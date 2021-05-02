@@ -1,4 +1,4 @@
-package com.example.example4;
+package com.example.scanWiFi;
 
 import org.junit.Test;
 

@@ -1,4 +1,4 @@
-package com.example.example4;
+package com.example.scanWiFi;
 
 import android.content.Context;
 import android.support.test.InstrumentationRegistry;
