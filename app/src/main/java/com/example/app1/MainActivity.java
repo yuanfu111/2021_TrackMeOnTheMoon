@@ -42,7 +42,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     private List<ScanResult> scan_results;
     private ArrayList<String> scanned_MACs = new ArrayList<String>();
     private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
-    private int interval=20,step=10,window=20,sample_numer=0;//ms
+    private int interval=20,step=15,window=30,sample_numer=0;//ms
     private TextView  activity,CellA,CellB,CellC,CellD;
     private boolean start_scan=false,scan_complete = false;
     private boolean start_get_data=false;//set to 1 if the data in a window starts to be collected
@@ -130,7 +130,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         if(Math.abs(prediction-1.0)<0.1)
             result= "Walking";
         if(Math.abs(prediction-2.0)<0.1)
-            result= "Jumping！";
+            result= "Jumping";
         return result;
 
     }
@@ -292,7 +292,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         System.out.println(chosen_macs);
         Float[] rss_values=new Float[chosen_macs.size()+1];//leave the last spot for the label
         System.out.println();
-        //Arrays.fill(rss_values,-100f);
+        Arrays.fill(rss_values,-100f);
         // Compare scanned MACs against chosen MACs
         if(scanned_MACs.size()!=0) {
             for (int i = 0; i < chosen_macs.size(); ++i) {
@@ -300,8 +300,6 @@ public class MainActivity extends Activity implements SensorEventListener {
                     if (chosen_macs.get(i)==scanned_MACs.get(j)) {
                         rss_values[i] = scanned_RSS.get(j).floatValue();
                         //System.out.println(rss_values[i]);
-                    } else {
-                        rss_values[i] = -100f;
                     }
                 }
             }
