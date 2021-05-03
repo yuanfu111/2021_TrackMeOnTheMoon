@@ -287,25 +287,38 @@ public class MainActivity extends Activity implements SensorEventListener {
     private List<Float>  get_current_rss(List<String> chosen_macs) {
         //System.out.println(chosen_macs);
         scanWifi();
-        System.out.println(scanned_MACs);
-        System.out.println(scanned_RSS);
-        System.out.println(chosen_macs);
+//        System.out.println(scanned_MACs);
+//        System.out.println(scanned_RSS);
+//        System.out.println(chosen_macs);
         Float[] rss_values=new Float[chosen_macs.size()+1];//leave the last spot for the label
-        System.out.println();
         Arrays.fill(rss_values,-100f);
+
         // Compare scanned MACs against chosen MACs
         if(scanned_MACs.size()!=0) {
+            /* for testing
+            scanned_MACs.remove(1);
+            scanned_MACs.add("c0:a0:bb:e9:87:87");
+            */
             for (int i = 0; i < chosen_macs.size(); ++i) {
                 for(int j=0;j<scanned_MACs.size();++j) {
-                    if (chosen_macs.get(i)==scanned_MACs.get(j)) {
+                    /* for testing
+//                    System.out.println("chosen_macs(i)"+chosen_macs.get(i));
+//                    System.out.println("scanned_mac(j)"+scanned_MACs.get(j));
+                     */
+                    if ((chosen_macs.get(i)).equals(scanned_MACs.get(j))) {
                         rss_values[i] = scanned_RSS.get(j).floatValue();
-                        //System.out.println(rss_values[i]);
+
                     }
                 }
             }
-//            for(Float each:rss_values){
-//                System.out.println(each);
-//            }
+            /* for testing
+            System.out.println(scanned_MACs);
+            System.out.println(scanned_RSS);
+            System.out.println(chosen_macs);
+            for(Float each:rss_values){
+                System.out.println(each);
+            }
+             */
 
             // Compare chosen MACs against scanned MACS
 //            for (int i = 0; i < chosen_macs.size(); ++i) {
