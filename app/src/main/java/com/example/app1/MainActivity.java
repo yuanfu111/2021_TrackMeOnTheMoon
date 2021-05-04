@@ -106,24 +106,27 @@ public class MainActivity extends Activity implements SensorEventListener {
         aY = event.values[1];
         aZ = event.values[2];
 
-        if(start_rec_act==true){
-            if(data_per_window.size()!=window){
-                if(start_get_data==false){
-                    get_current_act_data();
-                }
-            }
-            else{
-                //System.out.println(data_per_window);
-                List<Float> acc_data=new ArrayList<Float>(Arrays.asList(aX,aY,aZ));
-                List<Float> input_data = new ArrayList<>(featureExtraction(data_per_window));
-                Float prediction =knn_act.predict(input_data);
-                activity.setText(set_activity_text(prediction));
-                for(int i =0;i<step;i++){
-                    data_per_window.remove(i);
-                }
-                //data_per_window.clear();
+
+        if(data_per_window.size()!=window){
+            if(start_get_data==false){
+                get_current_act_data();
             }
         }
+        else{
+            if(start_rec_act==true) {
+                //System.out.println(data_per_window);
+                List<Float> acc_data = new ArrayList<Float>(Arrays.asList(aX, aY, aZ));
+                List<Float> input_data = new ArrayList<>(featureExtraction(data_per_window));
+                Float prediction = knn_act.predict(input_data);
+                activity.setText(set_activity_text(prediction));
+            }
+                for (int i = 0; i < step; i++) {
+                    data_per_window.remove(i);
+
+        }
+            //data_per_window.clear();
+        }
+
     }
     private String set_activity_text(Float prediction){
         String result = "";
@@ -282,7 +285,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
         else{
             v.setEnabled(false);
-            v.getBackground().setColorFilter(Color.WHITE, PorterDuff.Mode.OVERLAY);
+            v.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.ADD);
         }
     }
 
