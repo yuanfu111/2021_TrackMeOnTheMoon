@@ -47,7 +47,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     private TextView  CellA,CellB,CellC,CellD;
     private Button activity;
     private boolean start_get_data=false,//set to 1 if the data in a window starts to be collected
-                    start_rec_act=false;
+                    start_rec_act=false,
+                    scan_complete=false;
     private List<List<Float>> data_per_window=new ArrayList<>();
     private List<List<Float>> sample_table_act = new ArrayList<List<Float>>();
     private List<List<Float>> sample_table_loc = new ArrayList<List<Float>>();
@@ -316,6 +317,7 @@ public class MainActivity extends Activity implements SensorEventListener {
                     }
                 }
             }
+
             /* for testing
             System.out.println(scanned_MACs);
             System.out.println(scanned_RSS);
@@ -340,6 +342,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     private void scanWifi() {
         scanned_MACs.clear();
         scanned_RSS.clear();
+        scan_complete=false;
+        if(scan_results!=null) scan_results.clear();
         //registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
         Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
@@ -349,6 +353,9 @@ public class MainActivity extends Activity implements SensorEventListener {
                 scanned_MACs.add(scanResult.BSSID);
                 scanned_RSS.add(scanResult.level);
             }
+//            System.out.println(scanned_MACs);
+//            System.out.println(scanned_RSS);
+            scan_complete=true;
         }
         else{
 
@@ -376,25 +383,30 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        System.out.println(sample_table_act);
 //        System.out.println(sample_table_loc);
         List<Float> rss_values = new ArrayList<Float>(get_current_rss(chosen_macs));
+        System.out.println(chosen_macs);
+        System.out.println(rss_values);
         //List<Float> test_point= new ArrayList<Float>(Arrays.asList(-3.600000000000000000e+01f,-3.100000000000000000e+01f, -1.000000000000000000e+02f, -4.500000000000000000e+01f, -1.000000000000000000e+02f, -1.000000000000000000e+02f, -1.000000000000000000e+02f, -4.900000000000000000e+01f, -1.000000000000000000e+02f, -4.600000000000000000e+01f, -1.000000000000000000e+02f, -1.000000000000000000e+02f,-1f));
-        float prediction=knn_loc.predict(rss_values);
-        System.out.println(prediction);
-        if(Math.abs(prediction-0.0)<0.1) {
-            resetBg();
-            CellA.setBackground(drawable_orange);
-        }
-        if(Math.abs(prediction-1.0)<0.1){
-            resetBg();
-            CellB.setBackground(drawable_orange);
-        }
+        if(scan_complete==true) {
+            float prediction = knn_loc.predict(rss_values);
+            System.out.println(prediction);
+            Toast.makeText(this, "prediction " + prediction, Toast.LENGTH_LONG).show();
+            if (Math.abs(prediction - 0.0) < 0.1) {
+                resetBg();
+                CellA.setBackground(drawable_orange);
+            }
+            if (Math.abs(prediction - 1.0) < 0.1) {
+                resetBg();
+                CellB.setBackground(drawable_orange);
+            }
 
-        if(Math.abs(prediction-2.0)<0.1){
-            resetBg();
-            CellC.setBackground(drawable_orange);
-        }
-        if(Math.abs(prediction-3.0)<0.1) {
-            resetBg();
-            CellD.setBackground(drawable_orange);
+            if (Math.abs(prediction - 2.0) < 0.1) {
+                resetBg();
+                CellC.setBackground(drawable_orange);
+            }
+            if (Math.abs(prediction - 3.0) < 0.1) {
+                resetBg();
+                CellD.setBackground(drawable_orange);
+            }
         }
     }
     public void rec_my_activity(View v){
