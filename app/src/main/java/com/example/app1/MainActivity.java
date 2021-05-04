@@ -43,7 +43,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     private List<ScanResult> scan_results;
     private ArrayList<String> scanned_MACs = new ArrayList<String>();
     private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
-    private int interval=20,step=15,window=30,sample_numer=0;//ms
+    private int interval=80,window=10,sample_numer=0;//ms
     private TextView  CellA,CellB,CellC,CellD;
     private Button activity;
     private boolean start_get_data=false,//set to 1 if the data in a window starts to be collected
@@ -121,10 +121,11 @@ public class MainActivity extends Activity implements SensorEventListener {
                 Float prediction = knn_act.predict(input_data);
                 activity.setText(set_activity_text(prediction));
             }
-                for (int i = 0; i < step; i++) {
-                    data_per_window.remove(i);
-
-        }
+//                for (int i = 0; i < window; i++) {
+//                    data_per_window.remove(i);
+//
+//                }
+            data_per_window.clear();
             //data_per_window.clear();
         }
 
