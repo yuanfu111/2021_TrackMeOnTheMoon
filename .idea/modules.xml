@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/ScanWiFi.iml" filepath="$PROJECT_DIR$/.idea/modules/ScanWiFi.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/ScanWiFi.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/ScanWiFi.app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/2021_TrackMeOnTheMoon.iml" filepath="$PROJECT_DIR$/.idea/modules/2021_TrackMeOnTheMoon.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/2021_TrackMeOnTheMoon.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/2021_TrackMeOnTheMoon.app.iml" />
     </modules>
   </component>
 </project>

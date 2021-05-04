@@ -139,7 +139,7 @@ public class MainActivity extends AppCompatActivity {
                 arrayList.add(scanResult.BSSID + " " + scanResult.level + " " + label +'\n');
                 adapter.notifyDataSetChanged();
             }
-            if (count == 4) {
+            if (count%4 == 0) {
                 save2file(arrayList);
             }
         }
