@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
     android:padding="10dp"
     android:layout_width="match_parent"
@@ -64,20 +65,20 @@
             android:textColor="#F4EBEB"
             android:textStyle="bold" />
 
-        <TextView
+        <Button
             android:id="@+id/activity"
             android:layout_width="150dp"
             android:layout_height="50dp"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
+            android:layout_gravity="center"
             android:layout_margin="15dp"
-            android:autoText="false"
-            android:background="@android:color/holo_blue_light"
-            android:gravity="center_vertical|center_horizontal"
+            android:background="@android:color/holo_blue_bright"
+            android:onClick="rec_my_activity"
             android:text="My Activity"
             android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-            android:textColor="#FFFFFF"
-            android:textStyle="bold" />
+            android:textColor="#F4EBEB"
+            android:textStyle="bold"
+            app:backgroundTint="#03A9F4" />
+
     </LinearLayout>
 
 

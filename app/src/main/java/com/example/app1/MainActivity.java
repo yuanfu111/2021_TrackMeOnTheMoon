@@ -18,6 +18,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
@@ -43,9 +44,10 @@ public class MainActivity extends Activity implements SensorEventListener {
     private ArrayList<String> scanned_MACs = new ArrayList<String>();
     private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
     private int interval=20,step=15,window=30,sample_numer=0;//ms
-    private TextView  activity,CellA,CellB,CellC,CellD;
-    private boolean start_scan=false,scan_complete = false;
-    private boolean start_get_data=false;//set to 1 if the data in a window starts to be collected
+    private TextView  CellA,CellB,CellC,CellD;
+    private Button activity;
+    private boolean start_get_data=false,//set to 1 if the data in a window starts to be collected
+                    start_rec_act=false;
     private List<List<Float>> data_per_window=new ArrayList<>();
     private List<List<Float>> sample_table_act = new ArrayList<List<Float>>();
     private List<List<Float>> sample_table_loc = new ArrayList<List<Float>>();
@@ -56,7 +58,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        activity=findViewById(R.id.activity);
+        activity=(Button)findViewById(R.id.activity);
         CellA=findViewById(R.id.CellA);
         CellB=findViewById(R.id.CellB);
         CellC=findViewById(R.id.CellC);
@@ -104,24 +106,24 @@ public class MainActivity extends Activity implements SensorEventListener {
         aY = event.values[1];
         aZ = event.values[2];
 
-
-        if(data_per_window.size()!=window){
-            if(start_get_data==false){
-                get_current_act_data();
+        if(start_rec_act==true){
+            if(data_per_window.size()!=window){
+                if(start_get_data==false){
+                    get_current_act_data();
+                }
+            }
+            else{
+                //System.out.println(data_per_window);
+                List<Float> acc_data=new ArrayList<Float>(Arrays.asList(aX,aY,aZ));
+                List<Float> input_data = new ArrayList<>(featureExtraction(data_per_window));
+                Float prediction =knn_act.predict(input_data);
+                activity.setText(set_activity_text(prediction));
+                for(int i =0;i<step;i++){
+                    data_per_window.remove(i);
+                }
+                //data_per_window.clear();
             }
         }
-        else{
-            //System.out.println(data_per_window);
-            List<Float> acc_data=new ArrayList<Float>(Arrays.asList(aX,aY,aZ));
-            List<Float> input_data = new ArrayList<>(featureExtraction(data_per_window));
-            Float prediction =knn_act.predict(input_data);
-            activity.setText(set_activity_text(prediction));
-            for(int i =0;i<step;i++){
-                data_per_window.remove(i);
-            }
-            //data_per_window.clear();
-        }
-
     }
     private String set_activity_text(Float prediction){
         String result = "";
@@ -335,8 +337,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     private void scanWifi() {
         scanned_MACs.clear();
         scanned_RSS.clear();
-        //start_scan=true;
-        start_scan = false;
         //registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
         Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
@@ -393,6 +393,10 @@ public class MainActivity extends Activity implements SensorEventListener {
             resetBg();
             CellD.setBackground(drawable_orange);
         }
+    }
+    public void rec_my_activity(View v){
+        enableView(v,false);
+        start_rec_act=true;
     }
     private void resetBg(){
         CellA.setBackground(drawable_white);
