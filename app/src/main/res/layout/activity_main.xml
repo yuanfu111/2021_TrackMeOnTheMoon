@@ -13,7 +13,7 @@
         <TextView
             android:id="@+id/CellA"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:background="@drawable/rectangle"
             android:gravity="center"
             android:text="Cell A"
@@ -22,7 +22,7 @@
         <TextView
             android:id="@+id/CellB"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:background="@drawable/rectangle"
             android:gravity="center"
             android:text="Cell B"
@@ -31,7 +31,7 @@
         <TextView
             android:id="@+id/CellC"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:background="@drawable/rectangle"
             android:gravity="center"
             android:text="Cell C"
@@ -40,7 +40,7 @@
         <TextView
             android:id="@+id/CellD"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="100dp"
             android:background="@drawable/rectangle"
             android:gravity="center"
             android:text="Cell D"
