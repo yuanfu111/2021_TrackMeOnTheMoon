@@ -10,11 +10,13 @@ import java.util.List;
 import java.util.ArrayList;
 
 
+import android.graphics.Color;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.content.Context;
+import android.os.Handler;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -28,7 +30,8 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.widget.ListView;
 import android.widget.Toast;
-
+import android.graphics.Color;
+import android.graphics.PorterDuff;
 /**
  * Reference: https://ssaurel.medium.com/develop-a-wifi-scanner-android-application-daa3b77feb73
  */
@@ -45,6 +48,9 @@ public class MainActivity extends AppCompatActivity {
     private ArrayAdapter adapter;
     private int count = 0;
     private Clock clock = Clock.systemDefaultZone();
+    private Handler handler;
+    private Runnable runnable;
+    private int interval = 500;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -63,7 +69,21 @@ public class MainActivity extends AppCompatActivity {
         buttonScan.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
-                scanWifi();
+                handler = new Handler();
+                runnable = new Runnable() {
+                    @Override
+                    public void run() {
+                        if (count < 100) {
+                            scanWifi();
+                            handler.postDelayed(this, interval);
+                        }
+                        else {
+                            handler.removeCallbacks(runnable);
+                            buttonScan.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.OVERLAY);
+                        }
+                    }
+                };
+                handler.postDelayed(runnable, interval);
             }
         });
 
@@ -135,11 +155,14 @@ public class MainActivity extends AppCompatActivity {
             results = wifiManager.getScanResults();
             unregisterReceiver(this);
 
-            for (ScanResult scanResult : results) {
-                arrayList.add(scanResult.BSSID + " " + scanResult.level + " " + label +'\n');
+            for (int i=0; i<results.size(); ++i) {
+                arrayList.add(results.get(i).BSSID + " " + results.get(i).level + " " + label +'\n');
+                if (i == results.size()-1) {
+                    arrayList.add("---\n");
+                }
                 adapter.notifyDataSetChanged();
             }
-            if (count%4 == 0) {
+            if (count%50 == 0) {
                 save2file(arrayList);
             }
         }
