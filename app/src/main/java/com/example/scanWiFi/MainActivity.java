@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private Clock clock = Clock.systemDefaultZone();
     private Handler handler;
     private Runnable runnable;
-    private int interval = 2000;
+    private int small_interval = 1000;
+    private int big_interval = 1000*60*2; // 2 minutes
     private int max_sample = 100;
 
     @Override
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         if (count < max_sample) {
                             scanWifi();
-                            handler.postDelayed(this, interval);
+                            handler.postDelayed(this, small_interval);
                         }
                         else {
                             handler.removeCallbacks(runnable);
@@ -84,7 +85,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 };
-                handler.postDelayed(runnable, interval);
+                handler.postDelayed(runnable, small_interval);
             }
         });
 
