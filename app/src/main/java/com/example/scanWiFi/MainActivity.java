@@ -50,7 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private Clock clock = Clock.systemDefaultZone();
     private Handler handler;
     private Runnable runnable;
-    private int interval = 500;
+    private int interval = 2000;
+    private int max_sample = 100;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -73,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 runnable = new Runnable() {
                     @Override
                     public void run() {
-                        if (count < 100) {
+                        if (count < max_sample) {
                             scanWifi();
                             handler.postDelayed(this, interval);
                         }
@@ -162,7 +163,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 adapter.notifyDataSetChanged();
             }
-            if (count%50 == 0) {
+            if (count == max_sample) {
                 save2file(arrayList);
             }
         }
