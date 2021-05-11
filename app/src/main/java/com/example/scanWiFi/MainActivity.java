@@ -50,8 +50,7 @@ public class MainActivity extends AppCompatActivity {
     private Clock clock = Clock.systemDefaultZone();
     private Handler handler;
     private Runnable runnable;
-    private int small_interval = 1000;
-    private int big_interval = 1000*60*2; // 2 minutes
+    private int interval = 1000;
     private int max_sample = 100;
 
     @Override
@@ -68,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
         CellD_Btn = findViewById(R.id.CellD_Btn);
 
         // Set listener for the button.
+        // Push the button once, scan multiple times with given interval
         buttonScan.setOnClickListener(new View.OnClickListener(){
             @Override
             public void onClick(View view) {
@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
                     public void run() {
                         if (count < max_sample) {
                             scanWifi();
-                            handler.postDelayed(this, small_interval);
+                            handler.postDelayed(this, interval);
                         }
                         else {
                             handler.removeCallbacks(runnable);
@@ -85,9 +85,17 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 };
-                handler.postDelayed(runnable, small_interval);
+                handler.postDelayed(runnable, interval);
             }
         });
+
+        // Push the button once, scan once
+//        buttonScan.setOnClickListener(new View.OnClickListener() {
+//          @Override
+//          public void onClick(View view) {
+//              scanWifi();
+//          }
+//        });
 
         buttonReset.setOnClickListener(new View.OnClickListener(){
             @Override
