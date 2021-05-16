@@ -1,9 +1,7 @@
-package com.example.app1;
+package com.example.app2;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -21,7 +19,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.content.IntentFilter;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
@@ -59,7 +57,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        activity=(Button)findViewById(R.id.activity);
+//        activity=(Button)findViewById(R.id.activity);
         CellA=findViewById(R.id.CellA);
         CellB=findViewById(R.id.CellB);
         CellC=findViewById(R.id.CellC);

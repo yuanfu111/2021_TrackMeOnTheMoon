@@ -1,10 +1,7 @@
-package com.example.app1;
+package com.example.app2;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Dictionary;
-import java.util.Hashtable;
 import java.util.List;
 
 public final class KNN {
