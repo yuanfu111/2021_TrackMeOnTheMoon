@@ -166,7 +166,7 @@ public class MainActivity extends AppCompatActivity {
             unregisterReceiver(this);
 
             for (int i=0; i<results.size(); ++i) {
-                arrayList.add(results.get(i).BSSID + " " + results.get(i).level + " " + label +'\n');
+                arrayList.add(results.get(i).SSID + " " + results.get(i).BSSID + " " + results.get(i).level + " " + label +'\n');
                 if (i == results.size()-1) {
                     arrayList.add("---\n");
                 }
