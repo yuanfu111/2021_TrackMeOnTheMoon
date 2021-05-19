@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private int interval = 500;
-    private int max_sample = 4;
+    private int max_sample = 53;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -200,13 +200,13 @@ public class MainActivity extends AppCompatActivity {
         @Override
         public void onReceive(Context context, Intent intent) {
             count ++;
-            if (count % 10 == 0){
-                Toast.makeText(getApplicationContext(), "Complete " + count + " scans!", Toast.LENGTH_SHORT).show();
+            if ((count-3) % 10 == 0){
+                Toast.makeText(getApplicationContext(), "Complete " + (count-3) + " scans!", Toast.LENGTH_SHORT).show();
             }
             results = wifiManager.getScanResults();
             unregisterReceiver(this);
 
-            // Abandon the first 3 scans due to WiFi wake time
+            // Abandon the first 3 scans due to WiFi wake time (1.5 sec)
             if (count > 2) {
                 for (int i=0; i<results.size(); ++i) {
                     arrayList.add(results.get(i).SSID + " " + results.get(i).BSSID + " " + results.get(i).level + " " + label +'\n');
