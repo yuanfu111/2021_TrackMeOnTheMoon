@@ -14,7 +14,7 @@
     <LinearLayout
         android:orientation="horizontal"
         android:gravity="center"
-        android:padding="10dp"
+        android:padding="5dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
         <Button
@@ -40,6 +40,56 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="D" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/CellE_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="E" />
+
+        <Button
+            android:id="@+id/CellF_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="F" />
+
+        <Button
+            android:id="@+id/CellG_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="G" />
+
+        <Button
+            android:id="@+id/CellH_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="H" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <Button
+            android:id="@+id/CellI_Btn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="I" />
+
+<!--        <Button-->
+<!--            android:id="@+id/CellJ_Btn"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:text="J" />-->
     </LinearLayout>
 
     <LinearLayout

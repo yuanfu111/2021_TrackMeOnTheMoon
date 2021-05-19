@@ -40,7 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
     private WifiManager wifiManager;
     private Button buttonScan, buttonReset;
-    private Button CellA_Btn, CellB_Btn, CellC_Btn, CellD_Btn;
+    private Button CellA_Btn, CellB_Btn, CellC_Btn, CellD_Btn, CellE_Btn, CellF_Btn, CellG_Btn, CellH_Btn, CellI_Btn;
     private String label;
     private ListView listView;
     private List<ScanResult> results;
@@ -50,8 +50,8 @@ public class MainActivity extends AppCompatActivity {
     private Clock clock = Clock.systemDefaultZone();
     private Handler handler;
     private Runnable runnable;
-    private int interval = 1000;
-    private int max_sample = 100;
+    private int interval = 500;
+    private int max_sample = 4;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -65,6 +65,12 @@ public class MainActivity extends AppCompatActivity {
         CellB_Btn = findViewById(R.id.CellB_Btn);
         CellC_Btn = findViewById(R.id.CellC_Btn);
         CellD_Btn = findViewById(R.id.CellD_Btn);
+        CellE_Btn = findViewById(R.id.CellE_Btn);
+        CellF_Btn = findViewById(R.id.CellF_Btn);
+        CellG_Btn = findViewById(R.id.CellG_Btn);
+        CellF_Btn = findViewById(R.id.CellF_Btn);
+        CellH_Btn = findViewById(R.id.CellH_Btn);
+        CellI_Btn = findViewById(R.id.CellI_Btn);
 
         // Set listener for the button.
         // Push the button once, scan multiple times with given interval
@@ -134,6 +140,41 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        CellE_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                label = "E";
+            }
+        });
+
+        CellF_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                label = "F";
+            }
+        });
+
+        CellG_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                label = "G";
+            }
+        });
+
+        CellH_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                label = "H";
+            }
+        });
+
+        CellI_Btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                label = "I";
+            }
+        });
+
         listView = findViewById(R.id.wifiList);
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -150,30 +191,34 @@ public class MainActivity extends AppCompatActivity {
     private void scanWifi() {
         registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
-        Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
+        if (count == 0) {
+            Toast.makeText(getApplicationContext(), "Start scanning WiFi ...", Toast.LENGTH_SHORT).show();
         }
+    }
 
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             count ++;
-            if (count > 1){
+            if (count % 10 == 0){
                 Toast.makeText(getApplicationContext(), "Complete " + count + " scans!", Toast.LENGTH_SHORT).show();
-            }else {
-                Toast.makeText(getApplicationContext(), "Complete 1 scan!", Toast.LENGTH_SHORT).show();
             }
             results = wifiManager.getScanResults();
             unregisterReceiver(this);
 
-            for (int i=0; i<results.size(); ++i) {
-                arrayList.add(results.get(i).SSID + " " + results.get(i).BSSID + " " + results.get(i).level + " " + label +'\n');
-                if (i == results.size()-1) {
-                    arrayList.add("---\n");
+            // Abandon the first 3 scans due to WiFi wake time
+            if (count > 2) {
+                for (int i=0; i<results.size(); ++i) {
+                    arrayList.add(results.get(i).SSID + " " + results.get(i).BSSID + " " + results.get(i).level + " " + label +'\n');
+                    if (i == results.size()-1) {
+                        arrayList.add("---\n");
+                    }
+                    adapter.notifyDataSetChanged();
                 }
-                adapter.notifyDataSetChanged();
-            }
-            if (count == max_sample) {
-                save2file(arrayList);
+                if (count == max_sample) {
+                    Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
+                    save2file(arrayList);
+                }
             }
         }
     };
