@@ -100,8 +100,8 @@ public class ScanWiFi extends Activity {
 
     // Return the rank of MACs.
     // For example, if rss_values = [-10, -30, -15], the returned result is index = [0, 2, 1]
-    public Integer[] sort_MACs (List<Float> rss_values) {
-        Integer[] ranks = new Integer[rss_values.size()];
+    public int[] sort_MACs (List<Float> rss_values) {
+        int[] ranks = new int[rss_values.size()];
         Arrays.fill(ranks, -101);
         // 1. Find the max value, obtain index_max
         // 2. Update ranks[index_max]
