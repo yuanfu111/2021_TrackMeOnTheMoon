@@ -1,5 +1,6 @@
 package com.example.app2;
-//import APP2.Bayesian_parellel;
+import com.example.app2.Bayesian_serial;
+import com.example.app2.ScanWiFi;
 
 import android.os.Bundle;
 import androidx.appcompat.app.AppCompatActivity;
@@ -17,12 +18,12 @@ public class MainActivity extends AppCompatActivity {
     private static List<String> macs = new ArrayList<String>();
     private static List<List<List<Float>>> mac_tables = new ArrayList<List<List<Float>>>();
     private static int numTables;
+    private Integer[] ranks;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        System.out.println("Hello");
 //    public static void main(String args[]){
 //        System.out.println("Hello");
 //        loadMacs();
@@ -37,15 +38,15 @@ public class MainActivity extends AppCompatActivity {
         // }
     }
     private static void loadMacsTables(){
-        String[] pathes=new String[numTables];
+        String[] paths=new String[numTables];
         for(int i=0;i<numTables;i++)
         {
-            pathes[i]="./data/table_mac"+i+".txt";
+            paths[i]="./data/table_mac"+i+".txt";
         }
         String line;
         try {
             for(int i=0;i<numTables;i++){
-                InputStreamReader reader = new InputStreamReader(new FileInputStream(pathes[i]));
+                InputStreamReader reader = new InputStreamReader(new FileInputStream(paths[i]));
                 BufferedReader br = new BufferedReader(reader);
                 List<List<Float>> mac_table=new ArrayList<>();
                 while ((line = br.readLine()) != null) {
