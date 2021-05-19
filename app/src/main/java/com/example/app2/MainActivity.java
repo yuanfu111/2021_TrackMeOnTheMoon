@@ -1,6 +1,9 @@
 package com.example.app2;
 //import APP2.Bayesian_parellel;
 
+import android.os.Bundle;
+import androidx.appcompat.app.AppCompatActivity;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.lang.String;
@@ -9,16 +12,22 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.InputStreamReader;
 
-public class MainActivity {
+public class MainActivity extends AppCompatActivity {
 
     private static List<String> macs = new ArrayList<String>();
     private static List<List<List<Float>>> mac_tables = new ArrayList<List<List<Float>>>();
     private static int numTables;
-    public static void main(String args[]){
+
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+        System.out.println("Hello");
+//    public static void main(String args[]){
 //        System.out.println("Hello");
-        loadMacs();
-        numTables=macs.size();
-        loadMacsTables();
+//        loadMacs();
+//        numTables=macs.size();
+//        loadMacsTables();
         //Bayesian_parellel b=new Bayesian_parellel();
         //System.out.println(b.name);
         // int i=0;
