@@ -23,9 +23,13 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -48,13 +52,15 @@ public class MainActivity extends Activity implements SensorEventListener {
     private Float[] posterior_serial=new Float[numCells];
     private ArrayList<String> scanned_MACs = new ArrayList<String>();
     private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
-    private TextView  CellA,CellB,CellC,CellD;
+    private TextView  CellA,CellB,CellC,CellD,target;
     private List<String> chosen_macs = new ArrayList<String>();
     private Drawable drawable_orange,drawable_white;
+    private List<List<Integer>> online_test=new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        target=(TextView)findViewById(R.id.target);
         CellA=findViewById(R.id.CellA);
         CellB=findViewById(R.id.CellB);
         CellC=findViewById(R.id.CellC);
@@ -93,16 +99,11 @@ public class MainActivity extends Activity implements SensorEventListener {
     //Load the local training data
     private void loadData(){
         InputStream in1=this.getResources().openRawResource(R.raw.macs);
-        //in3=this.getResources().openRawResource(R.raw.chosen_macs);
         BufferedReader reader1=new BufferedReader(new InputStreamReader(in1));
-        //reader2=new BufferedReader(new InputStreamReader(in2)),
-        //reader3=new BufferedReader(new InputStreamReader(in3));
-
-        //List<Float> each_sample=new ArrayList<>();
         if(in1!=null){
             String line;
             try{
-                //Reading activity table
+                //Reading mac table
                 while((line=reader1.readLine())!=null){
                     chosen_macs.add(line);
                 }
@@ -194,36 +195,36 @@ public class MainActivity extends Activity implements SensorEventListener {
         prior_serial=inital_prior;
         List<String> scaned_mac=new ArrayList<>();
         List<Integer> scaned_rss=new ArrayList<>();
-        scaned_mac.add("c0:a0:bb:e9:87:85");
         scaned_mac.add("28:d1:27:d8:0c:3e");
-        scaned_mac.add("68:ff:7b:a9:67:94");//this one does not show in tha mac table. We need to clean it
-        scaned_mac.add("48:f8:b3:40:f8:8d");
+        scaned_mac.add("c0:a0:bb:e9:87:85");
+        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
         scaned_mac.add("28:d1:27:d8:0c:3f");
-        scaned_mac.add("c0:a0:bb:e9:87:87");
-        scaned_mac.add("00:4a:77:6a:6f:2e");
-        scaned_mac.add("58:8b:f3:4e:cc:e4");
-        scaned_mac.add("34:e8:94:bd:dd:d4");
+        scaned_mac.add("68:ff:7b:a9:67:94");
         scaned_mac.add("34:e8:94:bd:dd:d3");
-        scaned_mac.add("20:e8:82:f0:4b:3c");
+        scaned_mac.add("34:e8:94:bd:dd:d4");
+        scaned_mac.add("48:f8:b3:40:f8:8d");
+        scaned_mac.add("00:4a:77:6a:6f:2e");
         scaned_mac.add("68:ff:7b:a9:67:93");
-        scaned_mac.add("b0:4e:26:1d:d9:6b");
-        scaned_mac.add("80:2a:a8:11:e2:3f");
-        scaned_mac.add("00:4a:77:6a:6f:2f");
-        scaned_rss.add(-37);
-        scaned_rss.add(-46);
-        scaned_rss.add(-53);
-        scaned_rss.add(-54);
-        scaned_rss.add(-57);
-        scaned_rss.add(-59);
-        scaned_rss.add(-66);
-        scaned_rss.add(-69);
-        scaned_rss.add(-70);
+        scaned_mac.add("24:f5:a2:dd:25:34");
+        scaned_mac.add("58:8b:f3:4e:cc:e4");
+        scaned_mac.add("08:26:97:e3:2c:81");
+        scaned_mac.add("82:2a:a8:11:e2:3f");
+        scaned_mac.add("0a:26:97:e3:2c:81");
+        scaned_rss.add(-45);
+        scaned_rss.add(-45);
+        scaned_rss.add(-47);
+        scaned_rss.add(-49);
+        scaned_rss.add(-52);
+        scaned_rss.add(-60);
+        scaned_rss.add(-60);
+        scaned_rss.add(-63);
+        scaned_rss.add(-63);
+        scaned_rss.add(-68);
         scaned_rss.add(-72);
-        scaned_rss.add(-74);
-        scaned_rss.add(-75);
-        scaned_rss.add(-79);
-        scaned_rss.add(-83);
-        scaned_rss.add(-88);
+        scaned_rss.add(-73);
+        scaned_rss.add(-77);
+        scaned_rss.add(-78);
+        scaned_rss.add(-78);
 
         clean_scan_result(scaned_mac,scaned_rss);
         //scaned_mac=scanned_MACs;
@@ -244,43 +245,44 @@ public class MainActivity extends Activity implements SensorEventListener {
                 System.out.println("Steady State reached");
                 break;//if reaches steady state
             }
-
-
             updata_serial_prior();
         }
 
         int pred_serial=getMaxIndex(posterior_serial);
         System.out.println(pred_serial);
-////
-////        List<Float[]> prior_parallel=new ArrayList<>();
-////        for(int i=0;i<scaned_rss.size();i++)
-////        {
-////            prior_parallel.add(new Float[]{0.25f,0.25f,0.25f,0.25f});
-////        }
-////
-////        int pred_parallel = sense_parallel(prior_parallel,scaned_mac,scaned_rss);
-//        //System.out.println(pred_parallel);
-//
-//        float prediction=pred_serial;
-//
-//        if (Math.abs(prediction - 0.0) < 0.1) {
-//            resetBg();
-//            CellA.setBackground(drawable_orange);
-//        }
-//        if (Math.abs(prediction - 1.0) < 0.1) {
-//            resetBg();
-//            CellB.setBackground(drawable_orange);
-//        }
-//
-//        if (Math.abs(prediction - 2.0) < 0.1) {
-//            resetBg();
-//            CellC.setBackground(drawable_orange);
-//        }
-//        if (Math.abs(prediction - 3.0) < 0.1) {
-//            resetBg();
-//            CellD.setBackground(drawable_orange);
-//        }
 
+//        List<Float[]> prior_parallel=new ArrayList<>();
+//        for(int i=0;i<scaned_rss.size();i++)
+//        {
+//            prior_parallel.add(new Float[]{0.25f,0.25f,0.25f,0.25f});
+//        }
+//
+//        int pred_parallel = sense_parallel(prior_parallel,scaned_mac,scaned_rss);
+//        System.out.println(pred_parallel);
+
+        Integer prediction=pred_serial;
+
+        if (prediction == 0) {
+            resetBg();
+            CellA.setBackground(drawable_orange);
+        }
+        if (prediction == 1) {
+            resetBg();
+            CellB.setBackground(drawable_orange);
+        }
+
+        if (prediction == 2) {
+            resetBg();
+            CellC.setBackground(drawable_orange);
+        }
+        if (prediction == 3) {
+            resetBg();
+            CellD.setBackground(drawable_orange);
+        }
+
+        Integer t = Integer.parseInt(target.getText().toString());
+        online_test.add(Arrays.asList(prediction,t));
+        System.out.println(online_test);
     }
     private boolean check_steady_state(){
         boolean steady=true;
@@ -441,5 +443,35 @@ public class MainActivity extends Activity implements SensorEventListener {
         });
         return indices;
     }
+    public void saveTest(View v){
+        FileOutputStream out ;
+        BufferedWriter writer = null;
+        try{
+            out = openFileOutput("test_result.txt",Context.MODE_PRIVATE);
+            writer=new BufferedWriter(new OutputStreamWriter(out));
+            for(List<Integer> each_test: online_test){
+                String line=Integer.toString(each_test.get(0)) +' '+each_test.get(1)+'\n';
+                writer.write(line);
+            }
+        }catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally {
+            try{
+                writer.close();
+            }catch(IOException e){
+                e.printStackTrace();
+            }
+        }
 
+        //show the accuracy
+        int right_count=0;
+        for(List<Integer> each_test:online_test){
+            if(each_test.get(0)==each_test.get(1))
+                right_count+=1;
+        }
+        float accuracy=right_count*1.0f/online_test.size();
+        Toast.makeText(this,"Accuracy "+accuracy,Toast.LENGTH_LONG).show();
+    }
 }
