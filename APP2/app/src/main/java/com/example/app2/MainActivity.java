@@ -194,15 +194,10 @@ public class MainActivity extends Activity implements SensorEventListener {
             System.out.println(scanResult.level);
         }
         System.out.println("All results are stored.");
-
-
         Float[] inital_prior=new Float[]{0.25f,0.25f,0.25f,0.25f};
         prior_serial=inital_prior;
         List<String> scaned_mac=new ArrayList<>();
         List<Integer> scaned_rss=new ArrayList<>();
-
-
-
         scaned_mac.add("c0:a0:bb:e9:87:85");
         scaned_mac.add("28:d1:27:d8:0c:3e");
         scaned_mac.add("68:ff:7b:a9:67:94");//this one does not show in tha mac table. We need to clean it
@@ -234,7 +229,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         scaned_rss.add(-83);
         scaned_rss.add(-88);
 
-        //clean_scan_result(scaned_mac,scaned_rss);
+        clean_scan_result(scaned_mac,scaned_rss);
         //scaned_mac=scanned_MACs;
         //scaned_rss=scanned_RSS;
 
