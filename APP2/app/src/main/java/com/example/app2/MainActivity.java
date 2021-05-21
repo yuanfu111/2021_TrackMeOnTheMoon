@@ -39,7 +39,6 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class MainActivity extends Activity implements SensorEventListener {
-
     private SensorManager sensorManager;
     private WifiManager wifiManager;
     //private Handler handler;
@@ -93,8 +92,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void onSensorChanged(SensorEvent event){
         //activity.setText("0.0");
         //get the the x,y,z values of the accelerometer
-
-
     }
     //Load the local training data
     private void loadData(){
@@ -136,6 +133,7 @@ public class MainActivity extends Activity implements SensorEventListener {
                     mac_tables.add(mac_table);
                     reader2.close();
                 }
+                Log.d("success","Mac_tables Loaded");
             }catch(IOException e) {
                 e.printStackTrace();
             }
@@ -158,7 +156,9 @@ public class MainActivity extends Activity implements SensorEventListener {
         if(scan_results!=null) scan_results.clear();
         //registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         wifiManager.startScan();
-        Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
+
+        //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
+        Log.d("success","Scanning WiFi ...");
         scan_results = wifiManager.getScanResults();
         if(scan_results!=null) {
             for (ScanResult scanResult : scan_results) {
@@ -168,7 +168,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
         else{
         }
-        Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
+        Log.d("success","Complete scan!");
+        //Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
     }
 //    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
 //        @Override
@@ -190,46 +191,45 @@ public class MainActivity extends Activity implements SensorEventListener {
             System.out.println(scanResult.BSSID);
             System.out.println(scanResult.level);
         }
+        System.out.println("size"+scan_results.size());
         System.out.println("All results are stored.");
-        Float[] inital_prior=new Float[]{0.25f,0.25f,0.25f,0.25f};
-        prior_serial=inital_prior;
+
         List<String> scaned_mac=new ArrayList<>();
         List<Integer> scaned_rss=new ArrayList<>();
-        scaned_mac.add("28:d1:27:d8:0c:3e");
-        scaned_mac.add("c0:a0:bb:e9:87:85");
-        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
-        scaned_mac.add("28:d1:27:d8:0c:3f");
-        scaned_mac.add("68:ff:7b:a9:67:94");
-        scaned_mac.add("34:e8:94:bd:dd:d3");
-        scaned_mac.add("34:e8:94:bd:dd:d4");
-        scaned_mac.add("48:f8:b3:40:f8:8d");
-        scaned_mac.add("00:4a:77:6a:6f:2e");
-        scaned_mac.add("68:ff:7b:a9:67:93");
-        scaned_mac.add("24:f5:a2:dd:25:34");
-        scaned_mac.add("58:8b:f3:4e:cc:e4");
-        scaned_mac.add("08:26:97:e3:2c:81");
-        scaned_mac.add("82:2a:a8:11:e2:3f");
-        scaned_mac.add("0a:26:97:e3:2c:81");
-        scaned_rss.add(-45);
-        scaned_rss.add(-45);
-        scaned_rss.add(-47);
-        scaned_rss.add(-49);
-        scaned_rss.add(-52);
-        scaned_rss.add(-60);
-        scaned_rss.add(-60);
-        scaned_rss.add(-63);
-        scaned_rss.add(-63);
-        scaned_rss.add(-68);
-        scaned_rss.add(-72);
-        scaned_rss.add(-73);
-        scaned_rss.add(-77);
-        scaned_rss.add(-78);
-        scaned_rss.add(-78);
+//        scaned_mac.add("28:d1:27:d8:0c:3e");
+//        scaned_mac.add("c0:a0:bb:e9:87:85");
+//        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
+//        scaned_mac.add("28:d1:27:d8:0c:3f");
+//        scaned_mac.add("68:ff:7b:a9:67:94");
+//        scaned_mac.add("34:e8:94:bd:dd:d3");
+//        scaned_mac.add("34:e8:94:bd:dd:d4");
+//        scaned_mac.add("48:f8:b3:40:f8:8d");
+//        scaned_mac.add("00:4a:77:6a:6f:2e");
+//        scaned_mac.add("68:ff:7b:a9:67:93");
+//        scaned_mac.add("24:f5:a2:dd:25:34");
+//        scaned_mac.add("58:8b:f3:4e:cc:e4");
+//        scaned_mac.add("08:26:97:e3:2c:81");
+//        scaned_mac.add("82:2a:a8:11:e2:3f");
+//        scaned_mac.add("0a:26:97:e3:2c:81");
+//        scaned_rss.add(-45);
+//        scaned_rss.add(-45);
+//        scaned_rss.add(-47);
+//        scaned_rss.add(-49);
+//        scaned_rss.add(-52);
+//        scaned_rss.add(-60);
+//        scaned_rss.add(-60);
+//        scaned_rss.add(-63);
+//        scaned_rss.add(-63);
+//        scaned_rss.add(-68);
+//        scaned_rss.add(-72);
+//        scaned_rss.add(-73);
+//        scaned_rss.add(-77);
+//        scaned_rss.add(-78);
+//        scaned_rss.add(-78);
 
+        scaned_mac=scanned_MACs;
+        scaned_rss=scanned_RSS;
         clean_scan_result(scaned_mac,scaned_rss);
-        //scaned_mac=scanned_MACs;
-        //scaned_rss=scanned_RSS;
-
         Integer[] sorted_indexes=sort(scaned_rss);
         for(int index:sorted_indexes)
             System.out.println(scaned_rss.get(index));
@@ -284,14 +284,21 @@ public class MainActivity extends Activity implements SensorEventListener {
         online_test.add(Arrays.asList(prediction,t));
         System.out.println(online_test);
     }
+    public void init_belief(View v)
+    {
+        Float[] inital_prior=new Float[]{0.25f,0.25f,0.25f,0.25f};
+        resetBg();
+        prior_serial=inital_prior;
+    }
     private boolean check_steady_state(){
         boolean steady=true;
         //if any big change happens, we should keep the iteration
         for(int i=0;i<prior_serial.length;i++)
         {
-            float change_rate=Math.abs(prior_serial[i]-posterior_serial[i]);///prior_serial[i];
+            if(prior_serial[i]==0 || posterior_serial[i]==0) continue;
+            float change_rate=Math.abs(prior_serial[i]-posterior_serial[i])/prior_serial[i];
             System.out.println("change rate: "+change_rate);
-            if(change_rate>0.000000001)
+            if(change_rate>0.01)
             {
                 steady=false;
             }
