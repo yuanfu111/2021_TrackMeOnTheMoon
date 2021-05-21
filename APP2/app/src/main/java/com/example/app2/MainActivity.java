@@ -38,11 +38,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 
     private SensorManager sensorManager;
     private WifiManager wifiManager;
-    private Handler handler;
-    private Runnable runnable;
+    //private Handler handler;
+    //private Runnable runnable;
     private List<ScanResult> scan_results;
     private int numTables;
-    private List<String> macs = new ArrayList<String>();
     private List<List<List<Float>>> mac_tables = new ArrayList<List<List<Float>>>();
     private int numCells=4;
     private Float[] prior_serial=new Float[numCells];
@@ -50,7 +49,6 @@ public class MainActivity extends Activity implements SensorEventListener {
     private ArrayList<String> scanned_MACs = new ArrayList<String>();
     private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
     private TextView  CellA,CellB,CellC,CellD;
-    private List<List<Float>> sample_table_loc = new ArrayList<List<Float>>();
     private List<String> chosen_macs = new ArrayList<String>();
     private Drawable drawable_orange,drawable_white;
     @Override
@@ -72,8 +70,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            Toast.makeText(this, "WiFi is disabled ... We need to enable it", Toast.LENGTH_LONG).show();
 //            wifiManager.setWifiEnabled(true);
 //        }
-        Float[] labels_act=new Float[]{0.0f,1.0f,2.0f},
-                labels_loc=new Float[]{0.0f,1.0f,2.0f,3.0f};
 
     }
     protected void onResume(){
@@ -108,11 +104,11 @@ public class MainActivity extends Activity implements SensorEventListener {
             try{
                 //Reading activity table
                 while((line=reader1.readLine())!=null){
-                    macs.add(line);
+                    chosen_macs.add(line);
                 }
                 Log.d("success","Mac Loaded");
                 reader1.close();
-                numTables=macs.size();
+                numTables=chosen_macs.size();
 
                 String[] ids=new String[numTables];
                 for(int i=0;i<numTables;i++)
@@ -316,7 +312,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         {
             String i=it_mac.next();
             it_rss.next();
-            if(!(macs.contains(i))){
+            if(!(chosen_macs.contains(i))){
                 it_mac.remove();
                 it_rss.remove();
             }
@@ -330,8 +326,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         Float[] posterior=new Float[numCells];
         int index_table =-1;
         for(int i=0;i<numTables;i++){
-            //System.out.println(macs.get(i));
-            if(rss_mac.equals(macs.get(i))){
+            //System.out.println(chosen_macs.get(i));
+            if(rss_mac.equals(chosen_macs.get(i))){
                 index_table=i;
             }
         }
