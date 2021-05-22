@@ -294,7 +294,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     private List<Float>  get_current_rss(List<String> chosen_macs) {
         //System.out.println(chosen_macs);
         scanWifi();
-//        System.out.println(scanned_MACs);
+        //System.out.println("ssssss"+scanned_MACs);
 //        System.out.println(scanned_RSS);
 //        System.out.println(chosen_macs);
         Float[] rss_values=new Float[chosen_macs.size()+1];//leave the last spot for the label

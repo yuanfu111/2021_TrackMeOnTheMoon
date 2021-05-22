@@ -1,9 +1,11 @@
 package com.example.app2;
 
+import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -12,6 +14,7 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.net.wifi.ScanResult;
+import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -22,6 +25,10 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -43,45 +50,46 @@ public class MainActivity extends Activity implements SensorEventListener {
     private WifiManager wifiManager;
     //private Handler handler;
     //private Runnable runnable;
-    private List<ScanResult> scan_results;
+    private List<ScanResult> scan_results =new ArrayList<>();
     private int numTables;
     private List<List<List<Float>>> mac_tables = new ArrayList<List<List<Float>>>();
-    private int numCells=4;
-    private Float[] prior_serial=new Float[numCells];
-    private Float[] posterior_serial=new Float[numCells];
+    private int numCells = 4;
+    private Float[] prior_serial = new Float[numCells];
+    private Float[] posterior_serial = new Float[numCells];
     private ArrayList<String> scanned_MACs = new ArrayList<String>();
     private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
-    private TextView  CellA,CellB,CellC,CellD,target;
+    private TextView CellA, CellB, CellC, CellD, target;
     private List<String> chosen_macs = new ArrayList<String>();
-    private Drawable drawable_orange,drawable_white;
-    private List<List<Integer>> online_test=new ArrayList<>();
+    private Drawable drawable_orange, drawable_white;
+    private List<List<Integer>> online_test = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        target=(TextView)findViewById(R.id.target);
-        CellA=findViewById(R.id.CellA);
-        CellB=findViewById(R.id.CellB);
-        CellC=findViewById(R.id.CellC);
-        CellD=findViewById(R.id.CellD);
+        target = (TextView) findViewById(R.id.target);
+        CellA = findViewById(R.id.CellA);
+        CellB = findViewById(R.id.CellB);
+        CellC = findViewById(R.id.CellC);
+        CellD = findViewById(R.id.CellD);
         drawable_orange = getResources().getDrawable(R.drawable.rectangle_orange);
         drawable_white = getResources().getDrawable(R.drawable.rectangle);
-        sensorManager=(SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         loadData();
         //Toast.makeText(this,"Initializing..please wait",Toast.LENGTH_LONG).show();
-
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
-//        if (wifiManager.isWifiEnabled()==false) {
-//            Toast.makeText(this, "WiFi is disabled ... We need to enable it", Toast.LENGTH_LONG).show();
-//            wifiManager.setWifiEnabled(true);
-//        }
+
+        if (wifiManager.isWifiEnabled() == false) {
+            Toast.makeText(this, "WiFi is disabled ... We need to enable it", Toast.LENGTH_LONG).show();
+            wifiManager.setWifiEnabled(true);
+        }
 
     }
-    protected void onResume(){
+
+    protected void onResume() {
         super.onResume();
 
     }
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
     }
@@ -89,43 +97,40 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
     @Override
-    public void onSensorChanged(SensorEvent event){
+    public void onSensorChanged(SensorEvent event) {
         //activity.setText("0.0");
         //get the the x,y,z values of the accelerometer
     }
     //Load the local training data
-    private void loadData(){
-        InputStream in1=this.getResources().openRawResource(R.raw.macs);
-        BufferedReader reader1=new BufferedReader(new InputStreamReader(in1));
-        if(in1!=null){
+    private void loadData() {
+        InputStream in1 = this.getResources().openRawResource(R.raw.macs);
+        BufferedReader reader1 = new BufferedReader(new InputStreamReader(in1));
+        if (in1 != null) {
             String line;
-            try{
+            try {
                 //Reading mac table
-                while((line=reader1.readLine())!=null){
+                while ((line = reader1.readLine()) != null) {
                     chosen_macs.add(line);
                 }
-                Log.d("success","Mac Loaded");
+                Log.d("success", "Mac Loaded");
                 reader1.close();
-                numTables=chosen_macs.size();
-
-                String[] ids=new String[numTables];
-                for(int i=0;i<numTables;i++)
-                {
-                    ids[i]="table_mac"+i;
+                numTables = chosen_macs.size();
+                String[] ids = new String[numTables];
+                for (int i = 0; i < numTables; i++) {
+                    ids[i] = "table_mac" + i;
                 }
-
                 System.out.println(line);
-                for(int i=0;i<numTables;i++){
-                    int k=getResources().getIdentifier(ids[i],"raw",getPackageName());
-                    InputStream in2=this.getResources().openRawResource(k);
-                    BufferedReader reader2=new BufferedReader(new InputStreamReader(in2));
-                    List<List<Float>> mac_table=new ArrayList<>();
+                for (int i = 0; i < numTables; i++) {
+                    int k = getResources().getIdentifier(ids[i], "raw", getPackageName());
+                    InputStream in2 = this.getResources().openRawResource(k);
+                    BufferedReader reader2 = new BufferedReader(new InputStreamReader(in2));
+                    List<List<Float>> mac_table = new ArrayList<>();
                     while ((line = reader2.readLine()) != null) {
                         //System.out.println(line);
-                        String[] line_split=line.split("\\s+");
-                        List<Float> sample_split=new ArrayList<>();
+                        String[] line_split = line.split("\\s+");
+                        List<Float> sample_split = new ArrayList<>();
                         //get rid of the first element which is ""
-                        for(int j=1;j<line_split.length;j++){
+                        for (int j = 1; j < line_split.length; j++) {
                             sample_split.add(Float.parseFloat(line_split[j]));
                         }
                         mac_table.add(sample_split);
@@ -133,19 +138,17 @@ public class MainActivity extends Activity implements SensorEventListener {
                     mac_tables.add(mac_table);
                     reader2.close();
                 }
-                Log.d("success","Mac_tables Loaded");
-            }catch(IOException e) {
+                Log.d("success", "Mac_tables Loaded");
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
     }
-
-    private void enableView(View v,boolean b){
-        if(b==true){
+    private void enableView(View v, boolean b) {
+        if (b == true) {
             v.setEnabled(true);
             v.getBackground().setColorFilter(null);
-        }
-        else{
+        } else {
             v.setEnabled(false);
             v.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.ADD);
         }
@@ -153,47 +156,62 @@ public class MainActivity extends Activity implements SensorEventListener {
     private void scanWifi() {
         scanned_MACs.clear();
         scanned_RSS.clear();
-        if(scan_results!=null) scan_results.clear();
+        if (scan_results != null) scan_results.clear();
         //registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
-
-        //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
-        Log.d("success","Scanning WiFi ...");
+        boolean success =wifiManager.startScan();
         scan_results = wifiManager.getScanResults();
-        if(scan_results!=null) {
-            for (ScanResult scanResult : scan_results) {
-                scanned_MACs.add(scanResult.BSSID);
-                scanned_RSS.add(scanResult.level);
-            }
-        }
-        else{
-        }
-        Log.d("success","Complete scan!");
-        //Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
+        Log.d("success", "Scanning WiFi ...");
     }
 //    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
 //        @Override
 //        public void onReceive(Context context, Intent intent) {
-//            Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
+//            System.out.println("scan complete");
+//            //Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
 //            scan_results = wifiManager.getScanResults();
+//            if (scan_results != null) {
+//                for (ScanResult scanResult : scan_results) {
+//                    scanned_MACs.add(scanResult.BSSID);
+//                    scanned_RSS.add(scanResult.level);
+//                }
+//                execute_filtering();
+//            } else {
+//            }
 //            System.out.println("Hello, the results are ready!");
-//            System.out.println("Size of the result: "+scan_results.size());
+//            System.out.println("Size of the result: " + scan_results.size());
 //            unregisterReceiver(this);
 //        }
 //    };
-
     public void locate_me(View v) {
+        //while(scan_complete==false)
+        //{
         scanWifi();
-        for (ScanResult scanResult : scan_results) {
-            System.out.println("The results are being stored!");
-            scanned_MACs.add(scanResult.BSSID);
-            scanned_RSS.add(scanResult.level);
-            System.out.println(scanResult.BSSID);
-            System.out.println(scanResult.level);
-        }
-        System.out.println("size"+scan_results.size());
-        System.out.println("All results are stored.");
+        if (scan_results != null) {
+                for (ScanResult scanResult : scan_results) {
+                    scanned_MACs.add(scanResult.BSSID);
+                    scanned_RSS.add(scanResult.level);
 
+                }
+                execute_filtering();
+            } else {
+            }
+//        for(int i=0;i<scanned_MACs.size();i++)
+//        {
+//            System.out.println(scanned_MACs.get(i));
+//            System.out.println(scanned_RSS.get(i));
+//        }
+        //}
+//        for (ScanResult scanResult : scan_results) {
+//            System.out.println("The results are being stored!");
+//            scanned_MACs.add(scanResult.BSSID);
+//            scanned_RSS.add(scanResult.level);
+//            //System.out.println(scanResult.BSSID);
+//            //System.out.println(scanResult.level);
+//        }
+        //
+        //System.out.println("All results are stored.");
+    }
+    private void execute_filtering(){
         List<String> scaned_mac=new ArrayList<>();
         List<Integer> scaned_rss=new ArrayList<>();
 //        scaned_mac.add("28:d1:27:d8:0c:3e");
@@ -226,7 +244,6 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scaned_rss.add(-77);
 //        scaned_rss.add(-78);
 //        scaned_rss.add(-78);
-
         scaned_mac=scanned_MACs;
         scaned_rss=scanned_RSS;
         clean_scan_result(scaned_mac,scaned_rss);
@@ -234,7 +251,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         for(int index:sorted_indexes)
             System.out.println(scaned_rss.get(index));
         int max_serial_itr=10;
-
         for(int i=0;i<max_serial_itr;i++)
         {
             System.out.println("Iteration: "+(i+1));
@@ -247,10 +263,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             }
             updata_serial_prior();
         }
-
         int pred_serial=getMaxIndex(posterior_serial);
         System.out.println(pred_serial);
-
 //        List<Float[]> prior_parallel=new ArrayList<>();
 //        for(int i=0;i<scaned_rss.size();i++)
 //        {
