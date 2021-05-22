@@ -121,6 +121,14 @@
                 android:layout_weight="1"
                 android:onClick="saveTest"
                 android:text="save_test" />
+
+            <Button
+                android:id="@+id/serial_done"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="serial_done"
+                android:text="Serial_Done" />
         </LinearLayout>
         <LinearLayout
             android:layout_width="wrap_content"
