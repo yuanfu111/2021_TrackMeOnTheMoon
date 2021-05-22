@@ -196,8 +196,12 @@ public class MainActivity extends Activity implements SensorEventListener {
                     scanned_RSS.add(scanResult.level);
 
                 }
+
             execute__serial_filtering();
             //execute_parallel_filtering();
+
+                execute_filtering();
+
             } else {
             }
 //        for(int i=0;i<scanned_MACs.size();i++)
