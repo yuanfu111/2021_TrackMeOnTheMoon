@@ -13,6 +13,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiConfiguration;
 import android.net.wifi.WifiInfo;
@@ -37,6 +38,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -56,6 +58,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     private int numCells = 4;
     private Float[] prior_serial = new Float[numCells];
     private Float[] posterior_serial = new Float[numCells];
+    private int prediction;
+    private boolean serial_done;
     private ArrayList<String> scanned_MACs = new ArrayList<String>();
     private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
     private TextView CellA, CellB, CellC, CellD, target;
@@ -67,10 +71,10 @@ public class MainActivity extends Activity implements SensorEventListener {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         target = (TextView) findViewById(R.id.target);
-        CellA = findViewById(R.id.CellA);
-        CellB = findViewById(R.id.CellB);
-        CellC = findViewById(R.id.CellC);
-        CellD = findViewById(R.id.CellD);
+        CellA = (TextView)findViewById(R.id.CellA);
+        CellB = (TextView)findViewById(R.id.CellB);
+        CellC = (TextView)findViewById(R.id.CellC);
+        CellD = (TextView)findViewById(R.id.CellD);
         drawable_orange = getResources().getDrawable(R.drawable.rectangle_orange);
         drawable_white = getResources().getDrawable(R.drawable.rectangle);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -192,7 +196,12 @@ public class MainActivity extends Activity implements SensorEventListener {
                     scanned_RSS.add(scanResult.level);
 
                 }
+
+            execute__serial_filtering();
+            //execute_parallel_filtering();
+
                 execute_filtering();
+
             } else {
             }
 //        for(int i=0;i<scanned_MACs.size();i++)
@@ -211,71 +220,68 @@ public class MainActivity extends Activity implements SensorEventListener {
         //
         //System.out.println("All results are stored.");
     }
-    private void execute_filtering(){
-        List<String> scaned_mac=new ArrayList<>();
-        List<Integer> scaned_rss=new ArrayList<>();
-//        scaned_mac.add("28:d1:27:d8:0c:3e");
-//        scaned_mac.add("c0:a0:bb:e9:87:85");
-//        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
-//        scaned_mac.add("28:d1:27:d8:0c:3f");
-//        scaned_mac.add("68:ff:7b:a9:67:94");
-//        scaned_mac.add("34:e8:94:bd:dd:d3");
-//        scaned_mac.add("34:e8:94:bd:dd:d4");
-//        scaned_mac.add("48:f8:b3:40:f8:8d");
-//        scaned_mac.add("00:4a:77:6a:6f:2e");
-//        scaned_mac.add("68:ff:7b:a9:67:93");
-//        scaned_mac.add("24:f5:a2:dd:25:34");
-//        scaned_mac.add("58:8b:f3:4e:cc:e4");
-//        scaned_mac.add("08:26:97:e3:2c:81");
-//        scaned_mac.add("82:2a:a8:11:e2:3f");
-//        scaned_mac.add("0a:26:97:e3:2c:81");
-//        scaned_rss.add(-45);
-//        scaned_rss.add(-45);
-//        scaned_rss.add(-47);
-//        scaned_rss.add(-49);
-//        scaned_rss.add(-52);
-//        scaned_rss.add(-60);
-//        scaned_rss.add(-60);
-//        scaned_rss.add(-63);
-//        scaned_rss.add(-63);
-//        scaned_rss.add(-68);
-//        scaned_rss.add(-72);
-//        scaned_rss.add(-73);
-//        scaned_rss.add(-77);
-//        scaned_rss.add(-78);
-//        scaned_rss.add(-78);
-        scaned_mac=scanned_MACs;
-        scaned_rss=scanned_RSS;
-        clean_scan_result(scaned_mac,scaned_rss);
-        Integer[] sorted_indexes=sort(scaned_rss);
-        for(int index:sorted_indexes)
+    private void execute__serial_filtering() {
+        List<String> scaned_mac = new ArrayList<>();
+        List<Integer> scaned_rss = new ArrayList<>();
+        scaned_mac.add("28:d1:27:d8:0c:3e");
+        scaned_mac.add("c0:a0:bb:e9:87:85");
+        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
+        scaned_mac.add("28:d1:27:d8:0c:3f");
+        scaned_mac.add("68:ff:7b:a9:67:94");
+        scaned_mac.add("34:e8:94:bd:dd:d3");
+        scaned_mac.add("34:e8:94:bd:dd:d4");
+        scaned_mac.add("48:f8:b3:40:f8:8d");
+        scaned_mac.add("00:4a:77:6a:6f:2e");
+        scaned_mac.add("68:ff:7b:a9:67:93");
+        scaned_mac.add("24:f5:a2:dd:25:34");
+        scaned_mac.add("58:8b:f3:4e:cc:e4");
+        scaned_mac.add("08:26:97:e3:2c:81");
+        scaned_mac.add("82:2a:a8:11:e2:3f");
+        scaned_mac.add("0a:26:97:e3:2c:81");
+        scaned_rss.add(-45);
+        scaned_rss.add(-45);
+        scaned_rss.add(-47);
+        scaned_rss.add(-49);
+        scaned_rss.add(-52);
+        scaned_rss.add(-60);
+        scaned_rss.add(-60);
+        scaned_rss.add(-63);
+        scaned_rss.add(-63);
+        scaned_rss.add(-68);
+        scaned_rss.add(-72);
+        scaned_rss.add(-73);
+        scaned_rss.add(-77);
+        scaned_rss.add(-78);
+        scaned_rss.add(-78);
+        //scaned_mac = scanned_MACs;
+        //scaned_rss = scanned_RSS;
+        clean_scan_result(scaned_mac, scaned_rss);
+        Integer[] sorted_indexes = sort(scaned_rss);
+        for (int index : sorted_indexes)
             System.out.println(scaned_rss.get(index));
-        int max_serial_itr=10;
-        for(int i=0;i<max_serial_itr;i++)
-        {
-            System.out.println("Iteration: "+(i+1));
+        int max_serial_itr = 10;
+        for (int i = 0; i < max_serial_itr; i++) {
+            System.out.println("Iteration: " + (i + 1));
             System.out.println(scaned_mac.get(sorted_indexes[i]));
             System.out.println(scaned_rss.get(sorted_indexes[i]));
-            posterior_serial=sense_serial(prior_serial,scaned_mac.get(sorted_indexes[i]),scaned_rss.get(sorted_indexes[i]));
-            if(check_steady_state()) {
+            posterior_serial = sense_serial(prior_serial, scaned_mac.get(sorted_indexes[i]), scaned_rss.get(sorted_indexes[i]));
+            if (check_steady_state()) {
                 System.out.println("Steady State reached");
                 break;//if reaches steady state
             }
             updata_serial_prior();
         }
-        int pred_serial=getMaxIndex(posterior_serial);
-        System.out.println(pred_serial);
-//        List<Float[]> prior_parallel=new ArrayList<>();
-//        for(int i=0;i<scaned_rss.size();i++)
-//        {
-//            prior_parallel.add(new Float[]{0.25f,0.25f,0.25f,0.25f});
-//        }
-//
-//        int pred_parallel = sense_parallel(prior_parallel,scaned_mac,scaned_rss);
-//        System.out.println(pred_parallel);
+        prediction = getMaxIndex(posterior_serial);
+        System.out.println(prediction);
+        DecimalFormat decimalFormat= new  DecimalFormat( ".000" );
+        CellA.setText("A "+ decimalFormat.format(prior_serial[0]));
+        CellB.setText("B "+decimalFormat.format(prior_serial[1]));
+        CellC.setText("C "+decimalFormat.format(prior_serial[2]));
+        CellD.setText("D "+decimalFormat.format(prior_serial[3]));
 
-        Integer prediction=pred_serial;
-
+        show_result(prediction,true);
+    }
+    private void show_result(int prediction,boolean serial){
         if (prediction == 0) {
             resetBg();
             CellA.setBackground(drawable_orange);
@@ -293,16 +299,41 @@ public class MainActivity extends Activity implements SensorEventListener {
             resetBg();
             CellD.setBackground(drawable_orange);
         }
-
         Integer t = Integer.parseInt(target.getText().toString());
-        online_test.add(Arrays.asList(prediction,t));
-        System.out.println(online_test);
+        if(!serial) {
+            online_test.add(Arrays.asList(prediction, t));
+            System.out.println(online_test);
+        }
+    }
+    public void serial_done(View v){
+        Integer t = Integer.parseInt(target.getText().toString());
+        online_test.add(Arrays.asList(prediction, t));
+    }
+    private void execute_parallel_filtering(){
+        List<String> scaned_mac=scanned_MACs;
+        List<Integer> scaned_rss=scanned_RSS;
+        List<Float[]> prior_parallel=new ArrayList<>();
+        //scaned_mac=scanned_MACs;
+        //scaned_rss=scanned_RSS;
+        for(int i=0;i<scaned_rss.size();i++)
+        {
+            prior_parallel.add(new Float[]{0.25f,0.25f,0.25f,0.25f});
+        }
+        prediction = sense_parallel(prior_parallel,scaned_mac,scaned_rss);
+        show_result(prediction,false);
+        System.out.println(prediction);
     }
     public void init_belief(View v)
     {
         Float[] inital_prior=new Float[]{0.25f,0.25f,0.25f,0.25f};
+        serial_done=false;
         resetBg();
         prior_serial=inital_prior;
+        DecimalFormat decimalFormat= new  DecimalFormat( ".000" );
+        CellA.setText("A "+ decimalFormat.format(prior_serial[0]));
+        CellB.setText("B "+decimalFormat.format(prior_serial[1]));
+        CellC.setText("C "+decimalFormat.format(prior_serial[2]));
+        CellD.setText("D "+decimalFormat.format(prior_serial[3]));
     }
     private boolean check_steady_state(){
         boolean steady=true;
@@ -328,7 +359,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         CellD.setBackground(drawable_white);
     }
 
-    private  void clean_scan_result(List<String> raw_mac,List<Integer> raw_rss){
+    private void clean_scan_result(List<String> raw_mac,List<Integer> raw_rss){
         Iterator<String> it_mac=raw_mac.iterator();
         Iterator<Integer> it_rss=raw_rss.iterator();
         while(it_mac.hasNext() && it_rss.hasNext())
@@ -358,7 +389,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             System.out.println("Mac:"+rss_mac+" does not exist in the table list");
             return null;
         }
-        int column=(int)(100+rss);
+        int column=100+rss;
         Float sum = 0f;
         for(int i=0;i<numCells;i++){
 
