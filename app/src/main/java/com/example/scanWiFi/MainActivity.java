@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private int interval = 500;
-    private int max_sample = 20;
+    private int max_sample = 23;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
