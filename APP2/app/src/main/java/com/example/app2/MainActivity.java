@@ -196,12 +196,8 @@ public class MainActivity extends Activity implements SensorEventListener {
                     scanned_RSS.add(scanResult.level);
 
                 }
-
-            execute__serial_filtering();
+            execute_serial_filtering();
             //execute_parallel_filtering();
-
-                execute_filtering();
-
             } else {
             }
 //        for(int i=0;i<scanned_MACs.size();i++)
@@ -220,7 +216,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         //
         //System.out.println("All results are stored.");
     }
-    private void execute__serial_filtering() {
+    private void execute_serial_filtering() {
         List<String> scaned_mac = new ArrayList<>();
         List<Integer> scaned_rss = new ArrayList<>();
         scaned_mac.add("28:d1:27:d8:0c:3e");
