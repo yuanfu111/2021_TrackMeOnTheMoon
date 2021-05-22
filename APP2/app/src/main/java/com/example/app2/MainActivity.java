@@ -192,7 +192,7 @@ public class MainActivity extends Activity implements SensorEventListener {
                     scanned_RSS.add(scanResult.level);
 
                 }
-                execute_filtering();
+                execute_filtering();py
             } else {
             }
 //        for(int i=0;i<scanned_MACs.size();i++)
