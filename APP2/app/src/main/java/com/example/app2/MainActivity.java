@@ -55,17 +55,19 @@ public class MainActivity extends Activity implements SensorEventListener {
     private List<ScanResult> scan_results =new ArrayList<>();
     private int numTables;
     private List<List<List<Float>>> mac_tables = new ArrayList<List<List<Float>>>();
-    private int numCells = 4;
+    private int numCells = 9;
     private Float[] prior_serial = new Float[numCells];
     private Float[] posterior_serial = new Float[numCells];
     private int prediction;
-    private boolean serial_done;
-    private ArrayList<String> scanned_MACs = new ArrayList<String>();
-    private ArrayList<Integer> scanned_RSS = new ArrayList<Integer>();
-    private TextView CellA, CellB, CellC, CellD, target;
+    private List<String> scanned_MACs = new ArrayList<String>();
+    private List<Integer> scanned_RSS = new ArrayList<Integer>();
+    private TextView CellA, CellB, CellC, CellD, CellE, CellF, CellG, CellH, CellI, target;
     private List<String> chosen_macs = new ArrayList<String>();
     private Drawable drawable_orange, drawable_white;
     private List<List<Integer>> online_test = new ArrayList<>();
+    //for offline testing
+    private List<List<Integer>> testing_sample = new ArrayList<>();
+    private List<Integer> testing_target = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -75,10 +77,15 @@ public class MainActivity extends Activity implements SensorEventListener {
         CellB = (TextView)findViewById(R.id.CellB);
         CellC = (TextView)findViewById(R.id.CellC);
         CellD = (TextView)findViewById(R.id.CellD);
+        CellE = (TextView)findViewById(R.id.CellE);
+        CellF = (TextView)findViewById(R.id.CellF);
+        CellG = (TextView)findViewById(R.id.CellG);
+        CellH = (TextView)findViewById(R.id.CellH);
+        CellI = (TextView)findViewById(R.id.CellI);
         drawable_orange = getResources().getDrawable(R.drawable.rectangle_orange);
         drawable_white = getResources().getDrawable(R.drawable.rectangle);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        loadData();
+        loadData(true);
         //Toast.makeText(this,"Initializing..please wait",Toast.LENGTH_LONG).show();
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -106,24 +113,25 @@ public class MainActivity extends Activity implements SensorEventListener {
         //get the the x,y,z values of the accelerometer
     }
     //Load the local training data
-    private void loadData() {
+    private void loadData(boolean offtest) {
         InputStream in1 = this.getResources().openRawResource(R.raw.macs);
         BufferedReader reader1 = new BufferedReader(new InputStreamReader(in1));
         if (in1 != null) {
             String line;
             try {
-                //Reading mac table
+                //load chosen macs
                 while ((line = reader1.readLine()) != null) {
                     chosen_macs.add(line);
                 }
                 Log.d("success", "Mac Loaded");
                 reader1.close();
+
+                //load mac tables
                 numTables = chosen_macs.size();
                 String[] ids = new String[numTables];
                 for (int i = 0; i < numTables; i++) {
                     ids[i] = "table_mac" + i;
                 }
-                System.out.println(line);
                 for (int i = 0; i < numTables; i++) {
                     int k = getResources().getIdentifier(ids[i], "raw", getPackageName());
                     InputStream in2 = this.getResources().openRawResource(k);
@@ -143,6 +151,31 @@ public class MainActivity extends Activity implements SensorEventListener {
                     reader2.close();
                 }
                 Log.d("success", "Mac_tables Loaded");
+                if(offtest) {
+                    //load offline testing data
+                    InputStream in3 = this.getResources().openRawResource(R.raw.testing_target);
+                    BufferedReader reader3 = new BufferedReader(new InputStreamReader(in3));
+                    while ((line = reader3.readLine()) != null) {
+                        testing_target.add((int) Float.parseFloat(line));
+                    }
+                    reader3.close();
+                    //System.out.println(testing_target);
+                    InputStream in4 = this.getResources().openRawResource(R.raw.testing_sample);
+                    BufferedReader reader4 = new BufferedReader(new InputStreamReader(in4));
+                    while ((line = reader4.readLine()) != null) {
+                        //System.out.println(line);
+                        String[] line_split = line.split("\\s+");
+                        List<Integer> sample_split = new ArrayList<>();
+                        //get rid of the first element which is ""
+                        for (int j = 1; j < line_split.length; j++) {
+                            sample_split.add((int) Float.parseFloat(line_split[j]));
+                        }
+                        testing_sample.add(sample_split);
+                    }
+                    reader4.close();
+                    //System.out.println(testing_sample);
+                    Log.d("success", "Testing Loaded");
+                }
             } catch (IOException e) {
                 e.printStackTrace();
             }
@@ -186,39 +219,27 @@ public class MainActivity extends Activity implements SensorEventListener {
 //            unregisterReceiver(this);
 //        }
 //    };
-    public void locate_me(View v) {
-        //while(scan_complete==false)
-        //{
-        scanWifi();
-        if (scan_results != null) {
-                for (ScanResult scanResult : scan_results) {
-                    scanned_MACs.add(scanResult.BSSID);
-                    scanned_RSS.add(scanResult.level);
-
-                }
-            execute_serial_filtering();
-            //execute_parallel_filtering();
-            } else {
-            }
-//        for(int i=0;i<scanned_MACs.size();i++)
-//        {
-//            System.out.println(scanned_MACs.get(i));
-//            System.out.println(scanned_RSS.get(i));
-//        }
-        //}
-//        for (ScanResult scanResult : scan_results) {
-//            System.out.println("The results are being stored!");
-//            scanned_MACs.add(scanResult.BSSID);
-//            scanned_RSS.add(scanResult.level);
-//            //System.out.println(scanResult.BSSID);
-//            //System.out.println(scanResult.level);
-//        }
-        //
-        //System.out.println("All results are stored.");
+    private void offline_test(){
+        scanned_MACs=chosen_macs;
+        int count = 0;
+        for(int i =0;i<testing_sample.size();i++) {
+            scanned_RSS = testing_sample.get(i);
+            //execute_serial_filtering();
+            //init_belief();
+            execute_parallel_filtering();
+            if (prediction == testing_target.get(i))
+                count++;
+            online_test.add(Arrays.asList(prediction,testing_target.get(i)));
+        }
+        float accuracy = count*1.0f/testing_sample.size();
+        System.out.println("Sample size: "+testing_sample.size()+"\nCorrect prediction: "+count+"\nAccuracy: "+accuracy);
+        System.out.println(online_test);
     }
-    private void execute_serial_filtering() {
-        List<String> scaned_mac = new ArrayList<>();
-        List<Integer> scaned_rss = new ArrayList<>();
+    public void locate_me(View v) {
+
+        List<String> scaned_mac=new ArrayList<>();
+        List<Integer> scaned_rss=new ArrayList<>();
+
         scaned_mac.add("28:d1:27:d8:0c:3e");
         scaned_mac.add("c0:a0:bb:e9:87:85");
         scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
@@ -249,18 +270,40 @@ public class MainActivity extends Activity implements SensorEventListener {
         scaned_rss.add(-77);
         scaned_rss.add(-78);
         scaned_rss.add(-78);
-        //scaned_mac = scanned_MACs;
-        //scaned_rss = scanned_RSS;
-        clean_scan_result(scaned_mac, scaned_rss);
-        Integer[] sorted_indexes = sort(scaned_rss);
+        clean_scan_result(scaned_mac,scaned_rss);
+        scanned_MACs=scaned_mac;
+        scanned_RSS=scaned_rss;
+        //while(scan_complete==false)
+        //{
+
+        //offline_test();
+
+        //scanWifi();
+//        if (scan_results != null) {
+//                for (ScanResult scanResult : scan_results) {
+//                    scanned_MACs.add(scanResult.BSSID);
+//                    scanned_RSS.add(scanResult.level);
+//
+//                }
+//            execute_serial_filtering();
+//            //execute_parallel_filtering();
+//            } else {
+//            }
+
+        //execute_parallel_filtering();
+        execute_serial_filtering();
+    }
+    private void execute_serial_filtering() {
+        clean_scan_result(scanned_MACs, scanned_RSS);
+        Integer[] sorted_indexes = sort(scanned_RSS);
         for (int index : sorted_indexes)
-            System.out.println(scaned_rss.get(index));
+            System.out.println(scanned_RSS.get(index));
         int max_serial_itr = 10;
         for (int i = 0; i < max_serial_itr; i++) {
             System.out.println("Iteration: " + (i + 1));
-            System.out.println(scaned_mac.get(sorted_indexes[i]));
-            System.out.println(scaned_rss.get(sorted_indexes[i]));
-            posterior_serial = sense_serial(prior_serial, scaned_mac.get(sorted_indexes[i]), scaned_rss.get(sorted_indexes[i]));
+            System.out.println(scanned_MACs.get(sorted_indexes[i]));
+            System.out.println(scanned_RSS.get(sorted_indexes[i]));
+            posterior_serial = sense_serial(prior_serial, scanned_MACs.get(sorted_indexes[i]), scanned_RSS.get(sorted_indexes[i]));
             if (check_steady_state()) {
                 System.out.println("Steady State reached");
                 break;//if reaches steady state
@@ -269,36 +312,56 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
         prediction = getMaxIndex(posterior_serial);
         System.out.println(prediction);
-        DecimalFormat decimalFormat= new  DecimalFormat( ".000" );
-        CellA.setText("A "+ decimalFormat.format(prior_serial[0]));
-        CellB.setText("B "+decimalFormat.format(prior_serial[1]));
-        CellC.setText("C "+decimalFormat.format(prior_serial[2]));
-        CellD.setText("D "+decimalFormat.format(prior_serial[3]));
+
+
 
         show_result(prediction,true);
     }
     private void show_result(int prediction,boolean serial){
-        if (prediction == 0) {
-            resetBg();
-            CellA.setBackground(drawable_orange);
+        switch (prediction) {
+            case 0:
+                resetBg();
+                CellA.setBackground(drawable_orange);
+                break;
+            case 1:
+                resetBg();
+                CellB.setBackground(drawable_orange);
+                break;
+            case 2:
+                resetBg();
+                CellC.setBackground(drawable_orange);
+                break;
+            case 3:
+                resetBg();
+                CellD.setBackground(drawable_orange);
+                break;
+            case 4:
+                resetBg();
+                CellE.setBackground(drawable_orange);
+                break;
+            case 5:
+                resetBg();
+                CellF.setBackground(drawable_orange);
+                break;
+            case 6:
+                resetBg();
+                CellG.setBackground(drawable_orange);
+                break;
+            case 7:
+                resetBg();
+                CellH.setBackground(drawable_orange);
+                break;
+            case 8:
+                resetBg();
+                CellI.setBackground(drawable_orange);
+                break;
         }
-        if (prediction == 1) {
-            resetBg();
-            CellB.setBackground(drawable_orange);
-        }
-
-        if (prediction == 2) {
-            resetBg();
-            CellC.setBackground(drawable_orange);
-        }
-        if (prediction == 3) {
-            resetBg();
-            CellD.setBackground(drawable_orange);
-        }
+        DecimalFormat decimalFormat= new  DecimalFormat( ".000" );
         Integer t = Integer.parseInt(target.getText().toString());
         if(!serial) {
             online_test.add(Arrays.asList(prediction, t));
-            System.out.println(online_test);
+            //System.out.println(online_test);
+        }else{update_prior_txt();
         }
     }
     public void serial_done(View v){
@@ -306,31 +369,42 @@ public class MainActivity extends Activity implements SensorEventListener {
         online_test.add(Arrays.asList(prediction, t));
     }
     private void execute_parallel_filtering(){
-        List<String> scaned_mac=scanned_MACs;
-        List<Integer> scaned_rss=scanned_RSS;
+
         List<Float[]> prior_parallel=new ArrayList<>();
-        //scaned_mac=scanned_MACs;
-        //scaned_rss=scanned_RSS;
-        for(int i=0;i<scaned_rss.size();i++)
+        for(int i=0;i<scanned_RSS.size();i++)
         {
-            prior_parallel.add(new Float[]{0.25f,0.25f,0.25f,0.25f});
+            prior_parallel.add(new Float[]{1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f});
         }
-        prediction = sense_parallel(prior_parallel,scaned_mac,scaned_rss);
+        prediction = sense_parallel(prior_parallel,scanned_MACs,scanned_RSS);
         show_result(prediction,false);
         System.out.println(prediction);
     }
     public void init_belief(View v)
     {
-        Float[] inital_prior=new Float[]{0.25f,0.25f,0.25f,0.25f};
-        serial_done=false;
-        resetBg();
+        Float[] inital_prior=new Float[]{1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f};
         prior_serial=inital_prior;
+        resetBg();
+        update_prior_txt();
+    }
+    private void update_prior_txt(){
         DecimalFormat decimalFormat= new  DecimalFormat( ".000" );
         CellA.setText("A "+ decimalFormat.format(prior_serial[0]));
         CellB.setText("B "+decimalFormat.format(prior_serial[1]));
         CellC.setText("C "+decimalFormat.format(prior_serial[2]));
         CellD.setText("D "+decimalFormat.format(prior_serial[3]));
+        CellE.setText("E "+ decimalFormat.format(prior_serial[4]));
+        CellF.setText("F "+decimalFormat.format(prior_serial[5]));
+        CellG.setText("G "+decimalFormat.format(prior_serial[6]));
+        CellH.setText("H "+decimalFormat.format(prior_serial[7]));
+        CellI.setText("I "+decimalFormat.format(prior_serial[8]));
     }
+    private void init_belief()
+    {
+        Float[] inital_prior=new Float[]{1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f};
+        resetBg();
+        prior_serial=inital_prior;
+    }
+
     private boolean check_steady_state(){
         boolean steady=true;
         //if any big change happens, we should keep the iteration
