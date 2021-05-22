@@ -194,31 +194,30 @@ public class MainActivity extends Activity implements SensorEventListener {
         scanned_MACs.clear();
         scanned_RSS.clear();
         if (scan_results != null) scan_results.clear();
-        //registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         boolean success =wifiManager.startScan();
-        scan_results = wifiManager.getScanResults();
-        //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
         Log.d("success", "Scanning WiFi ...");
     }
-//    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
-//        @Override
-//        public void onReceive(Context context, Intent intent) {
-//            System.out.println("scan complete");
-//            //Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
-//            scan_results = wifiManager.getScanResults();
-//            if (scan_results != null) {
-//                for (ScanResult scanResult : scan_results) {
-//                    scanned_MACs.add(scanResult.BSSID);
-//                    scanned_RSS.add(scanResult.level);
-//                }
-//                execute_filtering();
-//            } else {
-//            }
-//            System.out.println("Hello, the results are ready!");
-//            System.out.println("Size of the result: " + scan_results.size());
-//            unregisterReceiver(this);
-//        }
-//    };
+    BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            System.out.println("scan complete");
+            Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
+            scan_results = wifiManager.getScanResults();
+            if (scan_results != null) {
+                for (ScanResult scanResult : scan_results) {
+                    scanned_MACs.add(scanResult.BSSID);
+                    scanned_RSS.add(scanResult.level);
+                }
+                execute_serial_filtering();
+            } else {
+            }
+            System.out.println("Hello, the results are ready!");
+            System.out.println("Size of the result: " + scan_results.size());
+            unregisterReceiver(this);
+        }
+    };
     private void offline_test(){
         scanned_MACs=chosen_macs;
         int count = 0;
@@ -237,61 +236,42 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     public void locate_me(View v) {
 
-        List<String> scaned_mac=new ArrayList<>();
-        List<Integer> scaned_rss=new ArrayList<>();
+        //List<String> scaned_mac=new ArrayList<>();
+        //List<Integer> scaned_rss=new ArrayList<>();
 
-        scaned_mac.add("28:d1:27:d8:0c:3e");
-        scaned_mac.add("c0:a0:bb:e9:87:85");
-        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
-        scaned_mac.add("28:d1:27:d8:0c:3f");
-        scaned_mac.add("68:ff:7b:a9:67:94");
-        scaned_mac.add("34:e8:94:bd:dd:d3");
-        scaned_mac.add("34:e8:94:bd:dd:d4");
-        scaned_mac.add("48:f8:b3:40:f8:8d");
-        scaned_mac.add("00:4a:77:6a:6f:2e");
-        scaned_mac.add("68:ff:7b:a9:67:93");
-        scaned_mac.add("24:f5:a2:dd:25:34");
-        scaned_mac.add("58:8b:f3:4e:cc:e4");
-        scaned_mac.add("08:26:97:e3:2c:81");
-        scaned_mac.add("82:2a:a8:11:e2:3f");
-        scaned_mac.add("0a:26:97:e3:2c:81");
-        scaned_rss.add(-45);
-        scaned_rss.add(-45);
-        scaned_rss.add(-47);
-        scaned_rss.add(-49);
-        scaned_rss.add(-52);
-        scaned_rss.add(-60);
-        scaned_rss.add(-60);
-        scaned_rss.add(-63);
-        scaned_rss.add(-63);
-        scaned_rss.add(-68);
-        scaned_rss.add(-72);
-        scaned_rss.add(-73);
-        scaned_rss.add(-77);
-        scaned_rss.add(-78);
-        scaned_rss.add(-78);
-        clean_scan_result(scaned_mac,scaned_rss);
-        scanned_MACs=scaned_mac;
-        scanned_RSS=scaned_rss;
-        //while(scan_complete==false)
-        //{
-
-        //offline_test();
-
-        //scanWifi();
-//        if (scan_results != null) {
-//                for (ScanResult scanResult : scan_results) {
-//                    scanned_MACs.add(scanResult.BSSID);
-//                    scanned_RSS.add(scanResult.level);
-//
-//                }
-//            execute_serial_filtering();
-//            //execute_parallel_filtering();
-//            } else {
-//            }
-
-        //execute_parallel_filtering();
-        execute_serial_filtering();
+//        scaned_mac.add("28:d1:27:d8:0c:3e");
+//        scaned_mac.add("c0:a0:bb:e9:87:85");
+//        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
+//        scaned_mac.add("28:d1:27:d8:0c:3f");
+//        scaned_mac.add("68:ff:7b:a9:67:94");
+//        scaned_mac.add("34:e8:94:bd:dd:d3");
+//        scaned_mac.add("34:e8:94:bd:dd:d4");
+//        scaned_mac.add("48:f8:b3:40:f8:8d");
+//        scaned_mac.add("00:4a:77:6a:6f:2e");
+//        scaned_mac.add("68:ff:7b:a9:67:93");
+//        scaned_mac.add("24:f5:a2:dd:25:34");
+//        scaned_mac.add("58:8b:f3:4e:cc:e4");
+//        scaned_mac.add("08:26:97:e3:2c:81");
+//        scaned_mac.add("82:2a:a8:11:e2:3f");
+//        scaned_mac.add("0a:26:97:e3:2c:81");
+//        scaned_rss.add(-45);
+//        scaned_rss.add(-45);
+//        scaned_rss.add(-47);
+//        scaned_rss.add(-49);
+//        scaned_rss.add(-52);
+//        scaned_rss.add(-60);
+//        scaned_rss.add(-60);
+//        scaned_rss.add(-63);
+//        scaned_rss.add(-63);
+//        scaned_rss.add(-68);
+//        scaned_rss.add(-72);
+//        scaned_rss.add(-73);
+//        scaned_rss.add(-77);
+//        scaned_rss.add(-78);
+//        scaned_rss.add(-78);
+//        scanned_MACs=scaned_mac;
+//        scanned_RSS=scaned_rss;
+        scanWifi();
     }
     private void execute_serial_filtering() {
         clean_scan_result(scanned_MACs, scanned_RSS);
@@ -301,8 +281,8 @@ public class MainActivity extends Activity implements SensorEventListener {
         int max_serial_itr = 10;
         for (int i = 0; i < max_serial_itr; i++) {
             System.out.println("Iteration: " + (i + 1));
-            System.out.println(scanned_MACs.get(sorted_indexes[i]));
-            System.out.println(scanned_RSS.get(sorted_indexes[i]));
+            System.out.println("Scanned MACs: " + scanned_MACs.get(sorted_indexes[i]));
+            System.out.println("Scanned RSS: " + scanned_RSS.get(sorted_indexes[i]));
             posterior_serial = sense_serial(prior_serial, scanned_MACs.get(sorted_indexes[i]), scanned_RSS.get(sorted_indexes[i]));
             if (check_steady_state()) {
                 System.out.println("Steady State reached");
@@ -427,6 +407,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         CellB.setBackground(drawable_white);
         CellC.setBackground(drawable_white);
         CellD.setBackground(drawable_white);
+        CellE.setBackground(drawable_white);
+        CellF.setBackground(drawable_white);
+        CellG.setBackground(drawable_white);
+        CellH.setBackground(drawable_white);
+        CellI.setBackground(drawable_white);
     }
 
     private void clean_scan_result(List<String> raw_mac,List<Integer> raw_rss){
