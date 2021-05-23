@@ -279,7 +279,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         Integer[] sorted_indexes = sort(scanned_RSS);
         for (int index : sorted_indexes)
             System.out.println(scanned_RSS.get(index));
-        int max_serial_itr = 10;
+        int max_serial_itr = 5;
         for (int i = 0; i < max_serial_itr; i++) {
             System.out.println("Iteration: " + (i + 1));
             System.out.println("Scanned MACs: " + scanned_MACs.get(sorted_indexes[i]));
