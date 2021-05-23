@@ -196,20 +196,21 @@ public class MainActivity extends Activity implements SensorEventListener {
         if (scan_results != null) scan_results.clear();
         registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
         boolean success =wifiManager.startScan();
-        Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
+        //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
         Log.d("success", "Scanning WiFi ...");
     }
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             System.out.println("scan complete");
-            Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
+            //Toast.makeText(getApplicationContext(), "Complete scan!", Toast.LENGTH_SHORT).show();
             scan_results = wifiManager.getScanResults();
             if (scan_results != null) {
                 for (ScanResult scanResult : scan_results) {
                     scanned_MACs.add(scanResult.BSSID);
                     scanned_RSS.add(scanResult.level);
                 }
+                clean_scan_result(scanned_MACs, scanned_RSS);
                 execute_serial_filtering();
             } else {
             }
@@ -274,7 +275,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         scanWifi();
     }
     private void execute_serial_filtering() {
-        clean_scan_result(scanned_MACs, scanned_RSS);
+        Toast.makeText(this, "serial", Toast.LENGTH_SHORT).show();
         Integer[] sorted_indexes = sort(scanned_RSS);
         for (int index : sorted_indexes)
             System.out.println(scanned_RSS.get(index));
@@ -285,10 +286,14 @@ public class MainActivity extends Activity implements SensorEventListener {
             System.out.println("Scanned RSS: " + scanned_RSS.get(sorted_indexes[i]));
             posterior_serial = sense_serial(prior_serial, scanned_MACs.get(sorted_indexes[i]), scanned_RSS.get(sorted_indexes[i]));
             if (check_steady_state()) {
+                Toast.makeText(this, "Steady State reached", Toast.LENGTH_SHORT).show();
                 System.out.println("Steady State reached");
                 break;//if reaches steady state
             }
             updata_serial_prior();
+            if(i==max_serial_itr){
+                Toast.makeText(this, "max interation reached", Toast.LENGTH_SHORT).show();
+            }
         }
         prediction = getMaxIndex(posterior_serial);
         System.out.println(prediction);
