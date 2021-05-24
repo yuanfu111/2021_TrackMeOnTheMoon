@@ -1,0 +1,1353 @@
+Costalaan_349 c0:a0:bb:e9:87:85 -44 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -56 E
+Costalaan_355 48:f8:b3:40:f8:8d -57 E
+LuckyCat 28:d1:27:d8:0c:3e -57 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -61 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -62 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -63 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -67 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -68 E
+scogast 82:2a:a8:11:e2:3f -75 E
+blablabla 10:b1:f8:48:be:84 -77 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -79 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -79 E
+scodelft 80:2a:a8:11:e2:3f -86 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -48 E
+Costalaan_349 c0:a0:bb:e9:87:85 -50 E
+TP-Link_6794 68:ff:7b:a9:67:94 -53 E
+LuckyCat 28:d1:27:d8:0c:3e -55 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -56 E
+Costalaan_355 48:f8:b3:40:f8:8d -57 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -59 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -65 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -67 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -70 E
+Costalaan_345 6c:19:8f:f2:95:46 -77 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -80 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -81 E
+It hurts when IP 48:d3:43:1c:ac:09 -81 E
+Ziggo be:f8:cc:04:fb:b9 -82 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -83 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -42 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -48 E
+TP-Link_6794 68:ff:7b:a9:67:94 -53 E
+LuckyCat 28:d1:27:d8:0c:3e -56 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -57 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -57 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -58 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -59 E
+Costalaan_355 48:f8:b3:40:f8:8d -60 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -62 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -75 E
+Costalaan_345 6c:19:8f:f2:95:46 -76 E
+Sitecom877806 00:0c:f6:87:78:06 -76 E
+Eetkamer.b fa:8f:ca:6f:51:19 -84 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -43 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -48 E
+TP-Link_6794 68:ff:7b:a9:67:94 -50 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -54 E
+LuckyCat 28:d1:27:d8:0c:3e -54 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -57 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -64 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -68 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -76 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -80 E
+Ziggo be:f8:cc:04:fb:b9 -80 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -40 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -42 E
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -51 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -59 E
+Costalaan_345 6c:19:8f:f2:95:46 -68 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -73 E
+Costalaan_355 48:f8:b3:40:f8:8d -73 E
+Sitecom877806 00:0c:f6:87:78:06 -75 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -77 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -82 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -83 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -40 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -43 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -48 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -50 E
+Costalaan_349 c0:a0:bb:e9:87:85 -54 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -68 E
+TP-Link_6794 68:ff:7b:a9:67:94 -71 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -72 E
+Jesusraved b0:4e:26:1d:d9:6b -72 E
+Costalaan_355 48:f8:b3:40:f8:8d -73 E
+Costalaan_345 6c:19:8f:f2:95:46 -77 E
+H369A3506C9 78:96:82:35:06:c9 -79 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -82 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -82 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -84 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -40 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -47 E
+LuckyCat 28:d1:27:d8:0c:3e -48 E
+Costalaan_349 c0:a0:bb:e9:87:85 -51 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -53 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -58 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+TP-Link_6794 68:ff:7b:a9:67:94 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -69 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -71 E
+Costalaan_355 48:f8:b3:40:f8:8d -73 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -79 E
+H369A3506C9 78:96:82:35:06:c9 -80 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -81 E
+---
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -45 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -46 E
+Costalaan_349 c0:a0:bb:e9:87:85 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -50 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -58 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -58 E
+TP-Link_6794 68:ff:7b:a9:67:94 -63 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -66 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+Costalaan_345 6c:19:8f:f2:95:46 -77 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -81 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -83 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -43 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -50 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -53 E
+LuckyCat 28:d1:27:d8:0c:3e -54 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -55 E
+TP-Link_6794 68:ff:7b:a9:67:94 -61 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -62 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -68 E
+Costalaan_355 48:f8:b3:40:f8:8d -68 E
+Jesusraved b0:4e:26:1d:d9:6b -69 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -79 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -80 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -45 E
+Costalaan_349 c0:a0:bb:e9:87:85 -47 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -56 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -58 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+TP-Link_6794 68:ff:7b:a9:67:94 -59 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -62 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -62 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -74 E
+Jesusraved b0:4e:26:1d:d9:6b -74 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -76 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -77 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -79 E
+Isaac_359 48:f8:b3:25:50:3e -82 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -83 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -42 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -48 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -52 E
+TP-Link_6794 68:ff:7b:a9:67:94 -53 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -56 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -59 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -59 E
+Costalaan_355 48:f8:b3:40:f8:8d -59 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -67 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -71 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -75 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -75 E
+H369A3506C9 78:96:82:35:06:c9 -78 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -80 E
+ 92:2a:a8:11:e2:3f -86 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -42 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -48 E
+TP-Link_6794 68:ff:7b:a9:67:94 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -51 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -54 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -56 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -56 E
+Costalaan_355 48:f8:b3:40:f8:8d -59 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -61 E
+Jesusraved b0:4e:26:1d:d9:6b -67 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -69 E
+VRV9517892EDC 78:dd:12:89:2e:dc -76 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -78 E
+Al Ansaar Guest 00:1a:8c:a3:86:11 -79 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -80 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -81 E
+H369A3506C9 78:96:82:35:06:c9 -81 E
+Al Ansaar Intern 00:1a:8c:a3:86:10 -82 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -84 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -48 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -52 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -54 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -59 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -60 E
+Costalaan_355 48:f8:b3:40:f8:8d -60 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -61 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -62 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+Costalaan_345 6c:19:8f:f2:95:46 -79 E
+Jesusraved b0:4e:26:1d:d9:6b -79 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -80 E
+H369A3506C9 78:96:82:35:06:c9 -80 E
+Eetkamer.b fa:8f:ca:6f:51:19 -82 E
+Ziggo 72:5a:9e:37:36:d1 -84 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -43 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -47 E
+Costalaan_349 c0:a0:bb:e9:87:85 -49 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -51 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -54 E
+TP-Link_6794 68:ff:7b:a9:67:94 -58 E
+Costalaan_355 48:f8:b3:40:f8:8d -59 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -62 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -62 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -64 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+Jesusraved b0:4e:26:1d:d9:6b -73 E
+H369A3506C9 78:96:82:35:06:c9 -74 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -79 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -81 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -82 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -43 E
+Costalaan_349 c0:a0:bb:e9:87:85 -44 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -48 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -51 E
+LuckyCat 28:d1:27:d8:0c:3e -53 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -55 E
+TP-Link_6794 68:ff:7b:a9:67:94 -56 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -63 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 E
+Costalaan_345 6c:19:8f:f2:95:46 -76 E
+Jesusraved b0:4e:26:1d:d9:6b -76 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -77 E
+H369A3506C9 78:96:82:35:06:c9 -79 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -82 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -42 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -47 E
+Costalaan_349 c0:a0:bb:e9:87:85 -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -50 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -52 E
+TP-Link_6794 68:ff:7b:a9:67:94 -52 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -59 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -61 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -66 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -78 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -83 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -41 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -48 E
+LuckyCat 28:d1:27:d8:0c:3e -48 E
+Costalaan_349 c0:a0:bb:e9:87:85 -49 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -51 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -55 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -66 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -66 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+Jesusraved b0:4e:26:1d:d9:6b -76 E
+Costalaan_345 6c:19:8f:f2:95:46 -78 E
+H369A3506C9 78:96:82:35:06:c9 -79 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -81 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -82 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+Costalaan_349 c0:a0:bb:e9:87:85 -50 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -54 E
+TP-Link_6794 68:ff:7b:a9:67:94 -55 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -57 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -60 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -65 E
+Costalaan_355 48:f8:b3:40:f8:8d -68 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+Jesusraved b0:4e:26:1d:d9:6b -74 E
+Costalaan_345 6c:19:8f:f2:95:46 -75 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -80 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -80 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -81 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -42 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -46 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+TP-Link_6794 68:ff:7b:a9:67:94 -53 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -54 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -58 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -60 E
+Costalaan_355 48:f8:b3:40:f8:8d -62 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -64 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -75 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -78 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -79 E
+---
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -49 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -52 E
+LuckyCat 28:d1:27:d8:0c:3e -52 E
+Costalaan_349 c0:a0:bb:e9:87:85 -54 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -56 E
+Costalaan_355 48:f8:b3:40:f8:8d -56 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -57 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -59 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -61 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -64 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -79 E
+Al Ansaar Guest 00:1a:8c:a3:86:11 -80 E
+Al Ansaar Intern 00:1a:8c:a3:86:10 -80 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -82 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -83 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -40 E
+Costalaan_349 c0:a0:bb:e9:87:85 -46 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -52 E
+TP-Link_6794 68:ff:7b:a9:67:94 -53 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -54 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -54 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -54 E
+LuckyCat 28:d1:27:d8:0c:3e -56 E
+Costalaan_355 48:f8:b3:40:f8:8d -56 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -76 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -76 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+Sitecom877806 00:0c:f6:87:78:06 -77 E
+Costalaan_345 6c:19:8f:f2:95:46 -80 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+Ziggo3ACF9F1 ac:22:05:28:2f:56 -83 E
+Ziggo ae:22:15:28:2f:56 -84 E
+ 8a:ac:c0:e6:29:41 -85 E
+ be:cf:4f:91:1b:06 -86 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -39 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -43 E
+Costalaan_349 c0:a0:bb:e9:87:85 -49 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -52 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -55 E
+LuckyCat 28:d1:27:d8:0c:3e -56 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -58 E
+Costalaan_355 48:f8:b3:40:f8:8d -62 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -73 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -75 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+Sitecom877806 00:0c:f6:87:78:06 -77 E
+kizilalanganganeef70 c0:c9:e3:fd:02:4e -77 E
+ZiggoE817C21 ac:22:05:24:72:04 -79 E
+ 8a:ac:c0:e6:29:41 -83 E
+ be:cf:4f:a1:1b:06 -84 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -42 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -47 E
+Costalaan_349 c0:a0:bb:e9:87:85 -51 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -55 E
+LuckyCat 28:d1:27:d8:0c:3e -56 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -56 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -63 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -65 E
+Costalaan_355 48:f8:b3:40:f8:8d -66 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -72 E
+Costalaan_353 24:f5:a2:dd:25:34 -76 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+ZiggoE817C21 ac:22:05:24:72:04 -78 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -78 E
+Costalaan_345 6c:19:8f:f2:95:46 -79 E
+ c6:c9:e3:fd:02:4e -80 E
+ 8a:ac:c0:f6:29:41 -82 E
+Eetkamer.b fa:8f:ca:6f:51:19 -83 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -83 E
+ be:cf:4f:a1:1b:06 -86 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -42 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -49 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -51 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+Costalaan_349 c0:a0:bb:e9:87:85 -54 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -56 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -56 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -64 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -67 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+Jesusraved b0:4e:26:1d:d9:6b -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Sitecom877806 00:0c:f6:87:78:06 -77 E
+kizilalanganganeef70 c0:c9:e3:fd:02:4e -78 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -79 E
+Costalaan_345 6c:19:8f:f2:95:46 -80 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -81 E
+Zyxel_1082 bc:cf:4f:a1:1b:06 -83 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -42 E
+Costalaan_349 c0:a0:bb:e9:87:85 -46 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -48 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -51 E
+TP-Link_6794 68:ff:7b:a9:67:94 -53 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -55 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -65 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -73 E
+Ziggo be:f8:cc:04:fb:b9 -74 E
+H369A3506C9 78:96:82:35:06:c9 -75 E
+blablabla 10:b1:f8:48:be:84 -75 E
+Eetkamer.b fa:8f:ca:6f:51:19 -80 E
+VFNL-74590A 00:5a:13:74:59:10 -80 E
+Cactus 60:32:b1:40:55:44 -80 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+ 8a:ac:c0:d6:29:41 -82 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -83 E
+ be:cf:4f:b1:1b:06 -84 E
+Ziggo ae:22:15:28:2f:56 -86 E
+ be:cf:4f:91:1b:06 -86 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -44 E
+LuckyCat 28:d1:27:d8:0c:3e -45 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -50 E
+Costalaan_349 c0:a0:bb:e9:87:85 -51 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -54 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -57 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -67 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Jesusraved b0:4e:26:1d:d9:6b -74 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -75 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Costalaan_353 24:f5:a2:dd:25:34 -76 E
+Zyxel_1082 bc:cf:4f:a1:1b:06 -85 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -44 E
+LuckyCat 28:d1:27:d8:0c:3e -47 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -50 E
+TP-Link_6794 68:ff:7b:a9:67:94 -52 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -52 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -56 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -56 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -59 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -62 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -64 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+Costalaan_353 24:f5:a2:dd:25:34 -74 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -75 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+kizilalanganganeef70 c0:c9:e3:fd:02:4e -79 E
+Ziggo f6:57:40:b2:9a:d1 -81 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -83 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -47 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -50 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -52 E
+Costalaan_349 c0:a0:bb:e9:87:85 -52 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -54 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -57 E
+LuckyCat 28:d1:27:d8:0c:3e -57 E
+TP-Link_6794 68:ff:7b:a9:67:94 -64 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -66 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+Jesusraved b0:4e:26:1d:d9:6b -72 E
+Costalaan_345 6c:19:8f:f2:95:46 -73 E
+Ziggo8362214 18:35:d1:0d:49:59 -79 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -82 E
+Online.nl_2941 88:ac:c0:c6:29:41 -82 E
+Al Ansaar Guest 00:1a:8c:a3:86:11 -84 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -48 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -49 E
+Costalaan_349 c0:a0:bb:e9:87:85 -49 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -49 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -55 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+Costalaan_355 48:f8:b3:40:f8:8d -62 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -70 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -71 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 E
+Costalaan_345 6c:19:8f:f2:95:46 -76 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -78 E
+Ziggo 5a:d3:43:1c:ac:09 -78 E
+Ziggo8362214 18:35:d1:0d:49:59 -83 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -84 E
+---
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -45 E
+LuckyCat 28:d1:27:d8:0c:3e -50 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -50 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -52 E
+Costalaan_349 c0:a0:bb:e9:87:85 -57 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -58 E
+TP-Link_6794 68:ff:7b:a9:67:94 -60 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -61 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -64 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -73 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -74 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -77 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+Ziggo f6:57:40:b2:9a:d1 -79 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -83 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -83 E
+Ziggo 2a:35:d1:0d:49:59 -83 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -83 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -44 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -45 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -48 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -49 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -55 E
+TP-Link_6794 68:ff:7b:a9:67:94 -59 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -60 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -62 E
+Costalaan_355 48:f8:b3:40:f8:8d -65 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -68 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -71 E
+Costalaan_345 6c:19:8f:f2:95:46 -72 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -73 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -74 E
+Jesusraved b0:4e:26:1d:d9:6b -76 E
+It hurts when IP 48:d3:43:1c:ac:09 -77 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+Ziggo f6:57:40:b2:9a:d1 -81 E
+Eetkamer.b fa:8f:ca:6f:51:19 -82 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+VFNL-74590A 00:5a:13:74:59:10 -82 E
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -82 E
+Ziggo3ACF9F1 ac:22:05:28:2f:56 -83 E
+ be:cf:4f:a1:1b:06 -84 E
+Al Ansaar Guest 00:1a:8c:a3:86:11 -84 E
+Ziggo ae:22:15:28:2f:56 -85 E
+Al Ansaar Intern 00:1a:8c:a3:86:10 -85 E
+Ziggo8362214 18:35:d1:0d:49:59 -85 E
+ 8a:ac:c0:e6:29:41 -85 E
+Ziggo 2a:35:d1:0d:49:59 -86 E
+ be:cf:4f:b1:1b:06 -86 E
+scogast 82:2a:a8:11:e2:e8 -86 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -44 E
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -45 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -48 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -49 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -54 E
+TP-Link_6794 68:ff:7b:a9:67:94 -56 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -68 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -69 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+Ziggo 5a:d3:43:1c:ac:09 -77 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -78 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -81 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -83 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -85 E
+---
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -46 E
+LuckyCat 28:d1:27:d8:0c:3e -46 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -50 E
+Costalaan_349 c0:a0:bb:e9:87:85 -50 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -62 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -65 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -69 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -71 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+Costalaan_345 6c:19:8f:f2:95:46 -74 E
+Jesusraved b0:4e:26:1d:d9:6b -76 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+Ziggo f6:57:40:b2:9a:d1 -82 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -85 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+LuckyCat 28:d1:27:d8:0c:3e -46 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -47 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -52 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+TP-Link_6794 68:ff:7b:a9:67:94 -59 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -66 E
+Costalaan_355 48:f8:b3:40:f8:8d -69 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+Costalaan_345 6c:19:8f:f2:95:46 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -74 E
+Ziggo ae:22:15:50:92:2b -76 E
+Ziggo-gast872A154 ae:22:35:50:92:2b -76 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -77 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+Ziggo 5a:d3:43:1c:ac:09 -78 E
+Ziggo be:f8:cc:04:e7:79 -86 E
+Ziggo8362214 18:35:d1:0d:49:59 -87 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+LuckyCat 28:d1:27:d8:0c:3e -46 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -46 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -47 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -49 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -49 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -62 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -67 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -75 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -77 E
+Costalaan_345 6c:19:8f:f2:95:46 -78 E
+Jesusraved b0:4e:26:1d:d9:6b -79 E
+It hurts when IP 48:d3:43:1c:ac:09 -79 E
+Ziggo f6:57:40:b2:9a:d1 -81 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -81 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -86 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -50 E
+LuckyCat 28:d1:27:d8:0c:3e -50 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -53 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -53 E
+TP-Link_6794 68:ff:7b:a9:67:94 -56 E
+Costalaan_355 48:f8:b3:40:f8:8d -62 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -69 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -72 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 E
+Costalaan_345 6c:19:8f:f2:95:46 -74 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -75 E
+Ziggo be:f8:cc:04:fb:b9 -75 E
+H369A3506C9 78:96:82:35:06:c9 -78 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+Ziggo 5a:d3:43:1c:ac:09 -78 E
+It hurts when IP 48:d3:43:1c:ac:09 -78 E
+VFNL-74590A 00:5a:13:74:59:10 -81 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -82 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -84 E
+Ziggo 2a:35:d1:0d:49:59 -85 E
+Ziggo8362214 18:35:d1:0d:49:59 -85 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -47 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -50 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -55 E
+TP-Link_6794 68:ff:7b:a9:67:94 -58 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -61 E
+Costalaan_355 48:f8:b3:40:f8:8d -64 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -72 E
+Costalaan_345 6c:19:8f:f2:95:46 -74 E
+H369A3506C9 78:96:82:35:06:c9 -75 E
+Ziggo ae:22:15:50:92:2b -76 E
+Ziggo-gast872A154 ae:22:35:50:92:2b -76 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+Ziggo 5a:d3:43:1c:ac:09 -77 E
+ c6:c9:e3:fd:02:56 -77 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -78 E
+It hurts when IP 48:d3:43:1c:ac:09 -78 E
+Ziggo f6:57:40:b2:9a:d1 -79 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -81 E
+Ziggo 2a:35:d1:0d:49:59 -84 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -85 E
+Ziggo be:f8:cc:04:e7:79 -86 E
+---
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -46 E
+Costalaan_349 c0:a0:bb:e9:87:85 -46 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -47 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -55 E
+LuckyCat 28:d1:27:d8:0c:3e -55 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -62 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -66 E
+Costalaan_355 48:f8:b3:40:f8:8d -67 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -70 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 E
+Jesusraved b0:4e:26:1d:d9:6b -74 E
+blablabla 10:b1:f8:48:be:84 -74 E
+Costalaan_345 6c:19:8f:f2:95:46 -75 E
+Costalaan_353 24:f5:a2:dd:25:34 -76 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -81 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -84 E
+Eetkamer.b fa:8f:ca:6f:51:19 -85 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -41 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -51 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -55 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -55 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -58 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -59 E
+TP-Link_6794 68:ff:7b:a9:67:94 -60 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -67 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -71 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Costalaan_353 24:f5:a2:dd:25:34 -76 E
+Costalaan_345 6c:19:8f:f2:95:46 -77 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -80 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -86 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -40 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -46 E
+LuckyCat 28:d1:27:d8:0c:3e -52 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -53 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -59 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -60 E
+TP-Link_6794 68:ff:7b:a9:67:94 -61 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -64 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -65 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -74 E
+blablabla 10:b1:f8:48:be:84 -74 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -76 E
+Costalaan_345 6c:19:8f:f2:95:46 -80 E
+Jesusraved b0:4e:26:1d:d9:6b -80 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -80 E
+VFNL-74590A 00:5a:13:74:59:10 -84 E
+Ziggo8362214 18:35:d1:0d:49:59 -84 E
+Eetkamer.b fa:8f:ca:6f:51:19 -85 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -46 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -53 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -58 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -60 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -64 E
+TP-Link_6794 68:ff:7b:a9:67:94 -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -65 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -71 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -73 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Costalaan_345 6c:19:8f:f2:95:46 -76 E
+H369A3506C9 78:96:82:35:06:c9 -80 E
+Jesusraved b0:4e:26:1d:d9:6b -80 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -80 E
+Ziggo f6:57:40:b2:9a:d1 -81 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -38 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -54 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -56 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -59 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -60 E
+TP-Link_6794 68:ff:7b:a9:67:94 -63 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -67 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -78 E
+Ziggo f6:57:40:b2:9a:d1 -81 E
+Ziggo 2a:35:d1:0d:49:59 -86 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -39 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -48 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -55 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -62 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -65 E
+TP-Link_6794 68:ff:7b:a9:67:94 -67 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -69 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -72 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -76 E
+Costalaan_345 6c:19:8f:f2:95:46 -77 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -77 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+VFNL-74590A 00:5a:13:74:59:10 -80 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -80 E
+Ziggo f6:57:40:b2:9a:d1 -80 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -44 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -56 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -56 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -60 E
+Costalaan_355 48:f8:b3:40:f8:8d -62 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -63 E
+TP-Link_6794 68:ff:7b:a9:67:94 -66 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -69 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -70 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -71 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -73 E
+Costalaan_353 24:f5:a2:dd:25:34 -73 E
+Jesusraved b0:4e:26:1d:d9:6b -74 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -81 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -38 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -48 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -51 E
+LuckyCat 28:d1:27:d8:0c:3e -54 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -54 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -57 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -61 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+TP-Link_6794 68:ff:7b:a9:67:94 -67 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -68 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+Costalaan_345 6c:19:8f:f2:95:46 -75 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+ 66:32:b1:40:55:44 -78 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -79 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -81 E
+VFNL-74590A 00:5a:13:74:59:10 -82 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -38 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -48 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+LuckyCat 28:d1:27:d8:0c:3e -54 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -55 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -56 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -59 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -68 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+TP-Link_6794 68:ff:7b:a9:67:94 -71 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -76 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -80 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -80 E
+VFNL-74590A 00:5a:13:74:59:10 -84 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -42 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -55 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -58 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -60 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -66 E
+Costalaan_355 48:f8:b3:40:f8:8d -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -75 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -75 E
+H369A3506C9 78:96:82:35:06:c9 -75 E
+Jesusraved b0:4e:26:1d:d9:6b -75 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -77 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -78 E
+Costalaan_345 6c:19:8f:f2:95:46 -80 E
+Al Ansaar Guest 00:1a:8c:a3:86:11 -84 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -43 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -46 E
+LuckyCat 28:d1:27:d8:0c:3e -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -51 E
+TP-Link_6794 68:ff:7b:a9:67:94 -55 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -57 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -59 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -62 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -73 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 E
+Jesusraved b0:4e:26:1d:d9:6b -75 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -79 E
+Ziggo f6:57:40:b2:9a:d1 -82 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -83 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -44 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -45 E
+LuckyCat 28:d1:27:d8:0c:3e -46 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -50 E
+TP-Link_6794 68:ff:7b:a9:67:94 -55 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -58 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -64 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -70 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -72 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -78 E
+Ziggo ae:22:15:28:2f:56 -83 E
+ 8a:ac:c0:e6:29:41 -83 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -84 E
+Ziggo3ACF9F1 ac:22:05:28:2f:56 -86 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -43 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -44 E
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -46 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -60 E
+TP-Link_6794 68:ff:7b:a9:67:94 -60 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -61 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -63 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+Costalaan_345 6c:19:8f:f2:95:46 -81 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -83 E
+Ziggo ae:22:15:28:2f:56 -84 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -45 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -45 E
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -46 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -59 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -60 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -60 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -63 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+Costalaan_345 6c:19:8f:f2:95:46 -79 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -84 E
+Eetkamer.b fa:8f:ca:6f:51:19 -85 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -46 E
+Costalaan_349 c0:a0:bb:e9:87:85 -46 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -47 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -52 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -53 E
+TP-Link_6794 68:ff:7b:a9:67:94 -59 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -59 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -62 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -63 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -78 E
+Costalaan_345 6c:19:8f:f2:95:46 -79 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+scogast 82:2a:a8:11:e2:e8 -83 E
+VFNL-74590A 00:5a:13:74:59:10 -84 E
+Ziggo3ACF9F1 ac:22:05:28:2f:56 -84 E
+Ziggo ae:22:15:28:2f:56 -84 E
+Online.nl_2941 88:ac:c0:c6:29:41 -84 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -44 E
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -47 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -52 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -53 E
+TP-Link_6794 68:ff:7b:a9:67:94 -58 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -61 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Jesusraved b0:4e:26:1d:d9:6b -73 E
+Costalaan_355 48:f8:b3:40:f8:8d -76 E
+Costalaan_345 6c:19:8f:f2:95:46 -79 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -80 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -83 E
+Eetkamer.b fa:8f:ca:6f:51:19 -84 E
+Ziggo ae:22:15:28:2f:56 -85 E
+Ziggo3ACF9F1 ac:22:05:28:2f:56 -86 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -42 E
+LuckyCat 28:d1:27:d8:0c:3e -43 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -46 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -51 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -53 E
+TP-Link_6794 68:ff:7b:a9:67:94 -57 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -60 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -65 E
+Costalaan_355 48:f8:b3:40:f8:8d -66 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -77 E
+H369A3506C9 78:96:82:35:06:c9 -78 E
+Costalaan_345 6c:19:8f:f2:95:46 -79 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -81 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -82 E
+Ziggo ae:22:15:28:2f:56 -83 E
+Al Ansaar Guest 00:1a:8c:a3:86:11 -84 E
+Online.nl_2941 88:ac:c0:c6:29:41 -84 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -85 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -41 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -49 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -49 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -50 E
+TP-Link_6794 68:ff:7b:a9:67:94 -56 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -63 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Jesusraved b0:4e:26:1d:d9:6b -74 E
+H369A3506C9 78:96:82:35:06:c9 -77 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -78 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -80 E
+Eetkamer.b fa:8f:ca:6f:51:19 -83 E
+Ziggo3ACF9F1 ac:22:05:28:2f:56 -85 E
+Ziggo ae:22:15:28:2f:56 -86 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -40 E
+LuckyCat 28:d1:27:d8:0c:3e -44 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -46 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -46 E
+TP-Link_6794 68:ff:7b:a9:67:94 -58 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -62 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -64 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -72 E
+blablabla 10:b1:f8:48:be:84 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -74 E
+Costalaan_345 6c:19:8f:f2:95:46 -76 E
+It hurts when IP 48:d3:43:1c:ac:09 -77 E
+kizilalanganganeef70 c0:c9:e3:fd:02:4e -77 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -78 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -78 E
+Ziggo f6:57:40:b2:9a:d1 -79 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -79 E
+H369A3506C9 78:96:82:35:06:c9 -80 E
+Ziggo 2a:35:d1:0d:49:59 -82 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -82 E
+Eetkamer.b fa:8f:ca:6f:51:19 -83 E
+Al Ansaar Intern 00:1a:8c:a3:86:10 -87 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -41 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -44 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -44 E
+Costalaan_349 c0:a0:bb:e9:87:85 -45 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -48 E
+LuckyCat 28:d1:27:d8:0c:3e -56 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -60 E
+TP-Link_6794 68:ff:7b:a9:67:94 -60 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -66 E
+Costalaan_355 48:f8:b3:40:f8:8d -71 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+Isaac_359 48:f8:b3:25:50:3e -75 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Jesusraved b0:4e:26:1d:d9:6b -77 E
+It hurts when IP 48:d3:43:1c:ac:09 -77 E
+Ziggo 5a:d3:43:1c:ac:09 -77 E
+Costalaan_345 6c:19:8f:f2:95:46 -78 E
+ZiggoE817C21 ac:22:05:24:72:04 -78 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -79 E
+Ziggo f6:57:40:b2:9a:d1 -79 E
+Eetkamer.b fa:8f:ca:6f:51:19 -81 E
+ be:cf:4f:b1:1b:06 -83 E
+ 8a:ac:c0:f6:29:41 -83 E
+Zyxel_1082 bc:cf:4f:a1:1b:06 -84 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -41 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -43 E
+Costalaan_349 c0:a0:bb:e9:87:85 -46 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -49 E
+LuckyCat 28:d1:27:d8:0c:3e -51 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -58 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -65 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+ c6:c9:e3:fd:02:56 -77 E
+Ziggo 5a:d3:43:1c:ac:09 -78 E
+ c6:c9:e3:fd:02:4e -78 E
+Jesusraved b0:4e:26:1d:d9:6b -79 E
+TELE2-F0FEC8_2.4G 20:e8:82:f0:fe:c9 -79 E
+kizilalanganganeef70 c0:c9:e3:fd:02:56 -80 E
+Eetkamer.b fa:8f:ca:6f:51:19 -81 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+ be:cf:4f:b1:1b:06 -83 E
+ be:cf:4f:a1:1b:06 -84 E
+ 8a:ac:c0:d6:29:41 -84 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -39 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -42 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -43 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -45 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -51 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -56 E
+TP-Link_6794 68:ff:7b:a9:67:94 -56 E
+LuckyCat 28:d1:27:d8:0c:3e -56 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -66 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -72 E
+ c6:c9:e3:fd:02:56 -78 E
+ c6:c9:e3:fd:02:4e -78 E
+VRV95173250FD 4c:1b:86:32:50:fd -78 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -79 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -81 E
+Costalaan_345 6c:19:8f:f2:95:46 -82 E
+Eetkamer.b fa:8f:ca:6f:51:19 -82 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -85 E
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -41 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -42 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -44 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -47 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 E
+LuckyCat 28:d1:27:d8:0c:3e -54 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -57 E
+TP-Link_6794 68:ff:7b:a9:67:94 -59 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -65 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+Costalaan_355 48:f8:b3:40:f8:8d -69 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -72 E
+H369A3506C9 78:96:82:35:06:c9 -74 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -74 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -75 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+McDonalds Wi-Fi  4c:9e:ff:c5:89:92 -78 E
+TELE2-F0FEC8_2.4G 20:e8:82:f0:fe:c9 -78 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -79 E
+Ziggo f6:57:40:b2:9a:d1 -81 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -81 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -83 E
+Zyxel_1082 bc:cf:4f:a1:1b:06 -83 E
+ be:cf:4f:91:1b:06 -84 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -41 E
+Costalaan_349 c0:a0:bb:e9:87:85 -41 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -43 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -46 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -49 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -55 E
+TP-Link_6794 68:ff:7b:a9:67:94 -57 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -66 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -69 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Jesusraved b0:4e:26:1d:d9:6b -78 E
+ fa:8f:ca:57:e1:4d -78 E
+Costalaan_345 6c:19:8f:f2:95:46 -79 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -79 E
+Eetkamer.b fa:8f:ca:6f:51:19 -81 E
+VFNL-74590A 00:5a:13:74:59:10 -81 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+ be:cf:4f:a1:1b:06 -83 E
+Ziggo 2a:35:d1:0d:49:59 -84 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -42 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -43 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -48 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -50 E
+Costalaan_349 c0:a0:bb:e9:87:85 -53 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -55 E
+TP-Link_6794 68:ff:7b:a9:67:94 -57 E
+Costalaan_355 48:f8:b3:40:f8:8d -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -66 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -71 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -74 E
+blablabla 10:b1:f8:48:be:84 -75 E
+Ziggo be:f8:cc:04:fb:b9 -75 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -76 E
+Sitecom877806 00:0c:f6:87:78:06 -76 E
+Ziggo f6:57:40:b2:9a:d1 -79 E
+Jesusraved b0:4e:26:1d:d9:6b -80 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -80 E
+Costalaan_345 6c:19:8f:f2:95:46 -81 E
+Ziggo 2a:35:d1:0d:49:59 -83 E
+Al Ansaar Guest 00:1a:8c:a3:86:11 -83 E
+Online.nl_2941 88:ac:c0:c6:29:41 -84 E
+ be:cf:4f:b1:1b:06 -84 E
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -86 E
+---
+LuckyCat 28:d1:27:d8:0c:3e -44 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -46 E
+Costalaan_349 c0:a0:bb:e9:87:85 -47 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -48 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -50 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -52 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -55 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+TP-Link_6794 68:ff:7b:a9:67:94 -65 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -69 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -71 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -72 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -72 E
+Ziggo be:f8:cc:04:fb:b9 -75 E
+H369A3506C9 78:96:82:35:06:c9 -76 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -77 E
+Ziggo f6:57:40:b2:9a:d1 -79 E
+Jesusraved b0:4e:26:1d:d9:6b -80 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+Costalaan_345 6c:19:8f:f2:95:46 -81 E
+Ziggo3ACF9F1 d8:0d:17:b9:24:81 -82 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -83 E
+Eetkamer.b fa:8f:ca:6f:51:19 -83 E
+Ziggo 2a:35:d1:0d:49:59 -86 E
+---
+LuckyCat_5G 28:d1:27:d8:0c:3f -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -48 E
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -49 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -56 E
+Costalaan_349 c0:a0:bb:e9:87:85 -58 E
+Costalaan_355 48:f8:b3:40:f8:8d -62 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -63 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -68 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -69 E
+Jesusraved b0:4e:26:1d:d9:6b -72 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -73 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -75 E
+Costalaan_345 6c:19:8f:f2:95:46 -78 E
+Ziggo f6:57:40:b2:9a:d1 -78 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -79 E
+ fa:8f:ca:57:e1:4d -79 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -83 E
+Chromecast1688.v fa:8f:ca:95:77:f1 -84 E
+Eetkamer.b fa:8f:ca:6f:51:19 -85 E
+---
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -46 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -47 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -48 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -52 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -56 E
+Costalaan_349 c0:a0:bb:e9:87:85 -56 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -67 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 E
+blablabla 10:b1:f8:48:be:84 -74 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -75 E
+Ziggo 5a:d3:43:1c:ac:09 -76 E
+ c6:c9:e3:fd:02:56 -77 E
+ 0a:26:97:f3:2c:81 -77 E
+Online.nl_2C81 08:26:97:e3:2c:81 -78 E
+Ziggo f6:57:40:b2:9a:d1 -79 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -79 E
+yeelink-light-ct2_miap690F 04:cf:8c:9c:69:0f -84 E
+Eetkamer.b fa:8f:ca:6f:51:19 -84 E
+---
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -45 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -46 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -48 E
+LuckyCat 28:d1:27:d8:0c:3e -49 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -49 E
+TP-Link_6794 68:ff:7b:a9:67:94 -54 E
+Costalaan_349 c0:a0:bb:e9:87:85 -58 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -63 E
+Costalaan_355 48:f8:b3:40:f8:8d -63 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -70 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -70 E
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -72 E
+H369A3506C9 78:96:82:35:06:c9 -74 E
+Ziggo0171069 ac:f8:cc:04:fb:b9 -75 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -76 E
+kizilalanganganeef70 c0:c9:e3:fd:02:56 -76 E
+It hurts when IP 48:d3:43:1c:ac:09 -77 E
+Ziggo f6:57:40:b2:9a:d1 -78 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -80 E
+Chromecast1688.v fa:8f:ca:95:77:f1 -85 E
+Ziggo8362214 18:35:d1:0d:49:59 -85 E
+Ziggo 2a:35:d1:0d:49:59 -86 E
+Eetkamer.b fa:8f:ca:6f:51:19 -86 E
+---
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -40 E
+LuckyCat 28:d1:27:d8:0c:3e -43 E
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -45 E
+LuckyCat_5G 28:d1:27:d8:0c:3f -49 E
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -50 E
+Costalaan_349 c0:a0:bb:e9:87:85 -54 E
+H369A6A6F2E 00:4a:77:6a:6f:2e -58 E
+TP-Link_6794 68:ff:7b:a9:67:94 -64 E
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -69 E
+H369A6A6F2E 00:4a:77:6a:6f:2f -72 E
+Costalaan_349-media c0:a0:bb:e9:87:87 -73 E
+Jesusraved b0:4e:26:1d:d9:6b -74 E
+blablabla 10:b1:f8:48:be:84 -74 E
+2.4GigaCyber 4c:38:d8:2e:f9:69 -76 E
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 E
+Ziggo 5a:d3:43:1c:ac:09 -77 E
+ 0a:26:97:e3:2c:81 -77 E
+H369A3506C9 78:96:82:35:06:c9 -79 E
+Ziggo6474152 e4:57:40:b2:9a:d1 -80 E
+ 8a:ac:c0:f6:29:41 -82 E
+KPN7AA876 6c:ba:b8:7a:a8:76 -83 E
+Ziggo 2a:35:d1:0d:49:59 -84 E
+Ziggo8362214 18:35:d1:0d:49:59 -84 E
+TMNL-3A7AE1 54:83:3a:3a:7a:e1 -85 E
+ 8a:ac:c0:d6:29:41 -85 E
+---

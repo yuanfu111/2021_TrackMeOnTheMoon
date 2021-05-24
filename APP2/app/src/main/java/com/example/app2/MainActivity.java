@@ -212,10 +212,12 @@ public class MainActivity extends Activity implements SensorEventListener {
                 }
                 clean_scan_result(scanned_MACs, scanned_RSS);
                 execute_serial_filtering();
+                System.out.println("Hello, the results are ready!");
+                System.out.println("Size of the result: " + scan_results.size());
             } else {
+                Toast.makeText(getApplicationContext(), "scan again", Toast.LENGTH_SHORT).show();
             }
-            System.out.println("Hello, the results are ready!");
-            System.out.println("Size of the result: " + scan_results.size());
+
             unregisterReceiver(this);
         }
     };
@@ -224,9 +226,9 @@ public class MainActivity extends Activity implements SensorEventListener {
         int count = 0;
         for(int i =0;i<testing_sample.size();i++) {
             scanned_RSS = testing_sample.get(i);
-            //execute_serial_filtering();
-            //init_belief();
-            execute_parallel_filtering();
+            execute_serial_filtering();
+            init_belief();
+            //execute_parallel_filtering();
             if (prediction == testing_target.get(i))
                 count++;
             online_test.add(Arrays.asList(prediction,testing_target.get(i)));
@@ -273,13 +275,18 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scanned_MACs=scaned_mac;
 //        scanned_RSS=scaned_rss;
         scanWifi();
+       // offline_test();
     }
     private void execute_serial_filtering() {
         Toast.makeText(this, "serial", Toast.LENGTH_SHORT).show();
         Integer[] sorted_indexes = sort(scanned_RSS);
         for (int index : sorted_indexes)
             System.out.println(scanned_RSS.get(index));
-        int max_serial_itr = 3;
+        int max_serial_itr = 5;
+        if(max_serial_itr>scanned_RSS.size())
+        {
+            max_serial_itr=scanned_RSS.size();
+        }
         for (int i = 0; i < max_serial_itr; i++) {
             System.out.println("Iteration: " + (i + 1));
             System.out.println("Scanned MACs: " + scanned_MACs.get(sorted_indexes[i]));
@@ -360,6 +367,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         {
             prior_parallel.add(new Float[]{1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f});
         }
+
         prediction = sense_parallel(prior_parallel,scanned_MACs,scanned_RSS);
         show_result(prediction,false);
         System.out.println(prediction);

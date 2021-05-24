@@ -1,0 +1,488 @@
+Jesusraved b0:4e:26:1d:d9:6b -59 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -64 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -67 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -67 G
+TP-Link_6794 68:ff:7b:a9:67:94 -68 G
+LuckyCat 28:d1:27:d8:0c:3e -68 G
+Costalaan_355 48:f8:b3:40:f8:8d -71 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -71 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -71 G
+Isaac_359 48:f8:b3:25:50:3e -72 G
+Costalaan_345 6c:19:8f:f2:95:46 -72 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -72 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -75 G
+Costalaan_391 c8:b3:73:48:2e:e8 -78 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -78 G
+Isaac_389 48:f8:b3:25:50:6e -78 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -79 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -81 G
+KPNBACC66 e4:75:dc:c2:04:0c -86 G
+ e6:75:dc:e2:04:0c -88 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -63 G
+Jesusraved b0:4e:26:1d:d9:6b -65 G
+LuckyCat 28:d1:27:d8:0c:3e -66 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -66 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -67 G
+Costalaan_345 6c:19:8f:f2:95:46 -68 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -68 G
+TP-Link_6794 68:ff:7b:a9:67:94 -69 G
+Costalaan_355 48:f8:b3:40:f8:8d -71 G
+scogast 82:2a:a8:11:e2:3f -71 G
+Isaac_359 48:f8:b3:25:50:3e -72 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -72 G
+PS4-5CF4BA3D3A0F b0:05:94:73:b2:6b -73 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -74 G
+H369A10572B 78:c1:a7:10:57:2b -74 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -76 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -76 G
+Tele2-modem  00:1b:fc:bd:fa:1e -76 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -77 G
+kizilalanganganeef70 c0:c9:e3:fd:02:22 -77 G
+scodelft 80:2a:a8:11:e2:3f -77 G
+Costalaan_385 74:da:da:35:b3:bb -77 G
+scogast 82:2a:a8:11:e2:e8 -77 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -81 G
+HZN509691439 54:fa:3e:74:8c:e4 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -84 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -58 G
+TP-Link_6794 68:ff:7b:a9:67:94 -68 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -68 G
+LuckyCat 28:d1:27:d8:0c:3e -70 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -70 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -71 G
+Costalaan_355 48:f8:b3:40:f8:8d -72 G
+scogast 82:2a:a8:11:e2:3f -73 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -74 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -75 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -75 G
+Costalaan_405 c0:a0:bb:eb:de:24 -75 G
+H369A10572B 78:c1:a7:10:57:2b -75 G
+Costalaan_423 6c:19:8f:f4:51:5b -75 G
+Isaac_359 48:f8:b3:25:50:3e -77 G
+Costalaan_385 74:da:da:35:b3:bb -77 G
+ c6:c9:e3:fd:02:22 -77 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -78 G
+Isaac_389 48:f8:b3:25:50:6e -78 G
+scogast 82:2a:a8:11:e2:e8 -78 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -80 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -80 G
+ 92:2a:a8:11:e2:e8 -81 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -82 G
+Huize Dikebele 48:f8:b3:25:4f:6c -83 G
+ZyXEL4ECCE3 58:8b:f3:4e:cc:e4 -85 G
+ e6:75:dc:e2:04:0c -86 G
+KPNBACC66 e4:75:dc:c2:04:0c -88 G
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -60 G
+TP-Link_6794 68:ff:7b:a9:67:94 -66 G
+Jesusraved b0:4e:26:1d:d9:6b -69 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -70 G
+Costalaan_345 6c:19:8f:f2:95:46 -70 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -71 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -71 G
+H369A10572B 78:c1:a7:10:57:2b -71 G
+scogast 82:2a:a8:11:e2:3f -72 G
+Costalaan_355 48:f8:b3:40:f8:8d -73 G
+Isaac_359 48:f8:b3:25:50:3e -73 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -74 G
+Isaac_389 48:f8:b3:25:50:6e -77 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -77 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -80 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -81 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -82 G
+Huize Dikebele 48:f8:b3:25:4f:6c -82 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -60 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -63 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -68 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -70 G
+scogast 82:2a:a8:11:e2:3f -72 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -73 G
+Isaac_359 48:f8:b3:25:50:3e -74 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -75 G
+Kindergarden e2:cb:ac:97:f7:20 -75 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 G
+TP-Link_6794 68:ff:7b:a9:67:94 -78 G
+Costalaan_355 48:f8:b3:40:f8:8d -78 G
+Costalaan_345 6c:19:8f:f2:95:46 -78 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -78 G
+Isaac_389 48:f8:b3:25:50:6e -78 G
+Costalaan_391 c8:b3:73:48:2e:e8 -79 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -80 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -82 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -85 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -88 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -57 G
+LuckyCat 28:d1:27:d8:0c:3e -67 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -67 G
+TP-Link_6794 68:ff:7b:a9:67:94 -72 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -72 G
+scogast 82:2a:a8:11:e2:3f -73 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -73 G
+Costalaan_345 6c:19:8f:f2:95:46 -73 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -73 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -73 G
+ e6:75:dc:ac:e8:ad -74 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -75 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -75 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -77 G
+Tele2-modem  00:1b:fc:bd:fa:1e -77 G
+Kindergarden e2:cb:ac:97:f7:20 -77 G
+scodelft 80:2a:a8:11:e2:3f -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -82 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -82 G
+Costalaan_417 48:f8:b3:40:f8:de -82 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -84 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -58 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -64 G
+TP-Link_6794 68:ff:7b:a9:67:94 -73 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -74 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -75 G
+H369A3D5658 94:a7:b7:3d:56:58 -75 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -77 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 G
+Kindergarden e2:cb:ac:97:f7:20 -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -79 G
+scogast 82:2a:a8:11:e2:e8 -81 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -83 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -84 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -86 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -58 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -64 G
+TP-Link_6794 68:ff:7b:a9:67:94 -73 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -74 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -75 G
+H369A3D5658 94:a7:b7:3d:56:58 -75 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -77 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 G
+Kindergarden e2:cb:ac:97:f7:20 -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -79 G
+scogast 82:2a:a8:11:e2:e8 -81 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -83 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -84 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -86 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -58 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -64 G
+TP-Link_6794 68:ff:7b:a9:67:94 -73 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -74 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -75 G
+H369A3D5658 94:a7:b7:3d:56:58 -75 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -77 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -77 G
+Kindergarden e2:cb:ac:97:f7:20 -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -79 G
+scogast 82:2a:a8:11:e2:e8 -81 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -83 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -84 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -86 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 G
+LuckyCat 28:d1:27:d8:0c:3e -65 G
+Costalaan_349 c0:a0:bb:e9:87:85 -67 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -71 G
+scodelft 80:2a:a8:11:e2:3f -72 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -73 G
+Isaac_359 48:f8:b3:25:50:3e -74 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 G
+Costalaan_355 48:f8:b3:40:f8:8d -75 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -76 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -76 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -77 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -77 G
+Costalaan_399 c0:a0:bb:eb:e2:b0 -77 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -78 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 G
+ e6:75:dc:ac:e8:ad -78 G
+scogast 82:2a:a8:11:e2:e8 -79 G
+Costalaan_391 c8:b3:73:48:2e:e8 -80 G
+Isaac_389 48:f8:b3:25:50:6e -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -81 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -81 G
+H369A3506C9 78:96:82:35:06:c9 -82 G
+Costalaan_385 74:da:da:35:b3:bb -83 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+scodelft 80:2a:a8:11:e2:e8 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -85 G
+TP-Link_2F24 d8:07:b6:d4:2f:24 -87 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 G
+LuckyCat 28:d1:27:d8:0c:3e -65 G
+Costalaan_349 c0:a0:bb:e9:87:85 -67 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -71 G
+scodelft 80:2a:a8:11:e2:3f -72 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -73 G
+Isaac_359 48:f8:b3:25:50:3e -74 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 G
+Costalaan_355 48:f8:b3:40:f8:8d -75 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -76 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -76 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -77 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -77 G
+Costalaan_399 c0:a0:bb:eb:e2:b0 -77 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -78 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 G
+ e6:75:dc:ac:e8:ad -78 G
+scogast 82:2a:a8:11:e2:e8 -79 G
+Costalaan_391 c8:b3:73:48:2e:e8 -80 G
+Isaac_389 48:f8:b3:25:50:6e -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -81 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -81 G
+H369A3506C9 78:96:82:35:06:c9 -82 G
+Costalaan_385 74:da:da:35:b3:bb -83 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+scodelft 80:2a:a8:11:e2:e8 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -85 G
+TP-Link_2F24 d8:07:b6:d4:2f:24 -87 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 G
+LuckyCat 28:d1:27:d8:0c:3e -65 G
+Costalaan_349 c0:a0:bb:e9:87:85 -67 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -71 G
+scodelft 80:2a:a8:11:e2:3f -72 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -73 G
+Isaac_359 48:f8:b3:25:50:3e -74 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 G
+Costalaan_355 48:f8:b3:40:f8:8d -75 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -76 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -76 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -77 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -77 G
+Costalaan_399 c0:a0:bb:eb:e2:b0 -77 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -78 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 G
+ e6:75:dc:ac:e8:ad -78 G
+scogast 82:2a:a8:11:e2:e8 -79 G
+Costalaan_391 c8:b3:73:48:2e:e8 -80 G
+Isaac_389 48:f8:b3:25:50:6e -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -81 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -81 G
+H369A3506C9 78:96:82:35:06:c9 -82 G
+Costalaan_385 74:da:da:35:b3:bb -83 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+scodelft 80:2a:a8:11:e2:e8 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -85 G
+TP-Link_2F24 d8:07:b6:d4:2f:24 -87 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 G
+LuckyCat 28:d1:27:d8:0c:3e -65 G
+Costalaan_349 c0:a0:bb:e9:87:85 -67 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -71 G
+scodelft 80:2a:a8:11:e2:3f -72 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -73 G
+Isaac_359 48:f8:b3:25:50:3e -74 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 G
+Costalaan_355 48:f8:b3:40:f8:8d -75 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -76 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -76 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -77 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -77 G
+Costalaan_399 c0:a0:bb:eb:e2:b0 -77 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -78 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 G
+ e6:75:dc:ac:e8:ad -78 G
+scogast 82:2a:a8:11:e2:e8 -79 G
+Costalaan_391 c8:b3:73:48:2e:e8 -80 G
+Isaac_389 48:f8:b3:25:50:6e -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -81 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -81 G
+H369A3506C9 78:96:82:35:06:c9 -82 G
+Costalaan_385 74:da:da:35:b3:bb -83 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+scodelft 80:2a:a8:11:e2:e8 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -85 G
+TP-Link_2F24 d8:07:b6:d4:2f:24 -87 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 G
+LuckyCat 28:d1:27:d8:0c:3e -65 G
+Costalaan_349 c0:a0:bb:e9:87:85 -67 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -71 G
+scodelft 80:2a:a8:11:e2:3f -72 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -73 G
+Isaac_359 48:f8:b3:25:50:3e -74 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 G
+Costalaan_355 48:f8:b3:40:f8:8d -75 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -76 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -76 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -77 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -77 G
+Costalaan_399 c0:a0:bb:eb:e2:b0 -77 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -78 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 G
+ e6:75:dc:ac:e8:ad -78 G
+scogast 82:2a:a8:11:e2:e8 -79 G
+Costalaan_391 c8:b3:73:48:2e:e8 -80 G
+Isaac_389 48:f8:b3:25:50:6e -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -81 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -81 G
+H369A3506C9 78:96:82:35:06:c9 -82 G
+Costalaan_385 74:da:da:35:b3:bb -83 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+scodelft 80:2a:a8:11:e2:e8 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -85 G
+TP-Link_2F24 d8:07:b6:d4:2f:24 -87 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -53 G
+LuckyCat 28:d1:27:d8:0c:3e -65 G
+Costalaan_349 c0:a0:bb:e9:87:85 -67 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -71 G
+scodelft 80:2a:a8:11:e2:3f -72 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -73 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -73 G
+Isaac_359 48:f8:b3:25:50:3e -74 G
+TP-Link_6794_5G 68:ff:7b:a9:67:93 -74 G
+Costalaan_355 48:f8:b3:40:f8:8d -75 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -76 G
+WE2-ACE8AC e4:75:dc:ac:e8:ad -76 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -77 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -77 G
+Costalaan_399 c0:a0:bb:eb:e2:b0 -77 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -78 G
+Tele2-modem  00:1b:fc:bd:fa:1e -78 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 G
+ e6:75:dc:ac:e8:ad -78 G
+scogast 82:2a:a8:11:e2:e8 -79 G
+Costalaan_391 c8:b3:73:48:2e:e8 -80 G
+Isaac_389 48:f8:b3:25:50:6e -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -81 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -81 G
+H369A3506C9 78:96:82:35:06:c9 -82 G
+Costalaan_385 74:da:da:35:b3:bb -83 G
+TP-Link_DDD4_5G 34:e8:94:bd:dd:d3 -84 G
+scodelft 80:2a:a8:11:e2:e8 -84 G
+Costalaan_349-media c0:a0:bb:e9:87:87 -85 G
+TP-Link_2F24 d8:07:b6:d4:2f:24 -87 G
+---
+Costalaan_349 c0:a0:bb:e9:87:85 -57 G
+Jesusraved b0:4e:26:1d:d9:6b -60 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -65 G
+LuckyCat 28:d1:27:d8:0c:3e -66 G
+Costalaan_355 48:f8:b3:40:f8:8d -70 G
+scogast 82:2a:a8:11:e2:3f -71 G
+Costalaan_345 6c:19:8f:f2:95:46 -71 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -71 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -73 G
+Tele2-modem  00:1b:fc:bd:fa:1e -74 G
+scodelft 80:2a:a8:11:e2:3f -74 G
+Isaac_359 48:f8:b3:25:50:3e -76 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -76 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -76 G
+Costalaan_391 c8:b3:73:48:2e:e8 -78 G
+Al Ansaar Guest 00:1a:8c:a3:86:23 -78 G
+Costalaan_405 c0:a0:bb:eb:de:24 -79 G
+scogast 82:2a:a8:11:e2:eb -79 G
+KPNBACC66 e4:75:dc:c2:04:0b -79 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -79 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -81 G
+ e6:75:dc:e2:04:0b -81 G
+scogast 82:2a:a8:12:e2:3f -85 G
+scodelft 80:2a:a8:12:e2:3f -88 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -60 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -66 G
+Costalaan_355 48:f8:b3:40:f8:8d -67 G
+TP-Link_6794 68:ff:7b:a9:67:94 -68 G
+LuckyCat 28:d1:27:d8:0c:3e -68 G
+Costalaan_345 6c:19:8f:f2:95:46 -71 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -74 G
+Tele2-modem  00:1b:fc:bd:fa:1e -74 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -75 G
+Costalaan_405 c0:a0:bb:eb:de:24 -77 G
+KPNBACC66 e4:75:dc:c2:04:0b -79 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -80 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -84 G
+scodelft 80:2a:a8:12:e2:3f -87 G
+---
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 G
+Jesusraved b0:4e:26:1d:d9:6b -59 G
+LuckyCat 28:d1:27:d8:0c:3e -67 G
+Isaac_359 48:f8:b3:25:50:3e -68 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -70 G
+TP-Link_6794 68:ff:7b:a9:67:94 -71 G
+Costalaan_345 6c:19:8f:f2:95:46 -72 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -73 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -75 G
+Kindergarden e0:cb:bc:97:f7:20 -75 G
+Costalaan_355 48:f8:b3:40:f8:8d -76 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -77 G
+Isaac_389 48:f8:b3:25:50:6e -77 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -77 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -77 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -78 G
+Costalaan_395 c0:a0:bb:eb:e3:5e -78 G
+HZN509691439 54:fa:3e:74:8c:e4 -79 G
+Costalaan_391 c8:b3:73:48:2e:e8 -80 G
+Costalaan_431 c0:a0:bb:eb:d6:5c -82 G
+LuckyCat_5G 28:d1:27:d8:0c:3f -83 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -84 G
+RK-Delft-Vrijwilligers 02:a0:57:16:2d:97 -84 G
+RK-Delft-Staff&Bestuur 00:a0:57:16:2d:97 -85 G
+RK-Delft-Gasten 06:a0:57:16:2d:97 -85 G
+ 92:2a:a8:12:e2:3f -88 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -56 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -69 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -71 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -72 G
+Costalaan_355 48:f8:b3:40:f8:8d -77 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -77 G
+Kindergarden e0:cb:bc:97:f7:20 -77 G
+Isaac_389 48:f8:b3:25:50:6e -78 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -78 G
+Costalaan_423 6c:19:8f:f4:51:5b -78 G
+DIRECT-29-HP PageWide Pro 477dw 12:e7:c6:5c:07:29 -79 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -80 G
+HZN509691439 54:fa:3e:74:8c:e4 -80 G
+Huize Dikebele 48:f8:b3:25:4f:6c -80 G
+Costalaan_353 24:f5:a2:dd:25:34 -82 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -84 G
+RK-Delft-Staff&Bestuur 00:a0:57:16:2d:97 -86 G
+ 92:2a:a8:12:e2:3f -87 G
+RK-Delft-Vrijwilligers 02:a0:57:16:2d:97 -87 G
+RK-Delft-Gasten 06:a0:57:16:2d:97 -87 G
+scodelft 80:2a:a8:12:e2:3f -88 G
+scogast 82:2a:a8:12:e2:3f -89 G
+---
+Jesusraved b0:4e:26:1d:d9:6b -55 G
+H369A6A6F2E 00:4a:77:6a:6f:2e -57 G
+Costalaan_349 c0:a0:bb:e9:87:85 -65 G
+TP-Link_6794 68:ff:7b:a9:67:94 -70 G
+Sahiti speaker.o fa:8f:ca:53:f6:d7 -71 G
+Costalaan_345 6c:19:8f:f2:95:46 -72 G
+Al Ansaar Guest 00:1a:8c:a3:86:11 -73 G
+Costalaan_355 48:f8:b3:40:f8:8d -74 G
+Al Ansaar Intern 00:1a:8c:a3:86:10 -75 G
+TP-Link_DDD4 34:e8:94:bd:dd:d4 -76 G
+TELE2-F0FEC8_2.4G_EXT b0:95:75:4f:5c:4b -76 G
+Tele2-modem  00:1b:fc:bd:fa:1e -77 G
+H369A6A6F2E 00:4a:77:6a:6f:2f -78 G
+TELE2-F04B3B_2.4G 20:e8:82:f0:4b:3c -78 G
+HZN509691439 54:fa:3e:74:8c:e4 -80 G
+RK-Delft-Vrijwilligers 02:a0:57:16:2d:97 -84 G
+Jesusraved3000 b0:4e:26:1d:d9:6a -85 G
+RK-Delft-Staff&Bestuur 00:a0:57:16:2d:97 -85 G
+RK-Delft-Gasten 06:a0:57:16:2d:97 -85 G
+scodelft 80:2a:a8:12:e2:3f -86 G
+scogast 82:2a:a8:12:e2:3f -86 G
+ 92:2a:a8:12:e2:3f -86 G
+Ziggo5165538 68:02:b8:4d:fd:4c -88 G
+---
