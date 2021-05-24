@@ -144,7 +144,7 @@ if __name__=="__main__":
     #print(traning_data.shape)
     save2txt(traning_data,"training_data.txt")
 
-    with open("macs.txt", 'w') as f:
+    with open("all_macs.txt", 'w') as f:
         for each_row in macs_uniq:
             f.write(each_row+'\n')
         f.close()
