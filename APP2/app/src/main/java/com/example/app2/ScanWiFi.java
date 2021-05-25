@@ -4,12 +4,6 @@
  */
 package com.example.app2;
 
-import java.io.BufferedWriter;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.time.Clock;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
@@ -18,19 +12,14 @@ import java.util.ArrayList;
 import android.app.Activity;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
-import android.os.Build;
 import android.os.Bundle;
 import android.content.Context;
-import android.util.Log;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.content.BroadcastReceiver;
-import android.widget.ArrayAdapter;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.widget.ListView;
 import android.widget.Toast;
 
 public class ScanWiFi extends Activity {
@@ -56,11 +45,11 @@ public class ScanWiFi extends Activity {
         CellB = findViewById(R.id.CellB);
         CellC = findViewById(R.id.CellC);
         CellD = findViewById(R.id.CellD);
-        CellE = findViewById(R.id.CellE);
-        CellF = findViewById(R.id.CellF);
-        CellG = findViewById(R.id.CellG);
-        CellH = findViewById(R.id.CellH);
-        CellI = findViewById(R.id.CellI);
+        CellE = findViewById(R.id.CellF);
+        CellF = findViewById(R.id.CellG);
+        CellG = findViewById(R.id.CellH);
+        CellH = findViewById(R.id.CellI);
+        CellI = findViewById(R.id.CellE);
 
         // Set listener for the Start button.
         buttonLocate.setOnClickListener(new View.OnClickListener(){
