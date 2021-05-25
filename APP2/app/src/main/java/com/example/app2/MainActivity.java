@@ -1,11 +1,9 @@
 package com.example.app2;
 
-import android.Manifest;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -15,20 +13,13 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 
 import android.net.wifi.ScanResult;
-import android.net.wifi.WifiConfiguration;
-import android.net.wifi.WifiInfo;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.view.View;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
-
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -41,11 +32,9 @@ import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.stream.IntStream;
 
 public class MainActivity extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
@@ -77,11 +66,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         CellB = (TextView)findViewById(R.id.CellB);
         CellC = (TextView)findViewById(R.id.CellC);
         CellD = (TextView)findViewById(R.id.CellD);
-        CellE = (TextView)findViewById(R.id.CellE);
-        CellF = (TextView)findViewById(R.id.CellF);
-        CellG = (TextView)findViewById(R.id.CellG);
-        CellH = (TextView)findViewById(R.id.CellH);
-        CellI = (TextView)findViewById(R.id.CellI);
+        CellE = (TextView)findViewById(R.id.CellF);
+        CellF = (TextView)findViewById(R.id.CellG);
+        CellG = (TextView)findViewById(R.id.CellH);
+        CellH = (TextView)findViewById(R.id.CellI);
+        CellI = (TextView)findViewById(R.id.CellE);
         drawable_orange = getResources().getDrawable(R.drawable.rectangle_orange);
         drawable_white = getResources().getDrawable(R.drawable.rectangle);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -239,9 +228,9 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     public void locate_me(View v) {
 
-        //List<String> scaned_mac=new ArrayList<>();
-        //List<Integer> scaned_rss=new ArrayList<>();
-
+//        List<String> scaned_mac=new ArrayList<>();
+//        List<Integer> scaned_rss=new ArrayList<>();
+//
 //        scaned_mac.add("28:d1:27:d8:0c:3e");
 //        scaned_mac.add("c0:a0:bb:e9:87:85");
 //        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
@@ -274,7 +263,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scaned_rss.add(-78);
 //        scanned_MACs=scaned_mac;
 //        scanned_RSS=scaned_rss;
-        scanWifi();
+          scanWifi();
+          //execute_serial_filtering();
        // offline_test();
     }
     private void execute_serial_filtering() {
@@ -348,7 +338,6 @@ public class MainActivity extends Activity implements SensorEventListener {
                 CellI.setBackground(drawable_orange);
                 break;
         }
-        DecimalFormat decimalFormat= new  DecimalFormat( ".000" );
         Integer t = Integer.parseInt(target.getText().toString());
         if(!serial) {
             online_test.add(Arrays.asList(prediction, t));
@@ -406,7 +395,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             if(prior_serial[i]==0 || posterior_serial[i]==0) continue;
             float change_rate=Math.abs(prior_serial[i]-posterior_serial[i])/prior_serial[i];
             System.out.println("change rate: "+change_rate);
-            if(change_rate>0.01)
+            if(change_rate>0.01 || posterior_serial[i]<0.95 )
             {
                 steady=false;
             }
