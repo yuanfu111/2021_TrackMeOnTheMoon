@@ -74,7 +74,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         drawable_orange = getResources().getDrawable(R.drawable.rectangle_orange);
         drawable_white = getResources().getDrawable(R.drawable.rectangle);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        loadData(true);
+        loadData(false);
         //Toast.makeText(this,"Initializing..please wait",Toast.LENGTH_LONG).show();
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -395,7 +395,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             if(prior_serial[i]==0 || posterior_serial[i]==0) continue;
             float change_rate=Math.abs(prior_serial[i]-posterior_serial[i])/prior_serial[i];
             System.out.println("change rate: "+change_rate);
-            if(change_rate>0.01 || posterior_serial[i]<0.95 )
+            if(change_rate>0.01 || posterior_serial[i]<0.85 )
             {
                 steady=false;
             }
