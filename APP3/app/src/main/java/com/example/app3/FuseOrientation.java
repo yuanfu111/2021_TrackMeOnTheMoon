@@ -30,7 +30,7 @@ public class FuseOrientation  {
 
         private float[] selectedOrientation = fusedOrientation;
         // filters
-        private  Butterworth butterHighPass=new Butterworth();
+        private  Butterworth butterLowPass=new Butterworth();
         public enum Mode {
             ACC_MAG, GYRO, FUSION
         }
@@ -43,7 +43,7 @@ public class FuseOrientation  {
         private long timestamp;
         private boolean initState = true;
 
-        public static final int TIME_CONSTANT = 30;
+        public static final int TIME_CONSTANT = 15;
         public static final float FILTER_COEFFICIENT = 0.98f;
         private Timer fuseTimer = new Timer();
 
@@ -63,11 +63,11 @@ public class FuseOrientation  {
             gyroMatrix[6] = 0.0f;
             gyroMatrix[7] = 0.0f;
             gyroMatrix[8] = 1.0f;
-            //first order high-pass filter fs=1000HZ fc=400HZ
-            butterHighPass.set_coefficient(new float[]{0.2452f,-0.2452f},new float[]{1f,0.5095f});
+            //first order low-pass filter fs=100  HZ fc=30HZ
+            //butterLowPass.set_coefficient(new float[]{0.4208f,0.4208f},new float[]{1f,-0.1584f});
             // wait for one second until gyroscope and magnetometer/accelerometer
             // data is initialised then scedule the complementary filter task
-            fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),1000, TIME_CONSTANT);
+            fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),250, TIME_CONSTANT);
 
         }
 
@@ -84,6 +84,7 @@ public class FuseOrientation  {
         }
 
         public void setMagnet(float[] sensorValues) {
+
             System.arraycopy(sensorValues, 0, magnet, 0, 3);
         }
 
@@ -119,6 +120,11 @@ public class FuseOrientation  {
         public void calculateAccMagOrientation() {
             if (SensorManager.getRotationMatrix(rotationMatrix, null, accel, magnet)) {
                 SensorManager.getOrientation(rotationMatrix, accMagOrientation);
+                //System.out.println(accMagOrientation[0]);
+                //apply low pass filter
+//                for(int i=0;i<3;i++) {
+//                    accMagOrientation[i]=butterLowPass.filter(accMagOrientation[i]);
+//                }
             }
         }
 
@@ -192,10 +198,8 @@ public class FuseOrientation  {
 
             // get the gyroscope based orientation from the rotation matrix
             SensorManager.getOrientation(gyroMatrix, gyroOrientation);
-            //apply high pass filter
-            for(int i=0;i<3;i++) {
-                gyroOrientation[i]=butterHighPass.filter(gyroOrientation[i]);
-            }
+            //System.out.println(gyroOrientation[0]);
+
         }
 
         private float[] getRotationMatrixFromOrientation(float[] o) {

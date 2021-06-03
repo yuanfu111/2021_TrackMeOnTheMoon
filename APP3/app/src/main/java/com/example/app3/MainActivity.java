@@ -34,7 +34,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private double x_range,y_range;
     private double move_noise,orient_noise,resample_noise;
     // Signal filter related declarations
-    private  Butterworth butterLowPass=new Butterworth();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +45,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         azimuthText = (TextView) findViewById(R.id.textView1);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
-        //first order low-pass filter fs=1000HZ fc=50HZ
-        butterLowPass.set_coefficient(new float[]{0.1367f,0.1367f},new float[]{1f,-0.7365f});
-        fuseSensor.setMode(FuseOrientation.Mode.ACC_MAG);
+
+        fuseSensor.setMode(FuseOrientation.Mode.FUSION);
 
     }
     public void registerSensorManagerListeners() {
@@ -110,7 +108,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      */
     public void updateValue() {
         //TODO: distance related
-        azimuthValue = fuseSensor.getAzimuth();
+        azimuthValue = (fuseSensor.getAzimuth()+360)%360;
+        azimuthText.setText(d.format(azimuthValue));
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
