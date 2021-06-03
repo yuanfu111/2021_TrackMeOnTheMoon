@@ -21,12 +21,12 @@ import java.util.Random;
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
     private Button button;
-    private TextView azimuthText,rollText,pitchText;
+    private TextView azimuthText;//,rollText,pitchText;
     // Sensor related declarations
     private SensorManager sensorManager = null;
     private FuseOrientation fuseSensor= new FuseOrientation();
     // Orientation
-    private double azimuthValue,rollValue,pitchValue;
+    private double azimuthValue;//,rollValue,pitchValue;
     private DecimalFormat d = new DecimalFormat("#.###");
     // Particle filter related declarations
     private int num_particle;
@@ -41,11 +41,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button=(Button)findViewById(R.id.button);
+        button=findViewById(R.id.button);
         button.setOnClickListener(this);
-        azimuthText = (TextView) findViewById(R.id.textView1);
-        rollText = (TextView) findViewById(R.id.textView2);
-        pitchText = (TextView) findViewById(R.id.textView3);
+        azimuthText =  findViewById(R.id.textView1);
+        rollText =  findViewById(R.id.textView2);
+        pitchText =  findViewById(R.id.textView3);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
         //first order low-pass filter fs=100HZ fc=40HZ
