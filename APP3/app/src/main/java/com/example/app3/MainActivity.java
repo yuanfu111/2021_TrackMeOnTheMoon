@@ -9,6 +9,7 @@ import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.RectShape;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
@@ -26,6 +27,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
+
 
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
@@ -47,46 +49,43 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private ShapeDrawable drawable;
     private Canvas canvas;
     private List<ShapeDrawable> walls;
-    int display_width;
-    int display_height;
-    int point_size=10;
+
+    public static int display_width;
+    public static int display_height;
+    public static int point_size=10;
+    public static int pixelPerMeter=100;
+    public static int center_x;
+    public static int center_y;
+
+    //testing
+    private Particle p;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button=(Button)findViewById(R.id.button);
+        button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
-        move_drawable=(Button)findViewById(R.id.move_drawable);
+        move_drawable = (Button) findViewById(R.id.move_drawable);
         move_drawable.setOnClickListener(this);
 
         azimuthText = (TextView) findViewById(R.id.textView1);
-        textView2=(TextView) findViewById(R.id.textView2);
+        textView2 = (TextView) findViewById(R.id.textView2);
         // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
         fuseSensor.setMode(FuseOrientation.Mode.FUSION);
 
-        // get screen dimensions
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        display_width = size.x;
-        display_height = size.y;
-
+        config_init();
         // create a drawable object
         drawable = new ShapeDrawable(new OvalShape());
         drawable.getPaint().setColor(Color.BLUE);
 
-
-        // create a canvas
-        ImageView canvasView = (ImageView) findViewById(R.id.canvas);
-        Bitmap blankBitmap = Bitmap.createBitmap(display_width,display_height, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(blankBitmap);
-        canvasView.setImageBitmap(blankBitmap);
-
+        //testing
+        canvas.drawColor(Color.WHITE);
+        p =  create_particle();
+        p.get_drawable().draw(canvas);
     }
-
     public void registerSensorManagerListeners() {
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -106,39 +105,166 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         super.onPause();
         sensorManager.unregisterListener(this);
     }
+    /** @Brief: Create particles randomly in a restricted range
+     *  @Author: Yuan Fu (5215315)
+     *  @Return: None
+     */
+    private Particle create_particle() {
+        //TODO: x,y restriction
+        Random r=new Random(System.currentTimeMillis());
+        double x,y,orient;
+        // for(int i=0;i<num_particle;i++) {
+        x=x_range*(r.nextDouble()-0.5);
+        y=y_range*(r.nextDouble()-0.5);;
+        orient=2*Math.PI*r.nextDouble();
+        Particle p=new Particle();
+        p.set_attr(x,y,orient);
+        p.set_noise(move_noise,orient_noise,resample_noise);
+
+
+        return p;
+        //}
+    }
     @Override
     public  void onClick(View v) {
-        double distance=10;
-
+        double distance=0.1;
         switch (v.getId()) {
             case R.id.button: {
-                drawable.draw(canvas);
+                p.get_drawable().draw(canvas);
                 // in the middle of the screen
-                drawable.setBounds(display_width/2-point_size, display_height/2-point_size, display_width/2+point_size, display_height/2+point_size);
+                //p_draw.setBounds(display_width/2-point_size, display_height/2-point_size, display_width/2+point_size, display_height/2+point_size);
                 //azimuthText.setText(d.format(azimuthValue));
                 //Toast.makeText(this,"Click",Toast.LENGTH_LONG).show();
                 break;
             }
             case R.id.move_drawable: {
-                move_point_draw(distance,azimuthValue);
+                p.move(distance,(azimuthValue/360)*2*Math.PI);
             }
         }
+
+        if(detect_collision(p))
+        System.out.println("hit wall");
         // make the canvas all white and redraw
         canvas.drawColor(Color.WHITE);
-        drawable.draw(canvas);
+        p.get_drawable().draw(canvas);
+        draw_walls();
     }
-
-    /** @Brief: Move the drawable point on canvas based on distance and orientation
+    private void draw_walls() {
+        for(ShapeDrawable wall : walls)
+            wall.draw(canvas);
+    }
+    /** @Brief: Initialize walls based on our layout 1m=100 pixel
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
+     *  -------------------------------------------
+     *  -         -          -          -         -
+     *  -------------------------  ----------------
+     *  -                  -   -      -   -
+     *  -                  -   -      -   -
+     *  -                  -          -   -
+     *  -                  -----      -   -
+     *  -                  -   -      -   -
+     *  -                  -      ---------
+     *  -                  -----
      */
-    private void move_point_draw(double distance, double orient) {
-        int dist_x = (int) (Math.sin((orient/360)*2*Math.PI)*distance);
-        int dist_y = (int) (Math.cos((orient/360)*2*Math.PI)*distance);
-        textView2.setText( "x: "+dist_x +" y: "+dist_y +" orient:"+ d.format(orient));
-        Rect r = drawable.getBounds();
-        drawable.setBounds(r.left + dist_x, r.top-dist_y, r.right + dist_x, r.bottom-dist_y);
+    private void init_walls() {
+        int line_width=8;
+
+
+        walls=new ArrayList<>();
+        //horizontal lines
+        ShapeDrawable d1 = new ShapeDrawable(new RectShape());
+        d1.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*3.5),
+                center_x+pixelPerMeter*10,center_y+line_width/2-(int)(pixelPerMeter*3.5));
+
+        ShapeDrawable d2 = new ShapeDrawable(new RectShape());
+        d2.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*2.5),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d3 = new ShapeDrawable(new RectShape());
+        d3.setBounds(center_x+pixelPerMeter*3,center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*10),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d4 = new ShapeDrawable(new RectShape());
+        d4.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*0.5),
+                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*0.5));
+
+        ShapeDrawable d5 = new ShapeDrawable(new RectShape());
+        d5.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*3.5));
+
+        ShapeDrawable d6 = new ShapeDrawable(new RectShape());
+        d6.setBounds(center_x+(int)(pixelPerMeter*2),center_y-line_width/2+(int)(pixelPerMeter*3),
+                center_x+(int)(pixelPerMeter*6.5),center_y+line_width/2+(int)(pixelPerMeter*3));
+
+        //vetical lines
+        ShapeDrawable d7 = new ShapeDrawable(new RectShape());
+        d7.setBounds(center_x-line_width/2-(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2-(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+
+        ShapeDrawable d8 = new ShapeDrawable(new RectShape());
+        d8.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*0));
+
+        ShapeDrawable d9 = new ShapeDrawable(new RectShape());
+        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*0.5),
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3));
+
+        ShapeDrawable d10 = new ShapeDrawable(new RectShape());
+        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*4.5),center_y+(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d11 = new ShapeDrawable(new RectShape());
+        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*6.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*6.5),center_y+(int)(pixelPerMeter*3));
+
+        ShapeDrawable d12 = new ShapeDrawable(new RectShape());
+        d12.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d13 = new ShapeDrawable(new RectShape());
+        d13.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+        walls.add(d1);
+        walls.add(d2);
+        walls.add(d3);
+        walls.add(d4);
+        walls.add(d5);
+        walls.add(d6);
+        walls.add(d7);
+        walls.add(d8);
+        walls.add(d9);
+        walls.add(d10);
+        walls.add(d11);
+        walls.add(d12);
+        walls.add(d13);
     }
+    //TODO: collision detection
+    public boolean detect_collision(Particle p) {
+        ShapeDrawable p_drawable = new ShapeDrawable(new OvalShape());
+        //p_drawable.getPaint().setColor(Color.BLUE);
+        for(ShapeDrawable wall : walls) {
+            if(isCollision(wall,p.get_drawable()))
+
+                return true;
+        }
+        return false;
+    }
+    private boolean isCollision(ShapeDrawable first, ShapeDrawable second) {
+        Rect firstRect = new Rect(first.getBounds());
+        return firstRect.intersect(second.getBounds());
+    }
+//    /** @Brief: Move the drawable point on canvas based on distance and orientation
+//     *  @Author: Yuan Fu (5215315)
+//     *  @Return: None
+//     */
+//    private void move_point_draw(double distance, double orient) {
+//        int dist_x = (int) (Math.sin((orient/360)*2*Math.PI)*distance);
+//        int dist_y = (int) (Math.cos((orient/360)*2*Math.PI)*distance);
+//        textView2.setText( "x: "+dist_x +" y: "+dist_y +" orient:"+ d.format(orient));
+//        Rect r = drawable.getBounds();
+//        drawable.setBounds(r.left + dist_x, r.top-dist_y, r.right + dist_x, r.bottom-dist_y);
+//    }
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -173,29 +299,25 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     }
     // Init some global values
     private void config_init() {
-        x_range=0;y_range=0;
+        x_range=20;y_range=7; // in meters
         move_noise=0;orient_noise=0;resample_noise=0;
         num_particle=100;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        display_width = size.x;
+        display_height = size.y;
+        center_x=display_width/2;
+        center_y=display_height/2;
+        ImageView canvasView = (ImageView) findViewById(R.id.canvas);
+        Bitmap blankBitmap = Bitmap.createBitmap(display_width, display_height, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(blankBitmap);
+        canvasView.setImageBitmap(blankBitmap);
+        init_walls();
+        draw_walls();
     }
 
-    /** @Brief: Create particles randomly in a restricted range
-     *  @Author: Yuan Fu (5215315)
-     *  @Return: None
-     */
-    private void creat_particles() {
-        //TODO: x,y restriction
-        Random r=new Random(System.currentTimeMillis());
-        double x,y,orient;
-        for(int i=0;i<num_particle;i++) {
-            x=x_range*r.nextDouble();
-            y=y_range*r.nextDouble();;
-            orient=2*Math.PI*r.nextDouble();
-            Particle p=new Particle();
-            p.set_attr(x,y,orient);
-            p.set_noise(move_noise,orient_noise,resample_noise);
-            p_list.add(p);
-        }
-    }
+
     /** @Brief: Resample the current particle list. Identify dead particles and reborn them from random alive particles
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -205,9 +327,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         // identify dead particles
         List<Integer> dead_indeces=new ArrayList<>();
         for(int i=0;i<num_particle;i++) {
-            if(p_list.get(i).detect_collision()==true) {
-                dead_indeces.add(i);
-            }
+           // if(detect_collision(p_list.get(i))==true) {
+           //     dead_indeces.add(i);
+           // }
         }
         // reborn the dead particles new alive particles
         Random r=new Random(System.currentTimeMillis());
@@ -231,4 +353,5 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
         }
     }
+
 }
