@@ -7,31 +7,33 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import java.text.DecimalFormat;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Random;
 
-import static android.util.Half.EPSILON;
-import static java.lang.Math.sin;
-import static java.lang.Math.cos;
-import static java.lang.Math.sqrt;
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
-
+    // UI related declarations
     private Button button;
+    private TextView azimuthText;
+    // Sensor related declarations
     private SensorManager sensorManager = null;
     private FuseOrientation fuseSensor= new FuseOrientation();
-
+    // Orientation
     private double azimuthValue;
-    private TextView azimuthText;
     private DecimalFormat d = new DecimalFormat("#.###");
-    // filters
+    // Particle filter related declarations
+    private int num_particle;
+    List<Particle> p_list=new ArrayList<>();
+    private double x_range,y_range;
+    private double move_noise,orient_noise,resample_noise;
+    // Signal filter related declarations
     private  Butterworth butterLowPass=new Butterworth();
 
     @Override
@@ -46,8 +48,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         registerSensorManagerListeners();
         //first order low-pass filter fs=1000HZ fc=50HZ
         butterLowPass.set_coefficient(new float[]{0.1367f,0.1367f},new float[]{1f,-0.7365f});
-
-
         fuseSensor.setMode(FuseOrientation.Mode.ACC_MAG);
 
     }
@@ -82,13 +82,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
 
     }
+    /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
+     *  @Author: Yuan Fu
+     *  @Return: None
+     */
     public void onSensorChanged(SensorEvent event) {
-            // rotation_vector
-            //     if(event.sensor==rotation_vector) {
-//        float[] quat = new float[4];
-//        rsensorManager.getQuaternionFromVector(quat, event.values);
-//        Log.d("Success", "x:"+quat[0] +";y:"+quat[1]+";z:"+quat[2]+" fff"+quat[3]);
-            //       }
+        //TODO: distance related
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 fuseSensor.setAccel(event.values);
@@ -103,15 +102,77 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 fuseSensor.setMagnet(event.values);
                 break;
         }
-        updateOrientationDisplay();
+        updateValue();
     }
-    public void updateOrientationDisplay() {
-
+    /** @Brief: Up date the (fused)sensor value
+     *  @Author: Yuan Fu
+     *  @Return: None
+     */
+    public void updateValue() {
+        //TODO: distance related
         azimuthValue = fuseSensor.getAzimuth();
-
-        //azimuthText.setText(d.format(azimuthValue));
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+    // Init some global values
+    private void config_init() {
+        x_range=0;y_range=0;
+        move_noise=0;orient_noise=0;resample_noise=0;
+        num_particle=100;
+    }
+
+    /** @Brief: Create particles randomly in a restricted range
+     *  @Author: Yuan Fu
+     *  @Return: None
+     */
+    private void creat_particles() {
+        //TODO: x,y restriction
+        Random r=new Random(System.currentTimeMillis());
+        double x,y,orient;
+        for(int i=0;i<num_particle;i++) {
+            x=x_range*r.nextDouble();
+            y=y_range*r.nextDouble();;
+            orient=2*Math.PI*r.nextDouble();
+            Particle p=new Particle();
+            p.set_attr(x,y,orient);
+            p.set_noise(move_noise,orient_noise,resample_noise);
+            p_list.add(p);
+        }
+    }
+    /** @Brief: Resample the current particle list
+     *  @Author: Yuan Fu
+     *  @Return: None
+     */
+    private void resample() {
+        // TODO: Test it
+        // identify dead particles
+        List<Integer> dead_indeces=new ArrayList<>();
+        for(int i=0;i<num_particle;i++) {
+            if(p_list.get(i).detect_collision()==true) {
+                dead_indeces.add(i);
+            }
+        }
+        // reborn the dead particles new alive particles
+        Random r=new Random(System.currentTimeMillis());
+        int random_index;
+        random_index=r.nextInt(num_particle);
+        // list store the index of the particle around which dead will be reborn
+        List<Integer> reborn_around=new ArrayList<>();
+        for(int i=0;i<dead_indeces.size();i++) {
+            // continue the generate random number
+            // until the number does not match dead particle index
+            while(dead_indeces.contains(random_index)) {
+                random_index=r.nextInt(num_particle);
+            }
+            reborn_around.add(random_index);
+        }
+        // reborn
+        if(dead_indeces.size()!=reborn_around.size()) {
+            System.out.println("number of dead and reborn do not match");
+        }
+        for(int i=0;i<dead_indeces.size();i++) {
+            p_list.get(dead_indeces.get(i)).reborn_around(p_list.get(reborn_around.get(i)));
+        }
     }
 }

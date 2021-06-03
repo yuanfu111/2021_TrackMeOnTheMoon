@@ -1,9 +1,8 @@
 package com.example.app3;
-
+// reference: https://github.com/goatstone/AndroidSensorFusion
 import android.hardware.SensorEvent;
 import android.hardware.SensorManager;
 import android.util.Log;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -123,8 +122,6 @@ public class FuseOrientation  {
             }
         }
 
-        // This function is borrowed from the Android reference
-        // at http://developer.android.com/reference/android/hardware/SensorEvent.html#values
         // It calculates a rotation vector from the gyroscope angular speed values.
         private void getRotationVectorFromGyro(float[] gyroValues,
                                                float[] deltaRotationVector,
