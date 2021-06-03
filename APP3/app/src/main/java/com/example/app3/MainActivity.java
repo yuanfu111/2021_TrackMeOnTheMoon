@@ -116,7 +116,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         azimuthValue = (fuseSensor.getAzimuth()+360)%360;
         rollValue = (fuseSensor.getRoll()+360)%360;
         pitchValue = (fuseSensor.getPitch()+360)%360;
-        azimuthText.setText(d.format(azimuthValue));
+        //azimuthText.setText(d.format(azimuthValue));
         //rollText.setText(d.format(rollValue));
        // pitchText.setText(d.format(pitchValue));
 
