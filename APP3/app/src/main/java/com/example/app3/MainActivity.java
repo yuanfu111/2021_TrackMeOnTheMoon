@@ -21,12 +21,12 @@ import java.util.Random;
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
     private Button button;
-    private TextView azimuthText;
+    private TextView azimuthText,rollText,pitchText;
     // Sensor related declarations
     private SensorManager sensorManager = null;
     private FuseOrientation fuseSensor= new FuseOrientation();
     // Orientation
-    private double azimuthValue;
+    private double azimuthValue,rollValue,pitchValue;
     private DecimalFormat d = new DecimalFormat("#.###");
     // Particle filter related declarations
     private int num_particle;
@@ -34,7 +34,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private double x_range,y_range;
     private double move_noise,orient_noise,resample_noise;
     // Signal filter related declarations
-    private  Butterworth butterLowPass=new Butterworth();
+   // private  Butterworth butterLowPass=new Butterworth();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,11 +44,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         button=(Button)findViewById(R.id.button);
         button.setOnClickListener(this);
         azimuthText = (TextView) findViewById(R.id.textView1);
+        rollText = (TextView) findViewById(R.id.textView2);
+        pitchText = (TextView) findViewById(R.id.textView3);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
-        //first order low-pass filter fs=1000HZ fc=50HZ
-        butterLowPass.set_coefficient(new float[]{0.1367f,0.1367f},new float[]{1f,-0.7365f});
-        fuseSensor.setMode(FuseOrientation.Mode.ACC_MAG);
+        //first order low-pass filter fs=100HZ fc=40HZ
+
+        fuseSensor.setMode(FuseOrientation.Mode.FUSION);
 
     }
     public void registerSensorManagerListeners() {
@@ -99,6 +101,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 break;
 
             case Sensor.TYPE_MAGNETIC_FIELD:
+
                 fuseSensor.setMagnet(event.values);
                 break;
         }
@@ -110,7 +113,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      */
     public void updateValue() {
         //TODO: distance related
-        azimuthValue = fuseSensor.getAzimuth();
+        azimuthValue = (fuseSensor.getAzimuth()+360)%360;
+        rollValue = (fuseSensor.getRoll()+360)%360;
+        pitchValue = (fuseSensor.getPitch()+360)%360;
+        azimuthText.setText(d.format(azimuthValue));
+        //rollText.setText(d.format(rollValue));
+       // pitchText.setText(d.format(pitchValue));
+
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
@@ -145,7 +154,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      *  @Return: None
      */
     private void resample() {
-        // TODO: Test it
+        // TODO: Test it or change the list into Particle[] to save searching time
         // identify dead particles
         List<Integer> dead_indeces=new ArrayList<>();
         for(int i=0;i<num_particle;i++) {
@@ -172,7 +181,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             System.out.println("number of dead and reborn do not match");
         }
         for(int i=0;i<dead_indeces.size();i++) {
-            p_list.get(dead_indeces.get(i)).reborn_around(p_list.get(reborn_around.get(i)));
+            p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
         }
     }
 }

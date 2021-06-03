@@ -31,6 +31,7 @@ public class FuseOrientation  {
         private float[] selectedOrientation = fusedOrientation;
         // filters
         private  Butterworth butterHighPass=new Butterworth();
+        private  Butterworth butterLowPass=new Butterworth();
         public enum Mode {
             ACC_MAG, GYRO, FUSION
         }
@@ -43,7 +44,7 @@ public class FuseOrientation  {
         private long timestamp;
         private boolean initState = true;
 
-        public static final int TIME_CONSTANT = 30;
+        public static final int TIME_CONSTANT = 10;
         public static final float FILTER_COEFFICIENT = 0.98f;
         private Timer fuseTimer = new Timer();
 
@@ -65,9 +66,10 @@ public class FuseOrientation  {
             gyroMatrix[8] = 1.0f;
             //first order high-pass filter fs=1000HZ fc=400HZ
             butterHighPass.set_coefficient(new float[]{0.2452f,-0.2452f},new float[]{1f,0.5095f});
+            butterLowPass.set_coefficient(new float[]{0.6284f,0.6284f},new float[]{1f,0.2568f});
             // wait for one second until gyroscope and magnetometer/accelerometer
             // data is initialised then scedule the complementary filter task
-            fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),1000, TIME_CONSTANT);
+            fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),50, TIME_CONSTANT);
 
         }
 
@@ -84,6 +86,9 @@ public class FuseOrientation  {
         }
 
         public void setMagnet(float[] sensorValues) {
+//            for(int i=0;i<3;i++) {
+//                magnet[i]=butterLowPass.filter(magnet[i]);
+//            }
             System.arraycopy(sensorValues, 0, magnet, 0, 3);
         }
 
@@ -193,9 +198,9 @@ public class FuseOrientation  {
             // get the gyroscope based orientation from the rotation matrix
             SensorManager.getOrientation(gyroMatrix, gyroOrientation);
             //apply high pass filter
-            for(int i=0;i<3;i++) {
-                gyroOrientation[i]=butterHighPass.filter(gyroOrientation[i]);
-            }
+//            for(int i=0;i<3;i++) {
+//                gyroOrientation[i]=butterHighPass.filter(gyroOrientation[i]);
+//            }
         }
 
         private float[] getRotationMatrixFromOrientation(float[] o) {
