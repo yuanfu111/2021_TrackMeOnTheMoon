@@ -44,8 +44,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         button=findViewById(R.id.button);
         button.setOnClickListener(this);
         azimuthText =  findViewById(R.id.textView1);
-        rollText =  findViewById(R.id.textView2);
-        pitchText =  findViewById(R.id.textView3);
+        //rollText =  findViewById(R.id.textView2);
+        //pitchText =  findViewById(R.id.textView3);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
         //first order low-pass filter fs=100HZ fc=40HZ
