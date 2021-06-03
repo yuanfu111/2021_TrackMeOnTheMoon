@@ -7,37 +7,41 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
-import android.hardware.SensorEventListener;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
 
-    private Button button;
+    private Button activity;
     private SensorManager sensorManager;
-    private Sensor rotation_vector;
+    private Sensor accelerometer;
+    private float aX=0, aY=0, aZ=0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button=(Button)findViewById(R.id.button);
-        button.setOnClickListener(this);
+        activity = (Button)findViewById(R.id.activity);
+        activity.setOnClickListener(this);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
 
-            rotation_vector = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-            sensorManager.registerListener(this, rotation_vector,SensorManager.SENSOR_DELAY_NORMAL);
-        } else {
-
+            sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
         }
     }
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, rotation_vector,SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
 
     }
     protected void onPause() {
@@ -47,7 +51,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     @Override
     public  void onClick(View v) {
-        if(v.getId()==R.id.button){
+        if(v.getId()==R.id.activity){
             Toast.makeText(this,"Click",Toast.LENGTH_LONG).show();
         }
 
@@ -55,10 +59,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        float xValue = event.values[0];
-        float yValue = event.values[1];
-        float zValue = event.values[2];
-        //Log.d("Success", "x:"+xValue +";y:"+yValue+";z:"+zValue);
+        aX = event.values[0];
+        aY = event.values[1];
+        aZ = event.values[2];
+
     }
 
     @Override
@@ -66,5 +70,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         // Do nothing.
     }
 
+    // Detect walking using autocorrelation with FFT
+    private String DetectWalk(){
+        String prediction = null;
+
+        return prediction;
+    }
 
 }
