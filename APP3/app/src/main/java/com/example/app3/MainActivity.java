@@ -7,15 +7,12 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.os.Handler;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.Toast;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
 
@@ -38,7 +35,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
             sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
         }
+
     }
+
     protected void onResume() {
         super.onResume();
         sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
@@ -70,11 +69,23 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         // Do nothing.
     }
 
-    // Detect walking using autocorrelation with FFT
-    private String DetectWalk(){
+    // Detect walking using autocorrelation
+    public String DetectWalk(){
         String prediction = null;
-
+        // call autocorrelation
         return prediction;
+    }
+
+    // Brute force autocorrelation
+    public double[] autocorrelation(ArrayList<Float> accData){
+        double[] autocorrelation = new double[accData.size()];
+        for (int i=0; i<accData.size(); ++i){
+            autocorrelation[i] = 0;
+            for (int j=0; j<accData.size(); ++j){
+                autocorrelation[i] += accData.get(j) * accData.get((j+i)%accData.size());
+            }
+        }
+        return autocorrelation;
     }
 
 }
