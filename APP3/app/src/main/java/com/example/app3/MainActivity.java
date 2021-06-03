@@ -2,14 +2,23 @@ package com.example.app3;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import java.text.DecimalFormat;
@@ -20,8 +29,8 @@ import java.util.Random;
 
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
-    private Button button;
-    private TextView azimuthText;
+    private Button button,move_drawable;
+    private TextView azimuthText,textView2;
     // Sensor related declarations
     private SensorManager sensorManager = null;
     private FuseOrientation fuseSensor= new FuseOrientation();
@@ -33,8 +42,14 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     List<Particle> p_list=new ArrayList<>();
     private double x_range,y_range;
     private double move_noise,orient_noise,resample_noise;
-    // Signal filter related declarations
 
+    // Map related declarations
+    private ShapeDrawable drawable;
+    private Canvas canvas;
+    private List<ShapeDrawable> walls;
+    int display_width;
+    int display_height;
+    int point_size=10;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,22 +57,43 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
         button=(Button)findViewById(R.id.button);
         button.setOnClickListener(this);
+        move_drawable=(Button)findViewById(R.id.move_drawable);
+        move_drawable.setOnClickListener(this);
+
         azimuthText = (TextView) findViewById(R.id.textView1);
+        textView2=(TextView) findViewById(R.id.textView2);
+        // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
-
         fuseSensor.setMode(FuseOrientation.Mode.FUSION);
 
+        // get screen dimensions
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        display_width = size.x;
+        display_height = size.y;
+
+        // create a drawable object
+        drawable = new ShapeDrawable(new OvalShape());
+        drawable.getPaint().setColor(Color.BLUE);
+
+
+        // create a canvas
+        ImageView canvasView = (ImageView) findViewById(R.id.canvas);
+        Bitmap blankBitmap = Bitmap.createBitmap(display_width,display_height, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(blankBitmap);
+        canvasView.setImageBitmap(blankBitmap);
+
     }
+
     public void registerSensorManagerListeners() {
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
                 SensorManager.SENSOR_DELAY_FASTEST);
-
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
                 SensorManager.SENSOR_DELAY_FASTEST);
-
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
                 SensorManager.SENSOR_DELAY_FASTEST);
@@ -65,23 +101,46 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     protected void onResume() {
         super.onResume();
         registerSensorManagerListeners();
-
     }
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
     }
-
     @Override
     public  void onClick(View v) {
-        if(v.getId()==R.id.button){
-            azimuthText.setText(d.format(azimuthValue));
-            Toast.makeText(this,"Click",Toast.LENGTH_LONG).show();
-        }
+        double distance=10;
 
+        switch (v.getId()) {
+            case R.id.button: {
+                drawable.draw(canvas);
+                // in the middle of the screen
+                drawable.setBounds(display_width/2-point_size, display_height/2-point_size, display_width/2+point_size, display_height/2+point_size);
+                //azimuthText.setText(d.format(azimuthValue));
+                //Toast.makeText(this,"Click",Toast.LENGTH_LONG).show();
+                break;
+            }
+            case R.id.move_drawable: {
+                move_point_draw(distance,azimuthValue);
+            }
+        }
+        // make the canvas all white and redraw
+        canvas.drawColor(Color.WHITE);
+        drawable.draw(canvas);
+    }
+
+    /** @Brief: Move the drawable point on canvas based on distance and orientation
+     *  @Author: Yuan Fu (5215315)
+     *  @Return: None
+     */
+    private void move_point_draw(double distance, double orient) {
+        int dist_x = (int) (Math.sin((orient/360)*2*Math.PI)*distance);
+        int dist_y = (int) (Math.cos((orient/360)*2*Math.PI)*distance);
+        textView2.setText( "x: "+dist_x +" y: "+dist_y +" orient:"+ d.format(orient));
+        Rect r = drawable.getBounds();
+        drawable.setBounds(r.left + dist_x, r.top-dist_y, r.right + dist_x, r.bottom-dist_y);
     }
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
-     *  @Author: Yuan Fu
+     *  @Author: Yuan Fu (5215315)
      *  @Return: None
      */
     public void onSensorChanged(SensorEvent event) {
@@ -91,11 +150,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 fuseSensor.setAccel(event.values);
                 fuseSensor.calculateAccMagOrientation();
                 break;
-
             case Sensor.TYPE_GYROSCOPE:
                 fuseSensor.gyroFunction(event);
                 break;
-
             case Sensor.TYPE_MAGNETIC_FIELD:
                 fuseSensor.setMagnet(event.values);
                 break;
@@ -103,7 +160,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         updateValue();
     }
     /** @Brief: Up date the (fused)sensor value
-     *  @Author: Yuan Fu
+     *  @Author: Yuan Fu (5215315)
      *  @Return: None
      */
     public void updateValue() {
@@ -122,7 +179,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     }
 
     /** @Brief: Create particles randomly in a restricted range
-     *  @Author: Yuan Fu
+     *  @Author: Yuan Fu (5215315)
      *  @Return: None
      */
     private void creat_particles() {
@@ -139,12 +196,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             p_list.add(p);
         }
     }
-    /** @Brief: Resample the current particle list
-     *  @Author: Yuan Fu
+    /** @Brief: Resample the current particle list. Identify dead particles and reborn them from random alive particles
+     *  @Author: Yuan Fu (5215315)
      *  @Return: None
      */
     private void resample() {
-        // TODO: Test it
+        // TODO: Test it. Maybe try array instead of list to decrease searching time
         // identify dead particles
         List<Integer> dead_indeces=new ArrayList<>();
         for(int i=0;i<num_particle;i++) {
@@ -171,7 +228,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             System.out.println("number of dead and reborn do not match");
         }
         for(int i=0;i<dead_indeces.size();i++) {
-            p_list.get(dead_indeces.get(i)).reborn_around(p_list.get(reborn_around.get(i)));
+            p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
         }
     }
 }

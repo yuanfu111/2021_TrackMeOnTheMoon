@@ -2,7 +2,7 @@ package com.example.app3;
 
 /** @Brief: First order butterworth filter
 *
-*   @Author: Yuan Fu
+*   @Author: Yuan Fu (5215315)
 *
 * **/
 public class Butterworth {

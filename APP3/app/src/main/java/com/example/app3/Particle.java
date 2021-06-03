@@ -3,7 +3,7 @@ import java.lang.Math;
 import java.util.Random;
 /** @Brief: Particle class for particle filtering
  *
- *  @Author: Yuan Fu
+ *  @Author: Yuan Fu (5215315)
  *
  */
 public class Particle {
@@ -65,7 +65,7 @@ public class Particle {
 //    public double get_orient() {
 //        return this.orient;
 //    }
-    public void reborn_around(Particle newp) {
+    public void reborn(Particle newp) {
         Random r=new Random(System.currentTimeMillis());
         double newx=newp.x+this.resample_noise*r.nextGaussian();
         double newy=newp.y+this.resample_noise*r.nextGaussian();
