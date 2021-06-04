@@ -5,6 +5,8 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
 import android.graphics.Point;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
@@ -22,6 +24,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -31,34 +35,38 @@ import java.util.Random;
 
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
-    private Button button,move_drawable;
-    private TextView azimuthText,textView2;
+    private Button button, move_drawable;
+    private TextView azimuthText, textView2;
     // Sensor related declarations
     private SensorManager sensorManager = null;
-    private FuseOrientation fuseSensor= new FuseOrientation();
+    private FuseOrientation fuseSensor = new FuseOrientation();
     // Orientation
     private double azimuthValue;
     private DecimalFormat d = new DecimalFormat("#.###");
     // Particle filter related declarations
     private int num_particle;
-    List<Particle> p_list=new ArrayList<>();
-    private double x_range,y_range;
-    private double move_noise,orient_noise,resample_noise;
+    List<Particle> p_list = new ArrayList<>();
+    private double x_range, y_range;
+
 
     // Map related declarations
     private ShapeDrawable drawable;
     private Canvas canvas;
-    private List<ShapeDrawable> walls;
-
+    private List<ShapeDrawable> virtual_lines;
+    public static List<ShapeDrawable> walls;
     public static int display_width;
     public static int display_height;
-    public static int point_size=10;
-    public static int pixelPerMeter=100;
     public static int center_x;
     public static int center_y;
+    public static int point_size = 10;
+    public static int pixelPerMeter = 100;
+    public static double move_noise;
+    public static double orient_noise;
+    public static double resample_noise=1;
 
     //testing
     private Particle p;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,9 +91,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
         //testing
         canvas.drawColor(Color.WHITE);
-        p =  create_particle();
-        p.get_drawable().draw(canvas);
+        draw_layout();
+
     }
+
     public void registerSensorManagerListeners() {
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
@@ -97,61 +106,177 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
                 SensorManager.SENSOR_DELAY_FASTEST);
     }
+
     protected void onResume() {
         super.onResume();
         registerSensorManagerListeners();
     }
+
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
     }
-    /** @Brief: Create particles randomly in a restricted range
-     *  @Author: Yuan Fu (5215315)
-     *  @Return: None
+
+    // Init some global values
+    private void config_init() {
+        x_range = 20;
+        y_range = 7; // in meters
+        num_particle = 2;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        display_width = size.x;
+        display_height = size.y;
+        center_x = display_width / 2;
+        center_y = display_height / 2;
+        ImageView canvasView = (ImageView) findViewById(R.id.canvas);
+        Bitmap blankBitmap = Bitmap.createBitmap(display_width, display_height, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(blankBitmap);
+        canvasView.setImageBitmap(blankBitmap);
+        init_layout();
+        draw_layout();
+    }
+
+    /**
+     * @Brief: Create particles randomly in a restricted range
+     * @Author: Yuan Fu (5215315)
+     * @Return: None
      */
     private Particle create_particle() {
-        //TODO: x,y restriction
-        Random r=new Random(System.currentTimeMillis());
-        double x,y,orient;
-        // for(int i=0;i<num_particle;i++) {
-        x=x_range*(r.nextDouble()-0.5);
-        y=y_range*(r.nextDouble()-0.5);;
-        orient=2*Math.PI*r.nextDouble();
-        Particle p=new Particle();
-        p.set_attr(x,y,orient);
-        p.set_noise(move_noise,orient_noise,resample_noise);
+        SecureRandom r = new SecureRandom();
+        //Random r = new Random(System.currentTimeMillis());
+        double x, y, orient;
+        orient = 2 * Math.PI * r.nextDouble();
+        Particle p = new Particle();
+        // repeat recreating until within room and not collision
+        do  {
+            x = x_range * (r.nextDouble() - 0.5);
+            y = y_range * (r.nextDouble() - 0.5);
+            p.set_attr(x, y, orient);
+        }while(!check_in_room(x, y) || p.collision);
 
-
+        p.set_noise(move_noise, orient_noise, resample_noise);
+//        System.out.println("particle created");
+//        System.out.println("x: " +x+" y: "+y);
         return p;
-        //}
+    }
+
+    /** @Brief: Check if the coordinate is within the rooms of the layout
+     *  @Author: Yuan Fu (5215315)
+     *  @Param: x,y
+     *  @Return: false if out of range
+     */
+    public static boolean check_in_room(double x, double y) {
+        if(x<-10 || x>10 || y<-3.5 || y>3.5)
+            return false;
+        // the bottom left part
+        if(x<-1.5 && 2.5>y) {
+            return false;
+        }
+        // the bottom middle part
+        if(2<x && -2.5>y) {
+            return false;
+        }
+        // the bottom right part
+        if(6.5<x  && 2.5>y) {
+            return false;
+        }
+
+        return true;
+    }
+    private void draw_particles(List<Particle> list) {
+        for(Particle p : list) {
+            p.get_drawable().draw(canvas);
+        }
+    }
+    private void init_particles() {
+        p_list.clear();
+        for(int i =0;i<200;i++) {
+            Particle new_p =create_particle();
+            p_list.add(new_p);
+        }
+
     }
     @Override
     public  void onClick(View v) {
         double distance=0.1;
         switch (v.getId()) {
             case R.id.button: {
-                p.get_drawable().draw(canvas);
+                init_particles();
+                draw_particles(p_list);
                 // in the middle of the screen
                 //p_draw.setBounds(display_width/2-point_size, display_height/2-point_size, display_width/2+point_size, display_height/2+point_size);
-                //azimuthText.setText(d.format(azimuthValue));
+
                 //Toast.makeText(this,"Click",Toast.LENGTH_LONG).show();
                 break;
             }
             case R.id.move_drawable: {
-                p.move(distance,(azimuthValue/360)*2*Math.PI);
+                for(Particle p : p_list) {
+                    p.move(distance,(azimuthValue/360)*2*Math.PI);
+                }
+                resample();
             }
         }
+       // textView2.setText("X: "+ d.format(p.get_x()) +"\nY: " +d.format(p.get_y()) + "\nOrient: " + d.format(azimuthValue));
 
-        if(detect_collision(p))
-        System.out.println("hit wall");
+//        if(p.collision)
+//            Toast.makeText(this,"Hit wall",Toast.LENGTH_LONG).show();
         // make the canvas all white and redraw
         canvas.drawColor(Color.WHITE);
-        p.get_drawable().draw(canvas);
-        draw_walls();
+        draw_particles(p_list);
+        draw_layout();
     }
-    private void draw_walls() {
+    /** @Brief: Resample the current particle list. Identify dead particles and reborn them from random alive particles
+     *  @Author: Yuan Fu (5215315)
+     *  @Return: None
+     */
+    private void resample( ) {
+        // TODO: Test it. Maybe try array instead of list to decrease searching time
+        // identify dead particles
+        List<Integer> dead_indeces=new ArrayList<>();
+        for(int i=0;i<p_list.size();i++) {
+            if(p_list.get(i).collision) {
+                dead_indeces.add(i);
+            }
+        }
+        if(dead_indeces.size()==p_list.size()) {
+            init_particles();
+        }
+        else {
+        System.out.println("dead "+dead_indeces);
+        // reborn the dead particles new alive particles
+        SecureRandom r = new SecureRandom();
+        int random_index;
+        random_index=r.nextInt(p_list.size());
+        // list store the index of the particle around which dead will be reborn
+        List<Integer> reborn_around=new ArrayList<>();
+        for(int i=0;i<dead_indeces.size();i++) {
+            // continue the generate random number
+            // until the number does not match dead particle index
+            while(dead_indeces.contains(random_index)) {
+                random_index=r.nextInt(p_list.size());
+            }
+            reborn_around.add(random_index);
+        }
+        // if all particles are  dead
+
+            System.out.println("reborn " + reborn_around);
+            // reborn
+            if (dead_indeces.size() != reborn_around.size()) {
+                System.out.println("number of dead and reborn do not match");
+            }
+
+            for (int i = 0; i < dead_indeces.size(); i++) {
+                p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
+            }
+        }
+    }
+    private void draw_layout() {
         for(ShapeDrawable wall : walls)
             wall.draw(canvas);
+        for(ShapeDrawable virtual_line : virtual_lines) {
+            virtual_line.draw(canvas);
+        }
     }
     /** @Brief: Initialize walls based on our layout 1m=100 pixel
      *  @Author: Yuan Fu (5215315)
@@ -167,20 +292,19 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      *  -                  -      ---------
      *  -                  -----
      */
-    private void init_walls() {
+    private void init_layout() {
         int line_width=8;
-
-
         walls=new ArrayList<>();
         //horizontal lines
         ShapeDrawable d1 = new ShapeDrawable(new RectShape());
         d1.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*3.5),
                 center_x+pixelPerMeter*10,center_y+line_width/2-(int)(pixelPerMeter*3.5));
 
+        // door related
         ShapeDrawable d2 = new ShapeDrawable(new RectShape());
         d2.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*2.5),center_y+line_width/2-(int)(pixelPerMeter*2.5));
-
+                center_x+(int)(pixelPerMeter*2),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+        // door related
         ShapeDrawable d3 = new ShapeDrawable(new RectShape());
         d3.setBounds(center_x+pixelPerMeter*3,center_y-line_width/2-(int)(pixelPerMeter*2.5),
                 center_x+(int)(pixelPerMeter*10),center_y+line_width/2-(int)(pixelPerMeter*2.5));
@@ -194,37 +318,55 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*3.5));
 
         ShapeDrawable d6 = new ShapeDrawable(new RectShape());
-        d6.setBounds(center_x+(int)(pixelPerMeter*2),center_y-line_width/2+(int)(pixelPerMeter*3),
-                center_x+(int)(pixelPerMeter*6.5),center_y+line_width/2+(int)(pixelPerMeter*3));
+        d6.setBounds(center_x+(int)(pixelPerMeter*2),center_y-line_width/2+(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*6.5),center_y+line_width/2+(int)(pixelPerMeter*2.5));
 
         //vetical lines
         ShapeDrawable d7 = new ShapeDrawable(new RectShape());
         d7.setBounds(center_x-line_width/2-(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
                 center_x+line_width/2-(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
 
+        // door related
         ShapeDrawable d8 = new ShapeDrawable(new RectShape());
         d8.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*0));
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*1.5));
 
+        // door related
         ShapeDrawable d9 = new ShapeDrawable(new RectShape());
-        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*0.5),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3));
+        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*0.5),
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*2));
 
+        // door related
         ShapeDrawable d10 = new ShapeDrawable(new RectShape());
-        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*4.5),center_y+(int)(pixelPerMeter*2.5));
+        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3),
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+
 
         ShapeDrawable d11 = new ShapeDrawable(new RectShape());
-        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*6.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*6.5),center_y+(int)(pixelPerMeter*3));
+        d11.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*4.5),center_y+(int)(pixelPerMeter*1.5));
 
         ShapeDrawable d12 = new ShapeDrawable(new RectShape());
-        d12.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+        d12.setBounds(center_x-line_width/2+(int)(pixelPerMeter*6.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*6.5),center_y+(int)(pixelPerMeter*2.5));
 
         ShapeDrawable d13 = new ShapeDrawable(new RectShape());
-        d13.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
+        d13.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d14 = new ShapeDrawable(new RectShape());
+        d14.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
                 center_x+line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+
+        // additional bottom two lines
+        // horizontal
+        ShapeDrawable d15 = new ShapeDrawable(new RectShape());
+        d15.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*2),center_y+line_width/2+(int)(pixelPerMeter*3.5));
+        //vetical
+        ShapeDrawable d16 = new ShapeDrawable(new RectShape());
+        d16.setBounds(center_x-line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*3.5));
         walls.add(d1);
         walls.add(d2);
         walls.add(d3);
@@ -238,33 +380,37 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         walls.add(d11);
         walls.add(d12);
         walls.add(d13);
-    }
-    //TODO: collision detection
-    public boolean detect_collision(Particle p) {
-        ShapeDrawable p_drawable = new ShapeDrawable(new OvalShape());
-        //p_drawable.getPaint().setColor(Color.BLUE);
-        for(ShapeDrawable wall : walls) {
-            if(isCollision(wall,p.get_drawable()))
+        walls.add(d14);
+        walls.add(d15);
+        walls.add(d16);
+        // virtual lines
+        virtual_lines=new ArrayList<>();
+        ShapeDrawable l1 = new ShapeDrawable(new RectShape());
+        l1.setBounds(center_x-line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l1.getPaint().setColor(Color.GRAY);
 
-                return true;
-        }
-        return false;
+        ShapeDrawable l2 = new ShapeDrawable(new RectShape());
+        l2.setBounds(center_x-line_width/4-(int)(pixelPerMeter*0),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4-(int)(pixelPerMeter*0),center_y-(int)(pixelPerMeter*2.5));
+        l2.getPaint().setColor(Color.GRAY);
+
+        ShapeDrawable l3 = new ShapeDrawable(new RectShape());
+        l3.setBounds(center_x-line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l3.getPaint().setColor(Color.GRAY);
+
+        ShapeDrawable l4 = new ShapeDrawable(new RectShape());
+        l4.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/4-(int)(pixelPerMeter*0),
+                center_x+(int)(pixelPerMeter*4.5),center_y+line_width/4-(int)(pixelPerMeter*0));
+        l4.getPaint().setColor(Color.GRAY);
+
+        virtual_lines.add(l1);
+        virtual_lines.add(l2);
+        virtual_lines.add(l3);
+        virtual_lines.add(l4);
     }
-    private boolean isCollision(ShapeDrawable first, ShapeDrawable second) {
-        Rect firstRect = new Rect(first.getBounds());
-        return firstRect.intersect(second.getBounds());
-    }
-//    /** @Brief: Move the drawable point on canvas based on distance and orientation
-//     *  @Author: Yuan Fu (5215315)
-//     *  @Return: None
-//     */
-//    private void move_point_draw(double distance, double orient) {
-//        int dist_x = (int) (Math.sin((orient/360)*2*Math.PI)*distance);
-//        int dist_y = (int) (Math.cos((orient/360)*2*Math.PI)*distance);
-//        textView2.setText( "x: "+dist_x +" y: "+dist_y +" orient:"+ d.format(orient));
-//        Rect r = drawable.getBounds();
-//        drawable.setBounds(r.left + dist_x, r.top-dist_y, r.right + dist_x, r.bottom-dist_y);
-//    }
+
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -297,61 +443,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
-    // Init some global values
-    private void config_init() {
-        x_range=20;y_range=7; // in meters
-        move_noise=0;orient_noise=0;resample_noise=0;
-        num_particle=100;
-        Display display = getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        display_width = size.x;
-        display_height = size.y;
-        center_x=display_width/2;
-        center_y=display_height/2;
-        ImageView canvasView = (ImageView) findViewById(R.id.canvas);
-        Bitmap blankBitmap = Bitmap.createBitmap(display_width, display_height, Bitmap.Config.ARGB_8888);
-        canvas = new Canvas(blankBitmap);
-        canvasView.setImageBitmap(blankBitmap);
-        init_walls();
-        draw_walls();
-    }
 
-
-    /** @Brief: Resample the current particle list. Identify dead particles and reborn them from random alive particles
-     *  @Author: Yuan Fu (5215315)
-     *  @Return: None
-     */
-    private void resample() {
-        // TODO: Test it. Maybe try array instead of list to decrease searching time
-        // identify dead particles
-        List<Integer> dead_indeces=new ArrayList<>();
-        for(int i=0;i<num_particle;i++) {
-           // if(detect_collision(p_list.get(i))==true) {
-           //     dead_indeces.add(i);
-           // }
-        }
-        // reborn the dead particles new alive particles
-        Random r=new Random(System.currentTimeMillis());
-        int random_index;
-        random_index=r.nextInt(num_particle);
-        // list store the index of the particle around which dead will be reborn
-        List<Integer> reborn_around=new ArrayList<>();
-        for(int i=0;i<dead_indeces.size();i++) {
-            // continue the generate random number
-            // until the number does not match dead particle index
-            while(dead_indeces.contains(random_index)) {
-                random_index=r.nextInt(num_particle);
-            }
-            reborn_around.add(random_index);
-        }
-        // reborn
-        if(dead_indeces.size()!=reborn_around.size()) {
-            System.out.println("number of dead and reborn do not match");
-        }
-        for(int i=0;i<dead_indeces.size();i++) {
-            p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
-        }
-    }
 
 }
