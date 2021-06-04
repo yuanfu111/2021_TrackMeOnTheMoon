@@ -141,6 +141,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             state = DetectWalk(accData);
             if (state == "walking") {
                 walkingTime += (currentTime - startTime)/1000.0; // walking during the last sampling window
+                double d = (currentTime - startTime)/1000.0 * speed; // window内移动的距离
 //                System.out.println(walkingTime);
             }
 //            System.out.println("Current state: " + state);
