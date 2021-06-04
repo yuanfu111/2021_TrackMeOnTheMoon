@@ -3,6 +3,9 @@ import android.graphics.Color;
 import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
 import android.graphics.drawable.shapes.OvalShape;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 import java.lang.Math;
 import java.security.SecureRandom;
@@ -16,6 +19,7 @@ import static com.example.app3.MainActivity.check_in_room;
  *  @Author: Yuan Fu (5215315)
  *
  */
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class Particle {
     // coordinate and orientation of the particle
     private double x,y,orient;
@@ -34,8 +38,6 @@ public class Particle {
         this.collision=false;
     }
     public void set_attr(double new_x, double new_y, double new_orient) {
-        // TODO : throw exception if the input attr is outside the layout
-       //if(new_x<-10 || new_x>10 || new_y<3.5 ||new_y>3.5) throw new  NumberFormatException("particle x y out of range");
         if(new_orient<0 ||new_orient> 2*Math.PI) throw new  NumberFormatException("orient must be in [0,2*pi]");
 
         this.x=new_x;this.y=new_y;this.orient=new_orient;

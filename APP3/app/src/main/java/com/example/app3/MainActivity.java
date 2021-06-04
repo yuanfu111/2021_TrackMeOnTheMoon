@@ -16,6 +16,7 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.Display;
 import android.view.View;
@@ -25,14 +26,16 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.RequiresApi;
+
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
+import java.time.Clock;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Random;
 
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
     private Button button, move_drawable;
@@ -40,9 +43,24 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Sensor related declarations
     private SensorManager sensorManager = null;
     private FuseOrientation fuseSensor = new FuseOrientation();
-    // Orientation
+    // Orientation related declarations
     private double azimuthValue;
     private DecimalFormat d = new DecimalFormat("#.###");
+
+    // Distance related declarations
+    private double aX=0, aY=0, aZ=0, mag=0;
+    private String state = "idle"; // Walking or idle
+    private double walk_threshold = 15; // Threshold for determining walking; personal
+    private ArrayList<Double> accData = new ArrayList<>();
+    private int sampleCount = 0;
+    private int window = 1000; // 1000ms
+    private long startTime=0, currentTime = 0;
+    private double walkingTime;
+    private double distance;
+    private double speed = 1.5; // Yujin's walking speed is 1.5m/s
+    //private TextView currentState;
+    private Clock clock = Clock.systemDefaultZone();
+
     // Particle filter related declarations
     private int num_particle;
     List<Particle> p_list = new ArrayList<>();
@@ -239,36 +257,35 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 dead_indeces.add(i);
             }
         }
+        // if all particles are dead, intialize particles
         if(dead_indeces.size()==p_list.size()) {
             init_particles();
         }
         else {
-        System.out.println("dead "+dead_indeces);
-        // reborn the dead particles new alive particles
-        SecureRandom r = new SecureRandom();
-        int random_index;
-        random_index=r.nextInt(p_list.size());
-        // list store the index of the particle around which dead will be reborn
-        List<Integer> reborn_around=new ArrayList<>();
-        for(int i=0;i<dead_indeces.size();i++) {
-            // continue the generate random number
-            // until the number does not match dead particle index
-            while(dead_indeces.contains(random_index)) {
-                random_index=r.nextInt(p_list.size());
+            System.out.println("dead "+dead_indeces);
+            // reborn the dead particles new alive particles
+            SecureRandom r = new SecureRandom();
+            int random_index;
+            random_index=r.nextInt(p_list.size());
+            // list store the index of the particle around which dead will be reborn
+            List<Integer> reborn_around=new ArrayList<>();
+            for(int i=0;i<dead_indeces.size();i++) {
+                // continue the generate random number
+                // until the number does not match dead particle index
+                while(dead_indeces.contains(random_index)) {
+                    random_index=r.nextInt(p_list.size());
+                }
+                reborn_around.add(random_index);
             }
-            reborn_around.add(random_index);
-        }
-        // if all particles are  dead
+                System.out.println("reborn " + reborn_around);
+                // reborn
+                if (dead_indeces.size() != reborn_around.size()) {
+                    System.out.println("number of dead and reborn do not match");
+                }
 
-            System.out.println("reborn " + reborn_around);
-            // reborn
-            if (dead_indeces.size() != reborn_around.size()) {
-                System.out.println("number of dead and reborn do not match");
-            }
-
-            for (int i = 0; i < dead_indeces.size(); i++) {
-                p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
-            }
+                for (int i = 0; i < dead_indeces.size(); i++) {
+                    p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
+                }
         }
     }
     private void draw_layout() {
@@ -410,7 +427,77 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         virtual_lines.add(l3);
         virtual_lines.add(l4);
     }
-
+    private String DetectWalk(ArrayList<Double> accData){
+        String state = "idle";
+        double[] results = autocorrelation(accData);
+//        for (int i=0; i<results.length; ++i) {
+//            System.out.println("Result" + i + ": " + results[i]);
+//        }
+        // Find the maximum of autocorrelation results
+        double max = results[0];
+        for (int i=1; i<results.length; ++i) {
+            if (results[i] > max) {
+                max = results[i];
+//                System.out.println("Max correlation: " + max);
+            }
+        }
+        if (max > walk_threshold) {
+            state = "walking";
+        }
+        return state;
+    }
+    // Brute force autocorrelation
+    private double[] autocorrelation(ArrayList<Double> accData){
+        double sum = 0;
+        for (int i=0; i<accData.size(); ++i) {
+            sum += accData.get(i);
+        }
+        double avg = sum/accData.size();
+        double[] results = new double[accData.size()];
+        for (int i=0; i<accData.size(); ++i){
+            results[i] = 0; // i: lag
+            for (int j=0; j<accData.size(); ++j){
+                results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
+            }
+        }
+//        save2file(results);
+        return results;
+    }
+    private void get_distance(SensorEvent event) {
+        if (sampleCount == 0) {
+            sampleCount++;
+            startTime = clock.millis();
+            currentTime = startTime;
+//            System.out.println("startTime: " + startTime);
+        }else{
+            sampleCount++;
+            currentTime = clock.millis();
+//            System.out.println("currentTime: " + currentTime);
+        }
+        aX = event.values[0];
+        aY = event.values[1];
+        aZ = event.values[2];
+        mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
+//        if (accData.size()<sampleSize){
+        if (currentTime - startTime < window){
+            accData.add(mag);
+        }
+        else{
+            state = DetectWalk(accData);
+            if (state == "walking") {
+                walkingTime += (currentTime - startTime)/1000.0; // walking during the last sampling window
+                distance = (currentTime - startTime)/1000.0 * speed; // window内移动的距离
+//                System.out.println(walkingTime);
+            }
+            else {
+                distance=0;
+            }
+//            System.out.println("Current state: " + state);
+            accData.clear();
+//            System.out.println("Samples in 1s: " + sampleCount);
+            sampleCount = 0;
+        }
+    }
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -421,6 +508,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             case Sensor.TYPE_ACCELEROMETER:
                 fuseSensor.setAccel(event.values);
                 fuseSensor.calculateAccMagOrientation();
+                get_distance(event);
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 fuseSensor.gyroFunction(event);
@@ -439,6 +527,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         //TODO: distance related
         azimuthValue = (fuseSensor.getAzimuth()+360)%360;
         azimuthText.setText(d.format(azimuthValue));
+        textView2.setText(d.format(distance));
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
