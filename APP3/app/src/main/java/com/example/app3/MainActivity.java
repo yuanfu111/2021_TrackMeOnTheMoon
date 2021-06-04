@@ -33,9 +33,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private Sensor accelerometer;
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state; // Walking or idle
-    private double walk_threshold=90; // Threshold for determining walking
+    private double walk_threshold=100; // Threshold for determining walking
     private ArrayList<Double> accData = new ArrayList<>();
-    private int sampleSize = 30;
+//    private int sampleSize = 50;
+    private int sampleCount = 0;
+    private int window = 1000; // 1000ms
+    private long startTime=0, currentTime = 0;
     private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
 
@@ -72,16 +75,26 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         if(v.getId()==R.id.activity){
             Toast.makeText(this,"Start sensing...",Toast.LENGTH_LONG).show();
         }
-
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
+        if (sampleCount == 0) {
+            sampleCount++;
+            startTime = clock.millis();
+            currentTime = startTime;
+//            System.out.println("startTime: " + startTime);
+        }else{
+            sampleCount++;
+            currentTime = clock.millis();
+//            System.out.println("currentTime: " + currentTime);
+        }
         aX = event.values[0];
         aY = event.values[1];
         aZ = event.values[2];
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
-        if (accData.size()<sampleSize){
+//        if (accData.size()<sampleSize){
+        if (currentTime - startTime < window){
             accData.add(mag);
         }
         else{
@@ -89,6 +102,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             System.out.println("Current state: " + state);
             currentState.setText(state);
             accData.clear();
+//            System.out.println("Samples in 1s: " + sampleCount);
+            sampleCount = 0;
         }
     }
 
@@ -101,9 +116,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public String DetectWalk(ArrayList<Double> accData){
         String state = "idle";
         double[] results = autocorrelation(accData);
-        for (int i=0; i<results.length; ++i) {
-            System.out.println("Result" + i + ": " + results[i]);
-        }
+//        for (int i=0; i<results.length; ++i) {
+//            System.out.println("Result" + i + ": " + results[i]);
+//        }
         // Find the maximum of autocorrelation results
         double max = results[0];
         for (int i=1; i<results.length; ++i) {
