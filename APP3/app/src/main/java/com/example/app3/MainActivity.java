@@ -28,17 +28,20 @@ import java.lang.Math;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
 
-    private Button activity;
+    private Button start, pause, resume, stop;
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private double aX=0, aY=0, aZ=0, mag=0;
-    private String state; // Walking or idle
-    private double walk_threshold=100; // Threshold for determining walking
+    private String state = "idle"; // Walking or idle
+    private double walk_threshold = 15; // Threshold for determining walking; personal
     private ArrayList<Double> accData = new ArrayList<>();
 //    private int sampleSize = 50;
     private int sampleCount = 0;
     private int window = 1000; // 1000ms
     private long startTime=0, currentTime = 0;
+    private double walkingTime;
+    private double distance;
+    private double speed = 1.5; // Yujin's walking speed is 1.5m/s
     private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
 
@@ -47,16 +50,23 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        activity = (Button)findViewById(R.id.activity);
-        activity.setOnClickListener(this);
-        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        start = (Button)findViewById(R.id.start);
+        pause = (Button)findViewById(R.id.pause);
+        resume = (Button)findViewById(R.id.resume);
+        stop = (Button)findViewById(R.id.stop);
+        start.setOnClickListener(this);
+        pause.setOnClickListener(this);
+        resume.setOnClickListener(this);
+        stop.setOnClickListener(this);
         currentState = findViewById(R.id.currentState);
-        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
 
-            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+//        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+//
+//            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
 
-            sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-        }
+//            sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+//        }
 
     }
 
@@ -72,8 +82,38 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     @Override
     public  void onClick(View v) {
-        if(v.getId()==R.id.activity){
-            Toast.makeText(this,"Start sensing...",Toast.LENGTH_LONG).show();
+        switch (v.getId()){
+            case R.id.start:
+                Toast.makeText(this,"Start sensing...",Toast.LENGTH_LONG).show();
+                if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
+                    accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+                    sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+                }
+                distance = 0;
+                walkingTime = 0;
+                state = "idle";
+                sampleCount = 0;
+                accData.clear();
+                break;
+            case R.id.pause:
+                Toast.makeText(this,"Pause sensing...",Toast.LENGTH_LONG).show();
+                sensorManager.unregisterListener(this);
+                currentState.setText("Paused");
+                break;
+            case R.id.resume:
+                Toast.makeText(this,"Resume sensing...",Toast.LENGTH_LONG).show();
+                sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+                break;
+            case R.id.stop:
+                Toast.makeText(this,"Stop sensing...",Toast.LENGTH_LONG).show();
+                sensorManager.unregisterListener(this);
+                currentState.setText("Stopped");
+                distance = walkingTime * speed;
+//                System.out.println(distance);
+                double[] results = {walkingTime, distance};
+                save2file(results);
+            default:
+                break;
         }
     }
 
@@ -99,7 +139,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         else{
             state = DetectWalk(accData);
-            System.out.println("Current state: " + state);
+            if (state == "walking") {
+                walkingTime += (currentTime - startTime)/1000.0; // walking during the last sampling window
+//                System.out.println(walkingTime);
+            }
+//            System.out.println("Current state: " + state);
             currentState.setText(state);
             accData.clear();
 //            System.out.println("Samples in 1s: " + sampleCount);
@@ -124,7 +168,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         for (int i=1; i<results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
-                System.out.println("Max correlation: " + max);
+//                System.out.println("Max correlation: " + max);
             }
         }
         if (max > walk_threshold) {
@@ -142,7 +186,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double avg = sum/accData.size();
         double[] results = new double[accData.size()];
         for (int i=0; i<accData.size(); ++i){
-            results[i] = 0; // i: offset
+            results[i] = 0; // i: lag
             for (int j=0; j<accData.size(); ++j){
                 results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
             }
