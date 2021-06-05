@@ -38,9 +38,8 @@ public class Particle {
         this.collision=false;
     }
     public void set_attr(double new_x, double new_y, double new_orient) {
-        if(new_orient<0 ||new_orient> 2*Math.PI) throw new  NumberFormatException("orient must be in [0,2*pi]");
-
-        this.x=new_x;this.y=new_y;this.orient=new_orient;
+        //if(new_orient<0 ||new_orient> 2*Math.PI) throw new  NumberFormatException("orient must be in [0,2*pi]");
+        this.x=new_x;this.y=new_y;this.orient=(new_orient /360)*2*Math.PI;
         this.set_drawable();
         this.detect_collision();
     }
@@ -54,13 +53,14 @@ public class Particle {
      */
     public void move(double distance, double orientation) {
         if(distance<0) throw new  NumberFormatException("distance cannot be negative");
-        if(orientation<0 ||orientation> 2*Math.PI) throw new  NumberFormatException("orient must be in [0,2*pi]");
+        //if(orientation<0 ||orientation> 2*Math.PI) throw new  NumberFormatException("orient must be in [0,2*pi]");
         double new_x, new_y;
         // set the distance and orientation to move and apply noise
         SecureRandom r = new SecureRandom();
         // Random r_orient=new Random();
         distance = distance +move_noise*r.nextGaussian();
         orientation = orientation +orient_noise*r.nextGaussian();
+        orientation=(orientation /360)*2*Math.PI; // degree to arc
         // move
         new_x=this.x+Math.sin(orientation)*distance;
         new_y=this.y+Math.cos(orientation)*distance;

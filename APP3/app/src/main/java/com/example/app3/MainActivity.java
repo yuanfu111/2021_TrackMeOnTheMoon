@@ -59,20 +59,18 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private double walk_threshold = 15; // Threshold for determining walking; personal
     private ArrayList<Double> accData = new ArrayList<>();
     private int sampleCount = 0;
-    private int window = 1000; // 1000ms
+    private int window = 500; // 1000ms
     private long startTime=0, currentTime = 0;
     private double walkingTime;
     private double distance;
-    private double speed = 0.5; // Yujin's walking speed is 1.5m/s
+    private double speed = 0.4; // Yujin's walking speed is 1.5m/s
     private boolean sampling_done;
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
-
     // Particle filter related declarations
     private int num_particle;
     List<Particle> p_list = new ArrayList<>();
     private double x_range, y_range;
-
     // Map related declarations
     private ShapeDrawable drawable;
     private Canvas canvas;
@@ -86,12 +84,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int display_height;
     public static int center_x;
     public static int center_y;
-    public static int point_size = 10;
-    public static int pixelPerMeter = 100;
-    public static double move_noise;
-    public static double orient_noise;
-    public static double resample_noise=1;
-
+    public static int point_size = 8;
+    public static int pixelPerMeter = 80;
+    public static double move_noise=0.05;
+    public static double orient_noise=3;
+    public static double resample_noise=0.2;
+   // private double inputAngle;
+   // private double angleSum;
     //testing
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -145,6 +144,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         x_range = 20;
         y_range = 7; // in meters
         num_particle = 200;
+        //angleSum=0;
+        //inputAngle=0;
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -248,7 +249,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
                 reborn_around.add(random_index);
             }
-                System.out.println("reborn " + reborn_around);
+                //System.out.println("reborn " + reborn_around);
                 // reborn
                 if (dead_indeces.size() != reborn_around.size()) {
                     System.out.println("number of dead and reborn do not match");
@@ -281,9 +282,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         walls=new ArrayList<>();
         //horizontal lines
         ShapeDrawable d1 = new ShapeDrawable(new RectShape());
-        d1.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*3.5),
-                center_x+pixelPerMeter*10,center_y+line_width/2-(int)(pixelPerMeter*3.5));
-
+        d1.setBounds(center_x-(int)(pixelPerMeter*10),center_y-line_width/2-(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*10),center_y+line_width/2-(int)(pixelPerMeter*3.5));
         // door related
         ShapeDrawable d2 = new ShapeDrawable(new RectShape());
         d2.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*2.5),
@@ -445,18 +445,21 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         aZ = event.values[2];
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
 //        if (accData.size()<sampleSize){
+       // angleSum+=azimuthValue;
         if (currentTime - startTime < window){
-
             accData.add(mag);
             sampling_done=false;
+            //inputAngle=angleSum/sampleCount;
+
         }
         else{
             state = DetectWalk(accData);
             sampling_done=true;
+            //angleSum=0;
             if (state == "walking") {
                 walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
-                //distance = walkingTime * speed; // window内移动的距离
-                distance=0.2;
+                distance = walkingTime * speed; // window内移动的距离
+                //distance=0.2;
 //                System.out.println(walkingTime);
             }
             else {
@@ -479,7 +482,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             }
             case R.id.move_drawable: {
                 for(Particle p : p_list) {
-                    p.move(0.1,(azimuthValue/360)*2*Math.PI);
+                    p.move(0.1,azimuthValue);
                 }
                 resample();
                 break;
@@ -520,16 +523,17 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
         azimuthText.setText("Angle: "+d.format(azimuthValue));
         if(sampling_done && p_list.size()!=0) {
-            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance));
+            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) +"\nAvg angle: " + d.format(azimuthValue));
             //distance=0.1;
             System.out.println(distance);
             for (Particle p : p_list) {
-                p.move(distance, (azimuthValue / 360) * 2 * Math.PI);
+                p.move(distance, azimuthValue);
             }
             resample();
             draw_particle_on_map();
-            System.out.println("moving");
+           // System.out.println("moving");
         }
+        //System.out.println(azimuthValue);
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
