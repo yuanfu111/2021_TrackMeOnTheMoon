@@ -81,6 +81,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     myView v;
    // private int redraw_interval=1000;
     // some global variables
+    private int offset=20;
     public static int display_width;
     public static int display_height;
     public static int center_x;
@@ -516,7 +517,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      */
     public void updateValue() {
         //TODO: distance related
-        azimuthValue = (fuseSensor.getAzimuth()+360)%360;
+        azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
         azimuthText.setText("Angle: "+d.format(azimuthValue));
         if(sampling_done && p_list.size()!=0) {
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance));

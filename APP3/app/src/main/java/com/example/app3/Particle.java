@@ -62,8 +62,8 @@ public class Particle {
         distance = distance +move_noise*r.nextGaussian();
         orientation = orientation +orient_noise*r.nextGaussian();
         // move
-        new_x=this.x+Math.cos(orientation)*distance;
-        new_y=this.y+Math.sin(orientation)*distance;
+        new_x=this.x+Math.sin(orientation)*distance;
+        new_y=this.y+Math.cos(orientation)*distance;
         // set the new place to a new particle so that we can resample easily
         this.set_attr(new_x,new_y,orientation);
         //this.set_noise(this.move_noise,this.orient_noise,this.resample_noise);
