@@ -1,327 +1,561 @@
 package com.example.app3;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.DashPathEffect;
+import android.graphics.Paint;
+import android.graphics.Point;
+import android.graphics.Rect;
+import android.graphics.drawable.ShapeDrawable;
+import android.graphics.drawable.shapes.OvalShape;
+import android.graphics.drawable.shapes.RectShape;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.os.Build;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Handler;
+import android.os.Looper;
+import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RelativeLayout;
+import android.widget.TextView;
 import android.widget.Toast;
+import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.security.SecureRandom;
+import java.text.DecimalFormat;
+import java.time.Clock;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static android.util.Half.EPSILON;
-import static java.lang.Math.sin;
-import static java.lang.Math.cos;
-import static java.lang.Math.sqrt;
+
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
-
-    private Button button;
-    private SensorManager msensorManager;
-    private Sensor sensor_gyro,sensor_compass;
-    public static final int TIME_CONSTANT = 30;
-    // coefficient of weighted avg of gyro angle and compass angle
-    public static final float FILTER_COEFFICIENT = 0.98f;
-    private Timer fuseTimer = new Timer();
-    // declarations for gyro processing
-    private float[] gyro = new float[3];
-    private float[] gyroMatrix = new float[9];
-    private float[] rotationMatrix = new float[9];
-    private float[] accMagOrientation = new float[3];
-    private static final float NS2S = 1.0f / 1000000000.0f;
-    private final float[] deltaRotationVector = new float[4];
-    private float timestamp;
-    private boolean initState = true;
-
+    // UI related declarations
+    private Button button, move_drawable,update_map;
+    private TextView azimuthText, textView2;
+    // Sensor related declarations
+    private SensorManager sensorManager = null;
+    private FuseOrientation fuseSensor = new FuseOrientation();
     // Orientation related declarations
-    private float[] accel = new float[3];
-    private float[] magnetOrientation = new float[3];
-    private float[] gyroOrientation = new float[3];
-    private float[] fusedOrientation = new float[3];
-    private  Butterworth butterLowPass=new Butterworth();
-    private  Butterworth butterHighPass=new Butterworth();
+    private double azimuthValue;
+    private DecimalFormat d = new DecimalFormat("#.###");
 
+    // Distance related declarations
+    private double aX=0, aY=0, aZ=0, mag=0;
+    private String state = "idle"; // Walking or idle
+    private double walk_threshold = 15; // Threshold for determining walking; personal
+    private ArrayList<Double> accData = new ArrayList<>();
+    private int sampleCount = 0;
+    private int window = 1000; // 1000ms
+    private long startTime=0, currentTime = 0;
+    private double walkingTime;
+    private double distance;
+    private double speed = 0.5; // Yujin's walking speed is 1.5m/s
+    private boolean sampling_done;
+    //private TextView currentState;
+    private Clock clock = Clock.systemDefaultZone();
+
+    // Particle filter related declarations
+    private int num_particle;
+    List<Particle> p_list = new ArrayList<>();
+    private double x_range, y_range;
+
+    // Map related declarations
+    private ShapeDrawable drawable;
+    private Canvas canvas;
+    private List<ShapeDrawable> virtual_lines;
+    public static List<ShapeDrawable> walls;
+    myView v;
+   // private int redraw_interval=1000;
+    // some global variables
+    public static int display_width;
+    public static int display_height;
+    public static int center_x;
+    public static int center_y;
+    public static int point_size = 10;
+    public static int pixelPerMeter = 100;
+    public static double move_noise;
+    public static double orient_noise;
+    public static double resample_noise=1;
+
+    //testing
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button=(Button)findViewById(R.id.button);
+        button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
-       // rsensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-//        if (rsensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR) != null) {
-//
-//            rotation_vector = rsensorManager.getDefaultSensor(Sensor.TYPE_ROTATION_VECTOR);
-//
-//            rsensorManager.registerListener(this, rotation_vector,SensorManager.SENSOR_DELAY_NORMAL);
-//        } else {
-//
-//        }
-        msensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (msensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE) != null) {
-
-            sensor_gyro = msensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE);
-            msensorManager.registerListener(this, sensor_gyro,SensorManager.SENSOR_DELAY_FASTEST);
-        }
-        else {
-
-        }
-
-//        csensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-        if (msensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD) != null) {
-
-            sensor_compass = msensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD);
-            msensorManager.registerListener(this, sensor_compass,SensorManager.SENSOR_DELAY_NORMAL);
-        }
-        else {
-
-        }
-        init_gyro_matrix();
-        //first order low-pass filter fs=1000HZ fc=50HZ
-        butterLowPass.set_coefficient(new float[]{0.1367f,0.1367f},new float[]{1f,-0.7365f});
-        //first order low-pass filter fs=1000HZ fc=400HZ
-        butterHighPass.set_coefficient(new float[]{0.2452f,-0.2452f},new float[]{1f,0.5095f});
-
-        fuseTimer.scheduleAtFixedRate(new calculateFusedOrientationTask(),
-                1000, TIME_CONSTANT);
-
+        move_drawable = (Button) findViewById(R.id.move_drawable);
+        move_drawable.setOnClickListener(this);
+        update_map = (Button) findViewById(R.id.update_map);
+        update_map.setOnClickListener(this);
+        azimuthText = (TextView) findViewById(R.id.textView1);
+        textView2 = (TextView) findViewById(R.id.textView2);
+        // init sensors
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        registerSensorManagerListeners();
+        fuseSensor.setMode(FuseOrientation.Mode.FUSION);
+        config_init();
+        //testing
     }
-    private void init_gyro_matrix() {
-        gyroOrientation[0] = 0.0f;
-        gyroOrientation[1] = 0.0f;
-        gyroOrientation[2] = 0.0f;
 
-        // initialise gyroMatrix with identity matrix
-        gyroMatrix[0] = 1.0f; gyroMatrix[1] = 0.0f; gyroMatrix[2] = 0.0f;
-        gyroMatrix[3] = 0.0f; gyroMatrix[4] = 1.0f; gyroMatrix[5] = 0.0f;
-        gyroMatrix[6] = 0.0f; gyroMatrix[7] = 0.0f; gyroMatrix[8] = 1.0f;
+    public void registerSensorManagerListeners() {
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_FASTEST);
     }
 
     protected void onResume() {
         super.onResume();
-        msensorManager.registerListener(this, sensor_gyro,SensorManager.SENSOR_DELAY_NORMAL);
-        msensorManager.registerListener(this, sensor_compass,SensorManager.SENSOR_DELAY_NORMAL);
-
+        registerSensorManagerListeners();
     }
+
     protected void onPause() {
         super.onPause();
-        msensorManager.unregisterListener(this);
+        sensorManager.unregisterListener(this);
     }
 
+    /**
+     * @Brief: Initialize some global variables, create a customized view class and add it to the layout
+     * @Author: Yuan Fu (5215315)
+     * @Return: None
+     */
+    private void config_init() {
+        x_range = 20;
+        y_range = 7; // in meters
+        num_particle = 200;
+        Display display = getWindowManager().getDefaultDisplay();
+        Point size = new Point();
+        display.getSize(size);
+        display_width = size.x;
+        display_height = size.y;
+        center_x = display_width / 2;
+        center_y = display_height / 2;
+        ImageView canvasView = (ImageView) findViewById(R.id.canvas);
+        Bitmap blankBitmap = Bitmap.createBitmap(display_width, display_height, Bitmap.Config.ARGB_8888);
+        canvas = new Canvas(blankBitmap);
+        canvasView.setImageBitmap(blankBitmap);
+        init_layout();
+        sampling_done=false;
+        ConstraintLayout canvas_layout=(ConstraintLayout)findViewById(R.id.canvas_layout);
+        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.FILL_PARENT);
+        v = new myView(this);
+        v.setLayoutParams(lp);
+        canvas_layout.addView(v);
+    }
+    /**
+     * @Brief: Create particles randomly in a restricted range
+     * @Author: Yuan Fu (5215315)
+     * @Return: None
+     */
+    private Particle create_particle() {
+        SecureRandom r = new SecureRandom();
+        double x, y, orient;
+        orient = 2 * Math.PI * r.nextDouble();
+        Particle p = new Particle();
+        // repeat recreating until within room and not collision
+        do  {
+            x = x_range * (r.nextDouble() - 0.5);
+            y = y_range * (r.nextDouble() - 0.5);
+            p.set_attr(x, y, orient);
+        }while(!check_in_room(x, y) || p.collision);
+
+        p.set_noise(move_noise, orient_noise, resample_noise);
+//        System.out.println("particle created");
+//        System.out.println("x: " +x+" y: "+y);
+        return p;
+    }
+    /** @Brief: Check if the coordinate is within the rooms of the layout
+     *  @Author: Yuan Fu (5215315)
+     *  @Param: x,y coordinates
+     *  @Return: false if out of range
+     */
+    public static boolean check_in_room(double x, double y) {
+        if(x<-10 || x>10 || y<-3.5 || y>3.5)
+            return false;
+        // the bottom left part
+        if(x<-1.5 && 2.5>y) {
+            return false;
+        }
+        // the bottom middle part
+        if(2<x && -2.5>y) {
+            return false;
+        }
+        // the bottom right part
+        if(6.5<x  && 2.5>y) {
+            return false;
+        }
+        return true;
+    }
+    private void init_particles() {
+        p_list.clear();
+        for(int i =0;i<num_particle;i++) {
+            Particle new_p =create_particle();
+            p_list.add(new_p);
+        }
+    }
+    /** @Brief: Resample the current particle list. Identify dead particles and reborn them from random alive particles
+     *  @Author: Yuan Fu (5215315)
+     *  @Return: None
+     */
+    private void resample( ) {
+        // TODO: Test it. Maybe try array instead of list to decrease searching time
+        // identify dead particles
+        List<Integer> dead_indeces=new ArrayList<>();
+        for(int i=0;i<p_list.size();i++) {
+            if(p_list.get(i).collision) {
+                dead_indeces.add(i);
+            }
+        }
+        // if all particles are dead, intialize particles
+        if(dead_indeces.size()==p_list.size()) {
+            init_particles();
+        }
+        else {
+            System.out.println("dead "+dead_indeces);
+            // reborn the dead particles new alive particles
+            SecureRandom r = new SecureRandom();
+            int random_index;
+            random_index=r.nextInt(p_list.size());
+            // list store the index of the particle around which dead will be reborn
+            List<Integer> reborn_around=new ArrayList<>();
+            for(int i=0;i<dead_indeces.size();i++) {
+                // continue the generate random number
+                // until the number does not match dead particle index
+                while(dead_indeces.contains(random_index)) {
+                    random_index=r.nextInt(p_list.size());
+                }
+                reborn_around.add(random_index);
+            }
+                System.out.println("reborn " + reborn_around);
+                // reborn
+                if (dead_indeces.size() != reborn_around.size()) {
+                    System.out.println("number of dead and reborn do not match");
+                }
+
+                for (int i = 0; i < dead_indeces.size(); i++) {
+                    p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
+                }
+        }
+    }
+    private void draw_particle_on_map() {
+        v.invalidate();
+    }
+    /** @Brief: Initialize walls based on our layout 1m=100 pixel
+     *  @Author: Yuan Fu (5215315)
+     *  @Return: None
+     *  -------------------------------------------
+     *  -         -          -          -         -
+     *  -------------------------  ----------------
+     *  -                  -   -      -   -
+     *  -                  -   -      -   -
+     *  -                  -          -   -
+     *  -                  -----      -   -
+     *  -                  -   -      -   -
+     *  -                  -      ---------
+     *  -                  -----
+     */
+    private void init_layout() {
+        int line_width=8;
+        walls=new ArrayList<>();
+        //horizontal lines
+        ShapeDrawable d1 = new ShapeDrawable(new RectShape());
+        d1.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*3.5),
+                center_x+pixelPerMeter*10,center_y+line_width/2-(int)(pixelPerMeter*3.5));
+
+        // door related
+        ShapeDrawable d2 = new ShapeDrawable(new RectShape());
+        d2.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*2),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+        // door related
+        ShapeDrawable d3 = new ShapeDrawable(new RectShape());
+        d3.setBounds(center_x+pixelPerMeter*3,center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*10),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d4 = new ShapeDrawable(new RectShape());
+        d4.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*0.5),
+                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*0.5));
+
+        ShapeDrawable d5 = new ShapeDrawable(new RectShape());
+        d5.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*3.5));
+
+        ShapeDrawable d6 = new ShapeDrawable(new RectShape());
+        d6.setBounds(center_x+(int)(pixelPerMeter*2),center_y-line_width/2+(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*6.5),center_y+line_width/2+(int)(pixelPerMeter*2.5));
+
+        //vetical lines
+        ShapeDrawable d7 = new ShapeDrawable(new RectShape());
+        d7.setBounds(center_x-line_width/2-(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2-(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+
+        // door related
+        ShapeDrawable d8 = new ShapeDrawable(new RectShape());
+        d8.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*1.5));
+
+        // door related
+        ShapeDrawable d9 = new ShapeDrawable(new RectShape());
+        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*0.5),
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*2));
+
+        // door related
+        ShapeDrawable d10 = new ShapeDrawable(new RectShape());
+        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3),
+                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+
+        ShapeDrawable d11 = new ShapeDrawable(new RectShape());
+        d11.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*4.5),center_y+(int)(pixelPerMeter*1.5));
+
+        ShapeDrawable d12 = new ShapeDrawable(new RectShape());
+        d12.setBounds(center_x-line_width/2+(int)(pixelPerMeter*6.5),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*6.5),center_y+(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d13 = new ShapeDrawable(new RectShape());
+        d13.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+
+        ShapeDrawable d14 = new ShapeDrawable(new RectShape());
+        d14.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+
+        // additional bottom two lines
+        // horizontal
+        ShapeDrawable d15 = new ShapeDrawable(new RectShape());
+        d15.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*2),center_y+line_width/2+(int)(pixelPerMeter*3.5));
+        //vetical
+        ShapeDrawable d16 = new ShapeDrawable(new RectShape());
+        d16.setBounds(center_x-line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*3.5));
+        walls.add(d1);
+        walls.add(d2);
+        walls.add(d3);
+        walls.add(d4);
+        walls.add(d5);
+        walls.add(d6);
+        walls.add(d7);
+        walls.add(d8);
+        walls.add(d9);
+        walls.add(d10);
+        walls.add(d11);
+        walls.add(d12);
+        walls.add(d13);
+        walls.add(d14);
+        walls.add(d15);
+        walls.add(d16);
+        // virtual lines
+        virtual_lines=new ArrayList<>();
+        ShapeDrawable l1 = new ShapeDrawable(new RectShape());
+        l1.setBounds(center_x-line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l1.getPaint().setColor(Color.GRAY);
+
+        ShapeDrawable l2 = new ShapeDrawable(new RectShape());
+        l2.setBounds(center_x-line_width/4-(int)(pixelPerMeter*0),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4-(int)(pixelPerMeter*0),center_y-(int)(pixelPerMeter*2.5));
+        l2.getPaint().setColor(Color.GRAY);
+
+        ShapeDrawable l3 = new ShapeDrawable(new RectShape());
+        l3.setBounds(center_x-line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l3.getPaint().setColor(Color.GRAY);
+
+        ShapeDrawable l4 = new ShapeDrawable(new RectShape());
+        l4.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/4-(int)(pixelPerMeter*0),
+                center_x+(int)(pixelPerMeter*4.5),center_y+line_width/4-(int)(pixelPerMeter*0));
+        l4.getPaint().setColor(Color.GRAY);
+
+        virtual_lines.add(l1);
+        virtual_lines.add(l2);
+        virtual_lines.add(l3);
+        virtual_lines.add(l4);
+    }
+    private String DetectWalk(ArrayList<Double> accData){
+        String state = "idle";
+        double[] results = autocorrelation(accData);
+//        for (int i=0; i<results.length; ++i) {
+//            System.out.println("Result" + i + ": " + results[i]);
+//        }
+        // Find the maximum of autocorrelation results
+        double max = results[0];
+        for (int i=1; i<results.length; ++i) {
+            if (results[i] > max) {
+                max = results[i];
+//                System.out.println("Max correlation: " + max);
+            }
+        }
+        if (max > walk_threshold) {
+            state = "walking";
+        }
+        return state;
+    }
+    // Brute force autocorrelation
+    private double[] autocorrelation(ArrayList<Double> accData){
+        double sum = 0;
+        for (int i=0; i<accData.size(); ++i) {
+            sum += accData.get(i);
+        }
+        double avg = sum/accData.size();
+        double[] results = new double[accData.size()];
+        for (int i=0; i<accData.size(); ++i){
+            results[i] = 0; // i: lag
+            for (int j=0; j<accData.size(); ++j){
+                results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
+            }
+        }
+//        save2file(results);
+        return results;
+    }
+    private void get_distance(SensorEvent event) {
+        if (sampleCount == 0) {
+            sampleCount++;
+            startTime = clock.millis();
+            currentTime = startTime;
+//            System.out.println("startTime: " + startTime);
+        }else{
+            sampleCount++;
+            currentTime = clock.millis();
+//            System.out.println("currentTime: " + currentTime);
+        }
+        aX = event.values[0];
+        aY = event.values[1];
+        aZ = event.values[2];
+        mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
+//        if (accData.size()<sampleSize){
+        if (currentTime - startTime < window){
+
+            accData.add(mag);
+            sampling_done=false;
+        }
+        else{
+            state = DetectWalk(accData);
+            sampling_done=true;
+            if (state == "walking") {
+                walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
+                //distance = walkingTime * speed; // window内移动的距离
+                distance=0.2;
+//                System.out.println(walkingTime);
+            }
+            else {
+                distance=0;
+            }
+//            System.out.println("Current state: " + state);
+            accData.clear();
+//            System.out.println("Samples in 1s: " + sampleCount);
+            sampleCount = 0;
+        }
+    }
     @Override
     public  void onClick(View v) {
-        if(v.getId()==R.id.button){
-            Toast.makeText(this,"Click",Toast.LENGTH_LONG).show();
-
-        }
-
-    }
-
-    @Override
-    public void onSensorChanged(SensorEvent event) {
-        // rotation_vector
-   //     if(event.sensor==rotation_vector) {
-//        float[] quat = new float[4];
-//        rsensorManager.getQuaternionFromVector(quat, event.values);
-//        Log.d("Success", "x:"+quat[0] +";y:"+quat[1]+";z:"+quat[2]+" fff"+quat[3]);
- //       }
-        // compass
-        switch(event.sensor.getType()) {
-            case Sensor.TYPE_MAGNETIC_FIELD:
-                for(int i=0;i<3;i++) {
-                    magnetOrientation[i]= butterLowPass.filter(event.values[i]);
+        switch (v.getId()) {
+            case R.id.button: {
+                init_particles();
+                draw_particle_on_map();
+                Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
+                break;
+            }
+            case R.id.move_drawable: {
+                for(Particle p : p_list) {
+                    p.move(0.1,(azimuthValue/360)*2*Math.PI);
                 }
-                //System.arraycopy(event.values, 0, magnetOrientation, 0, 3);
+                resample();
+                break;
+            }
+            case R.id.update_map: {
+                draw_particle_on_map();
+            }
+        }
+    }
+    /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
+     *  @Author: Yuan Fu (5215315)
+     *  @Return: None
+     */
+    public void onSensorChanged(SensorEvent event) {
+        //TODO: distance related
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                fuseSensor.setAccel(event.values);
+                fuseSensor.calculateAccMagOrientation();
+                get_distance(event);
                 break;
             case Sensor.TYPE_GYROSCOPE:
-                gyroFunction(event);
+                fuseSensor.gyroFunction(event);
                 break;
-            case Sensor.TYPE_ACCELEROMETER:
-                // copy new accelerometer data into accel array
-                // then calculate new orientation
-                for(int i=0;i<3;i++) {
-                    accel[i]= butterLowPass.filter(event.values[i]);
-                }
-                //System.arraycopy(event.values, 0, accel, 0, 3);
-                calculateAccMagOrientation();
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                fuseSensor.setMagnet(event.values);
                 break;
         }
-
-//        if(event.sensor==compass) {
-//            float axisX = event.values[0];
-//            float axisY = event.values[1];
-//            float axisZ = event.values[2];
-//            Log.d("Success", "x_raw:"+axisX+" x_filtered:"+butterLowPass.filter(axisX) );
-//        }
-
+        updateValue();
     }
-
-
-
-
-    // gyro related functions
-    private void calculateAccMagOrientation() {
-        if(SensorManager.getRotationMatrix(rotationMatrix, null, accel, magnetOrientation)) {
-            SensorManager.getOrientation(rotationMatrix, accMagOrientation);
+    /** @Brief: Up date the (fused)sensor value move the particles and redraw the
+     *          map when distance sampling is done
+     *  @Author: Yuan Fu (5215315)
+     *  @Return: None
+     */
+    public void updateValue() {
+        //TODO: distance related
+        azimuthValue = (fuseSensor.getAzimuth()+360)%360;
+        azimuthText.setText("Angle: "+d.format(azimuthValue));
+        if(sampling_done && p_list.size()!=0) {
+            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance));
+            //distance=0.1;
+            System.out.println(distance);
+            for (Particle p : p_list) {
+                p.move(distance, (azimuthValue / 360) * 2 * Math.PI);
+            }
+            resample();
+            draw_particle_on_map();
+            System.out.println("moving");
         }
     }
-
-    private void getRotationVectorFromGyro(float[] gyroValues,
-                                           float[] deltaRotationVector,
-                                           float timeFactor)
-    {
-        float[] normValues = new float[3];
-
-        // Calculate the angular speed of the sample
-        float omegaMagnitude =
-                (float)Math.sqrt(gyroValues[0] * gyroValues[0] +
-                        gyroValues[1] * gyroValues[1] +
-                        gyroValues[2] * gyroValues[2]);
-
-        // Normalize the rotation vector if it's big enough to get the axis
-        if(omegaMagnitude > EPSILON) {
-            normValues[0] = gyroValues[0] / omegaMagnitude;
-            normValues[1] = gyroValues[1] / omegaMagnitude;
-            normValues[2] = gyroValues[2] / omegaMagnitude;
-        }
-
-        // Integrate around this axis with the angular speed by the timestep
-        // in order to get a delta rotation from this sample over the timestep
-        // We will convert this axis-angle representation of the delta rotation
-        // into a quaternion before turning it into the rotation matrix.
-        float thetaOverTwo = omegaMagnitude * timeFactor;
-        float sinThetaOverTwo = (float)Math.sin(thetaOverTwo);
-        float cosThetaOverTwo = (float)Math.cos(thetaOverTwo);
-        deltaRotationVector[0] = sinThetaOverTwo * normValues[0];
-        deltaRotationVector[1] = sinThetaOverTwo * normValues[1];
-        deltaRotationVector[2] = sinThetaOverTwo * normValues[2];
-        deltaRotationVector[3] = cosThetaOverTwo;
-    }
-
-
-    public void gyroFunction(SensorEvent event) {
-        // don't start until first accelerometer/magnetometer orientation has been acquired
-        if (accMagOrientation == null)
-            return;
-
-        // initialisation of the gyroscope based rotation matrix
-
-        if(initState) {
-            float[] initMatrix = new float[9];
-            initMatrix = getRotationMatrixFromOrientation(accMagOrientation);
-            float[] test = new float[3];
-            SensorManager.getOrientation(initMatrix, test);
-            gyroMatrix = matrixMultiplication(gyroMatrix, initMatrix);
-            initState = false;
-        }
-
-        // copy the new gyro values into the gyro array
-        // convert the raw gyro data into a rotation vector
-        float[] deltaVector = new float[4];
-        if(timestamp != 0) {
-            final float dT = (event.timestamp - timestamp) * NS2S;
-            System.arraycopy(event.values, 0, gyro, 0, 3);
-            getRotationVectorFromGyro(gyro, deltaVector, dT / 2.0f);
-        }
-
-        // measurement done, save current time for next interval
-        timestamp = event.timestamp;
-
-        // convert rotation vector into rotation matrix
-        float[] deltaMatrix = new float[9];
-        SensorManager.getRotationMatrixFromVector(deltaMatrix, deltaVector);
-
-        // apply the new rotation interval on the gyroscope based rotation matrix
-        gyroMatrix = matrixMultiplication(gyroMatrix, deltaMatrix);
-
-        // get the gyroscope based orientation from the rotation matrix
-        SensorManager.getOrientation(gyroMatrix, gyroOrientation);
-
-        //apply high pass filter
-        for(int i=0;i<3;i++) {
-            gyroOrientation[i]=butterHighPass.filter(gyroOrientation[i]);
-        }
-    }
-    private float[] getRotationMatrixFromOrientation(float[] o) {
-        float[] xM = new float[9];
-        float[] yM = new float[9];
-        float[] zM = new float[9];
-
-        float sinX = (float)Math.sin(o[1]);
-        float cosX = (float)Math.cos(o[1]);
-        float sinY = (float)Math.sin(o[2]);
-        float cosY = (float)Math.cos(o[2]);
-        float sinZ = (float)Math.sin(o[0]);
-        float cosZ = (float)Math.cos(o[0]);
-
-        // rotation about x-axis (pitch)
-        xM[0] = 1.0f; xM[1] = 0.0f; xM[2] = 0.0f;
-        xM[3] = 0.0f; xM[4] = cosX; xM[5] = sinX;
-        xM[6] = 0.0f; xM[7] = -sinX; xM[8] = cosX;
-
-        // rotation about y-axis (roll)
-        yM[0] = cosY; yM[1] = 0.0f; yM[2] = sinY;
-        yM[3] = 0.0f; yM[4] = 1.0f; yM[5] = 0.0f;
-        yM[6] = -sinY; yM[7] = 0.0f; yM[8] = cosY;
-
-        // rotation about z-axis (azimuth)
-        zM[0] = cosZ; zM[1] = sinZ; zM[2] = 0.0f;
-        zM[3] = -sinZ; zM[4] = cosZ; zM[5] = 0.0f;
-        zM[6] = 0.0f; zM[7] = 0.0f; zM[8] = 1.0f;
-
-        // rotation order is y, x, z (roll, pitch, azimuth)
-        float[] resultMatrix = matrixMultiplication(xM, yM);
-        resultMatrix = matrixMultiplication(zM, resultMatrix);
-        return resultMatrix;
-    }
-    private float[] matrixMultiplication(float[] A, float[] B) {
-        float[] result = new float[9];
-
-        result[0] = A[0] * B[0] + A[1] * B[3] + A[2] * B[6];
-        result[1] = A[0] * B[1] + A[1] * B[4] + A[2] * B[7];
-        result[2] = A[0] * B[2] + A[1] * B[5] + A[2] * B[8];
-
-        result[3] = A[3] * B[0] + A[4] * B[3] + A[5] * B[6];
-        result[4] = A[3] * B[1] + A[4] * B[4] + A[5] * B[7];
-        result[5] = A[3] * B[2] + A[4] * B[5] + A[5] * B[8];
-
-        result[6] = A[6] * B[0] + A[7] * B[3] + A[8] * B[6];
-        result[7] = A[6] * B[1] + A[7] * B[4] + A[8] * B[7];
-        result[8] = A[6] * B[2] + A[7] * B[5] + A[8] * B[8];
-
-        return result;
-    }
-
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
-        // Do nothing.
     }
-    class calculateFusedOrientationTask extends TimerTask {
-        public void run() {
-            float oneMinusCoeff = 1.0f - FILTER_COEFFICIENT;
-            fusedOrientation[0] =
-                    FILTER_COEFFICIENT * gyroOrientation[0]
-                            + oneMinusCoeff * accMagOrientation[0];
-
-            fusedOrientation[1] =
-                    FILTER_COEFFICIENT * gyroOrientation[1]
-                            + oneMinusCoeff * accMagOrientation[1];
-
-            fusedOrientation[2] =
-                    FILTER_COEFFICIENT * gyroOrientation[2]
-                            + oneMinusCoeff * accMagOrientation[2];
-
-            // overwrite gyro matrix and orientation with fused orientation
-            // to comensate gyro drift
-            gyroMatrix = getRotationMatrixFromOrientation(fusedOrientation);
-            System.arraycopy(fusedOrientation, 0, gyroOrientation, 0, 3);
+    /** @Brief: Customized view class for drawing the map
+     *  @Author: Yuan Fu (5215315)
+     */
+    public class myView extends View {
+        public myView(Context context) {
+            super(context);
         }
-    }
+        @Override
+        public void onDraw(final Canvas canvas) {
+            super.onDraw(canvas);  //IMPORTANT to draw the background
+            for(ShapeDrawable wall:walls) {
+                wall.draw(canvas);
+            }
+            for(ShapeDrawable virtual_line:virtual_lines) {
+                virtual_line.draw(canvas);
+            }
+            if(p_list.size()!=0) {
+                for (Particle p : p_list) {
+                    p.get_drawable().draw(canvas);
+                }
+            }
+        }
 
+    }
 }
+

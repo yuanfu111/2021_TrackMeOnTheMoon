@@ -1,8 +1,8 @@
 package com.example.app3;
 
-/** First order butterworth filter
+/** @Brief: First order butterworth filter
 *
-*   Author Yuan Fu
+*   @Author: Yuan Fu (5215315)
 *
 * **/
 public class Butterworth {
