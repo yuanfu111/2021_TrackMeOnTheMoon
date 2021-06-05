@@ -109,10 +109,15 @@ public class Particle {
      */
     private void detect_collision() {
         this.collision=false;
+        this.collision=!check_in_room(this.x,this.y);
         for(ShapeDrawable wall : MainActivity.walls) {
             Rect wallRect = new Rect(wall.getBounds());
-            if(wallRect.intersect(this.get_drawable().getBounds()))
-                this.collision=true;
+            if(wallRect.intersect(this.get_drawable().getBounds())) {
+                this.collision = true;
+                break; // break to save some time
+            }
         }
+
+
     }
 }

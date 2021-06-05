@@ -26,20 +26,20 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
-
 import androidx.annotation.RequiresApi;
-
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
-    private Button button, move_drawable;
+    private Button button, move_drawable,update_map;
     private TextView azimuthText, textView2;
     // Sensor related declarations
     private SensorManager sensorManager = null;
@@ -73,7 +73,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private Canvas canvas;
     private List<ShapeDrawable> virtual_lines;
     public static List<ShapeDrawable> walls;
-    private Handler handler;
+    private Handler handler ;
     private Runnable runnable;//redraw the map repeatedly
     private int redraw_interval=1000;
     // some global variables
@@ -88,17 +88,27 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static double resample_noise=1;
 
     //testing
-    private Particle p;
+    private Particle p_test;
+    public static int x;
+    public static int y;
+    private Timer timer = new Timer();
+    //AnimatedView animatedView = null;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        //animatedView = new AnimatedView(this);
+
+        //setContentView(animatedView);
 
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
         move_drawable = (Button) findViewById(R.id.move_drawable);
         move_drawable.setOnClickListener(this);
+        update_map = (Button) findViewById(R.id.update_map);
+        //update_map.setOnClickListener(this);
 
         azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
@@ -107,13 +117,14 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         registerSensorManagerListeners();
         fuseSensor.setMode(FuseOrientation.Mode.FUSION);
         config_init();
-
-        // create a drawable object
-        drawable = new ShapeDrawable(new OvalShape());
-        drawable.getPaint().setColor(Color.BLUE);
         //testing
+
+        //drawable = new ShapeDrawable(new OvalShape());
+        //drawable.getPaint().setColor(Color.BLUE);
+        //
         canvas.drawColor(Color.WHITE);
         draw_layout();
+        //Update_Map();
     }
 
     public void registerSensorManagerListeners() {
@@ -267,6 +278,24 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         for(ShapeDrawable virtual_line : virtual_lines) {
             virtual_line.draw(canvas);
         }
+    }
+    private void Update_Map() {
+        handler =new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                update_map.performClick();
+                handler.postDelayed(this, redraw_interval);
+            }
+        };
+        handler.postDelayed(runnable, redraw_interval);
+    }
+    public void draw_particle_on_map(View v) {
+        System.out.println("fuck");
+        canvas.drawColor(Color.WHITE);
+        //p_test.get_drawable().draw(canvas);
+        draw_particles(p_list);
+        draw_layout();
     }
     /** @Brief: Initialize walls based on our layout 1m=100 pixel
      *  @Author: Yuan Fu (5215315)
@@ -452,10 +481,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         aZ = event.values[2];
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
 //        if (accData.size()<sampleSize){
-        sampling_done=false;
         if (currentTime - startTime < window){
 
             accData.add(mag);
+            sampling_done=false;
         }
         else{
             state = DetectWalk(accData);
@@ -463,6 +492,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             if (state == "walking") {
                 walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
                 distance = walkingTime * speed; // window内移动的距离
+
 //                System.out.println(walkingTime);
             }
             else {
@@ -476,15 +506,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     }
     @Override
     public  void onClick(View v) {
-        //double distance=0.1;
         switch (v.getId()) {
             case R.id.button: {
+                if(p_list.size()!=0) handler.removeCallbacks(runnable);
                 init_particles();
-                draw_particles(p_list);
-                // in the middle of the screen
-                //p_draw.setBounds(display_width/2-point_size, display_height/2-point_size, display_width/2+point_size, display_height/2+point_size);
-
-                //Toast.makeText(this,"Click",Toast.LENGTH_LONG).show();
+                Update_Map();
+                Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
             case R.id.move_drawable: {
@@ -494,14 +521,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 resample();
                 break;
             }
-
+//            case R.id.update_map: {
+//                draw_particle_on_map();
+//            }
         }
-        // textView2.setText("X: "+ d.format(p.get_x()) +"\nY: " +d.format(p.get_y()) + "\nOrient: " + d.format(azimuthValue));
-
-//        if(p.collision)
-//            Toast.makeText(this,"Hit wall",Toast.LENGTH_LONG).show();
-        // make the canvas all white and redraw
-        draw_particle_on_map();
     }
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
      *  @Author: Yuan Fu (5215315)
@@ -522,16 +545,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 fuseSensor.setMagnet(event.values);
                 break;
         }
-
         updateValue();
-    }
-
-
-    private void draw_particle_on_map() {
-        System.out.println("fuck");
-        canvas.drawColor(Color.WHITE);
-        draw_particles(p_list);
-        draw_layout();
     }
     /** @Brief: Up date the (fused)sensor value
      *  @Author: Yuan Fu (5215315)
@@ -543,16 +557,17 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         azimuthText.setText(d.format(azimuthValue));
         if(sampling_done && p_list.size()!=0) {
             textView2.setText(d.format(distance));
-            draw_particle_on_map();
+            distance=0.1;
             System.out.println(distance);
             for (Particle p : p_list) {
                 p.move(distance, (azimuthValue / 360) * 2 * Math.PI);
             }
             resample();
+            System.out.println("moving");
         }
-
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
 }
+
