@@ -1,17 +1,12 @@
 package com.example.app3;
 
-import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
-import android.graphics.DashPathEffect;
-import android.graphics.Paint;
 import android.graphics.Point;
-import android.graphics.Rect;
 import android.graphics.drawable.ShapeDrawable;
-import android.graphics.drawable.shapes.OvalShape;
 import android.graphics.drawable.shapes.RectShape;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -19,8 +14,6 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -37,15 +30,14 @@ import java.text.DecimalFormat;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
 
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
-    private Button button, move_drawable,update_map;
+    private Button button, move_drawable,pause;
     private TextView azimuthText, textView2;
+    private boolean is_pase;
     // Sensor related declarations
     private SensorManager sensorManager = null;
     private FuseOrientation fuseSensor = new FuseOrientation();
@@ -68,7 +60,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
     // Particle filter related declarations
-    private int num_particle;
     List<Particle> p_list = new ArrayList<>();
     private double x_range, y_range;
     // Map related declarations
@@ -84,11 +75,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int display_height;
     public static int center_x;
     public static int center_y;
-    public static int point_size = 8;
+    public static int point_size = 3;
     public static int pixelPerMeter = 80;
     public static double move_noise=0.05;
-    public static double orient_noise=3;
-    public static double resample_noise=0.2;
+    public static double orient_noise=10;
+    public static double resample_noise=0.1;
+    private int num_particle=1000;
    // private double inputAngle;
    // private double angleSum;
     //testing
@@ -101,8 +93,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         button.setOnClickListener(this);
         move_drawable = (Button) findViewById(R.id.move_drawable);
         move_drawable.setOnClickListener(this);
-        update_map = (Button) findViewById(R.id.update_map);
-        update_map.setOnClickListener(this);
+        pause = (Button) findViewById(R.id.Pause);
+        pause.setOnClickListener(this);
         azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
         // init sensors
@@ -143,7 +135,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private void config_init() {
         x_range = 20;
         y_range = 7; // in meters
-        num_particle = 200;
+        is_pase=false;
         //angleSum=0;
         //inputAngle=0;
         Display display = getWindowManager().getDefaultDisplay();
@@ -182,7 +174,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             p.set_attr(x, y, orient);
         }while(!check_in_room(x, y) || p.collision);
 
-        p.set_noise(move_noise, orient_noise, resample_noise);
+        //p.set_noise(move_noise, orient_noise, resample_noise);
 //        System.out.println("particle created");
 //        System.out.println("x: " +x+" y: "+y);
         return p;
@@ -234,7 +226,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             init_particles();
         }
         else {
-            System.out.println("dead "+dead_indeces);
+//            System.out.println("dead "+dead_indeces);
             // reborn the dead particles new alive particles
             SecureRandom r = new SecureRandom();
             int random_index;
@@ -278,7 +270,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      *  -                  -----
      */
     private void init_layout() {
-        int line_width=8;
+        int line_width=4;
         walls=new ArrayList<>();
         //horizontal lines
         ShapeDrawable d1 = new ShapeDrawable(new RectShape());
@@ -487,8 +479,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 resample();
                 break;
             }
-            case R.id.update_map: {
-                draw_particle_on_map();
+            case R.id.Pause: {
+                if(is_pase) {
+                    pause.setText("Pause");
+                    is_pase=false;
+                }else{
+                    pause.setText("Resume");
+                    is_pase=true;
+                }
+
             }
         }
     }
@@ -522,10 +521,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         //TODO: distance related
         azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
         azimuthText.setText("Angle: "+d.format(azimuthValue));
-        if(sampling_done && p_list.size()!=0) {
+
+        if(sampling_done && p_list.size()!=0 && !is_pase) {
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) +"\nAvg angle: " + d.format(azimuthValue));
             //distance=0.1;
-            System.out.println(distance);
+           // System.out.println(distance);
             for (Particle p : p_list) {
                 p.move(distance, azimuthValue);
             }

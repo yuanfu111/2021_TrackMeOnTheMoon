@@ -43,11 +43,11 @@ public class Particle {
         this.set_drawable();
         this.detect_collision();
     }
-    public void set_noise(double new_move_noise, double new_orient_noise,double new_resample_noise) {
-        this.move_noise=new_move_noise;
-        this.orient_noise=new_orient_noise;
-        this.resample_noise=new_resample_noise;
-    }
+//    public void set_noise(double new_move_noise, double new_orient_noise,double new_resample_noise) {
+//        this.move_noise=new_move_noise;
+//        this.orient_noise=new_orient_noise;
+//        this.resample_noise=new_resample_noise;
+//    }
     /** @Brief: Move the particle and reset the corresponding drawable
      *
      */
