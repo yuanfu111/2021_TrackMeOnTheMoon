@@ -1,5 +1,6 @@
 package com.example.app3;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.content.Context;
 import android.graphics.Bitmap;
@@ -19,14 +20,18 @@ import android.hardware.SensorManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
+import android.os.Looper;
 import android.view.Display;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.RequiresApi;
+import androidx.constraintlayout.widget.ConstraintLayout;
+
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.time.Clock;
@@ -73,9 +78,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private Canvas canvas;
     private List<ShapeDrawable> virtual_lines;
     public static List<ShapeDrawable> walls;
-    private Handler handler ;
-    private Runnable runnable;//redraw the map repeatedly
-    private int redraw_interval=1000;
+    myView v;
+   // private int redraw_interval=1000;
     // some global variables
     public static int display_width;
     public static int display_height;
@@ -88,28 +92,17 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static double resample_noise=1;
 
     //testing
-    private Particle p_test;
-    public static int x;
-    public static int y;
-    private Timer timer = new Timer();
-    //AnimatedView animatedView = null;
-
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //animatedView = new AnimatedView(this);
-
-        //setContentView(animatedView);
 
         button = (Button) findViewById(R.id.button);
         button.setOnClickListener(this);
         move_drawable = (Button) findViewById(R.id.move_drawable);
         move_drawable.setOnClickListener(this);
         update_map = (Button) findViewById(R.id.update_map);
-        //update_map.setOnClickListener(this);
-
+        update_map.setOnClickListener(this);
         azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
         // init sensors
@@ -118,13 +111,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         fuseSensor.setMode(FuseOrientation.Mode.FUSION);
         config_init();
         //testing
-
-        //drawable = new ShapeDrawable(new OvalShape());
-        //drawable.getPaint().setColor(Color.BLUE);
-        //
-        canvas.drawColor(Color.WHITE);
-        draw_layout();
-        //Update_Map();
     }
 
     public void registerSensorManagerListeners() {
@@ -149,11 +135,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         sensorManager.unregisterListener(this);
     }
 
-    // Init some global values
+    /**
+     * @Brief: Initialize some global variables, create a customized view class and add it to the layout
+     * @Author: Yuan Fu (5215315)
+     * @Return: None
+     */
     private void config_init() {
         x_range = 20;
         y_range = 7; // in meters
-        num_particle = 2;
+        num_particle = 200;
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -166,10 +156,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         canvas = new Canvas(blankBitmap);
         canvasView.setImageBitmap(blankBitmap);
         init_layout();
-        draw_layout();
         sampling_done=false;
+        ConstraintLayout canvas_layout=(ConstraintLayout)findViewById(R.id.canvas_layout);
+        ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.FILL_PARENT);
+        v = new myView(this);
+        v.setLayoutParams(lp);
+        canvas_layout.addView(v);
     }
-
     /**
      * @Brief: Create particles randomly in a restricted range
      * @Author: Yuan Fu (5215315)
@@ -177,7 +170,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      */
     private Particle create_particle() {
         SecureRandom r = new SecureRandom();
-        //Random r = new Random(System.currentTimeMillis());
         double x, y, orient;
         orient = 2 * Math.PI * r.nextDouble();
         Particle p = new Particle();
@@ -193,10 +185,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //        System.out.println("x: " +x+" y: "+y);
         return p;
     }
-
     /** @Brief: Check if the coordinate is within the rooms of the layout
      *  @Author: Yuan Fu (5215315)
-     *  @Param: x,y
+     *  @Param: x,y coordinates
      *  @Return: false if out of range
      */
     public static boolean check_in_room(double x, double y) {
@@ -215,11 +206,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             return false;
         }
         return true;
-    }
-    private void draw_particles(List<Particle> list) {
-        for(Particle p : list) {
-            p.get_drawable().draw(canvas);
-        }
     }
     private void init_particles() {
         p_list.clear();
@@ -272,30 +258,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
         }
     }
-    private void draw_layout() {
-        for(ShapeDrawable wall : walls)
-            wall.draw(canvas);
-        for(ShapeDrawable virtual_line : virtual_lines) {
-            virtual_line.draw(canvas);
-        }
-    }
-    private void Update_Map() {
-        handler =new Handler();
-        runnable = new Runnable() {
-            @Override
-            public void run() {
-                update_map.performClick();
-                handler.postDelayed(this, redraw_interval);
-            }
-        };
-        handler.postDelayed(runnable, redraw_interval);
-    }
-    public void draw_particle_on_map(View v) {
-        System.out.println("fuck");
-        canvas.drawColor(Color.WHITE);
-        //p_test.get_drawable().draw(canvas);
-        draw_particles(p_list);
-        draw_layout();
+    private void draw_particle_on_map() {
+        v.invalidate();
     }
     /** @Brief: Initialize walls based on our layout 1m=100 pixel
      *  @Author: Yuan Fu (5215315)
@@ -359,7 +323,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         ShapeDrawable d10 = new ShapeDrawable(new RectShape());
         d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3),
                 center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
-
 
         ShapeDrawable d11 = new ShapeDrawable(new RectShape());
         d11.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.5),center_y-(int)(pixelPerMeter*2.5),
@@ -491,8 +454,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             sampling_done=true;
             if (state == "walking") {
                 walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
-                distance = walkingTime * speed; // window内移动的距离
-
+                //distance = walkingTime * speed; // window内移动的距离
+                distance=0.2;
 //                System.out.println(walkingTime);
             }
             else {
@@ -508,9 +471,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public  void onClick(View v) {
         switch (v.getId()) {
             case R.id.button: {
-                if(p_list.size()!=0) handler.removeCallbacks(runnable);
                 init_particles();
-                Update_Map();
+                draw_particle_on_map();
                 Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
@@ -521,9 +483,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 resample();
                 break;
             }
-//            case R.id.update_map: {
-//                draw_particle_on_map();
-//            }
+            case R.id.update_map: {
+                draw_particle_on_map();
+            }
         }
     }
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
@@ -547,27 +509,53 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         updateValue();
     }
-    /** @Brief: Up date the (fused)sensor value
+    /** @Brief: Up date the (fused)sensor value move the particles and redraw the
+     *          map when distance sampling is done
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
      */
     public void updateValue() {
         //TODO: distance related
         azimuthValue = (fuseSensor.getAzimuth()+360)%360;
-        azimuthText.setText(d.format(azimuthValue));
+        azimuthText.setText("Angle: "+d.format(azimuthValue));
         if(sampling_done && p_list.size()!=0) {
-            textView2.setText(d.format(distance));
-            distance=0.1;
+            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance));
+            //distance=0.1;
             System.out.println(distance);
             for (Particle p : p_list) {
                 p.move(distance, (azimuthValue / 360) * 2 * Math.PI);
             }
             resample();
+            draw_particle_on_map();
             System.out.println("moving");
         }
     }
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+    /** @Brief: Customized view class for drawing the map
+     *  @Author: Yuan Fu (5215315)
+     */
+    public class myView extends View {
+        public myView(Context context) {
+            super(context);
+        }
+        @Override
+        public void onDraw(final Canvas canvas) {
+            super.onDraw(canvas);  //IMPORTANT to draw the background
+            for(ShapeDrawable wall:walls) {
+                wall.draw(canvas);
+            }
+            for(ShapeDrawable virtual_line:virtual_lines) {
+                virtual_line.draw(canvas);
+            }
+            if(p_list.size()!=0) {
+                for (Particle p : p_list) {
+                    p.get_drawable().draw(canvas);
+                }
+            }
+        }
+
     }
 }
 
