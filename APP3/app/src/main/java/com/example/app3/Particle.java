@@ -117,7 +117,6 @@ public class Particle {
                 break; // break to save some time
             }
         }
-
-
     }
+
 }

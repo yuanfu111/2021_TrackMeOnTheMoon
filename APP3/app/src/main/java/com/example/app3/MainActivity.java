@@ -86,10 +86,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int center_x;
     public static int center_y;
     public static int point_size = 10;
-    public static int pixelPerMeter = 100;
-    public static double move_noise;
-    public static double orient_noise;
-    public static double resample_noise=1;
+    public static int pixelPerMeter = 100; // To be modified
+    public static double move_noise; // To be modified
+    public static double orient_noise; // To be modified
+    public static double resample_noise=1; // To be modified
 
     //testing
     @Override
@@ -191,7 +191,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      *  @Return: false if out of range
      */
     public static boolean check_in_room(double x, double y) {
-        if(x<-10 || x>10 || y<-3.5 || y>3.5)
+        if(x<-10 || x>10 || y<-3.5 || y>3.5) // Room size to be modified
             return false;
         // the bottom left part
         if(x<-1.5 && 2.5>y) {
@@ -455,7 +455,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             if (state == "walking") {
                 walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
                 //distance = walkingTime * speed; // window内移动的距离
-                distance=0.2;
+                distance=0.2; // To be modified
 //                System.out.println(walkingTime);
             }
             else {
