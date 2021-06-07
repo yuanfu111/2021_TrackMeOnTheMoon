@@ -44,18 +44,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Orientation related declarations
     private double azimuthValue;
     private DecimalFormat d = new DecimalFormat("#.###");
-
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
     private double walk_threshold = 15; // Threshold for determining walking; personal
     private ArrayList<Double> accData = new ArrayList<>();
     private int sampleCount = 0;
-    private int window = 500; // 1000ms
     private long startTime=0, currentTime = 0;
     private double walkingTime;
     private double distance;
-    private double speed = 0.4; // Yujin's walking speed is 1.5m/s
     private boolean sampling_done;
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
@@ -70,20 +67,22 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     myView v;
    // private int redraw_interval=1000;
     // some global variables
-    private int offset=20;
+    private int offset=15;
     public static int display_width;
     public static int display_height;
     public static int center_x;
     public static int center_y;
     public static int point_size = 3;
-    public static int pixelPerMeter = 80;
+    public static int pixelPerMeter = 85;
     public static double move_noise=0.05;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
     private int num_particle=1000;
+    private double speed = 0.4; // Yujin's walking speed is 1.5m/s
+    private int window = 500; // 1000ms
    // private double inputAngle;
    // private double angleSum;
-    //testing
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
