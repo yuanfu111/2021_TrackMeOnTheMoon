@@ -242,6 +242,13 @@
         android:gravity="center|center_vertical"
         android:orientation="horizontal">
 
+        <TextView
+            android:id="@+id/textView3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="TextView" />
+
         <Button
             android:id="@+id/Initial_belief"
             android:layout_width="wrap_content"
@@ -272,10 +279,18 @@
             android:id="@+id/save_test"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
             android:layout_weight="1"
             android:onClick="saveTest"
-            android:text="save_test"
-            android:layout_marginLeft="30dp"/>
+            android:text="save_test" />
+
+        <Button
+            android:id="@+id/move"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:onClick="start_move"
+            android:text="Start move" />
     </LinearLayout>
 
 </LinearLayout>

@@ -14,12 +14,16 @@ import android.hardware.SensorManager;
 
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
+
+import androidx.annotation.RequiresApi;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -30,12 +34,15 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.text.DecimalFormat;
+import java.time.Clock;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
+import java.util.zip.DataFormatException;
 
+@RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
     private WifiManager wifiManager;
@@ -44,37 +51,59 @@ public class MainActivity extends Activity implements SensorEventListener {
     private List<ScanResult> scan_results =new ArrayList<>();
     private int numTables;
     private List<List<List<Float>>> mac_tables = new ArrayList<List<List<Float>>>();
+    private List<Float[][]> trans_mtrixs =new ArrayList<>();
     private int numCells = 9;
     private Float[] prior_serial = new Float[numCells];
     private Float[] posterior_serial = new Float[numCells];
     private int prediction;
     private List<String> scanned_MACs = new ArrayList<String>();
     private List<Integer> scanned_RSS = new ArrayList<Integer>();
-    private TextView CellA, CellB, CellC, CellD, CellE, CellF, CellG, CellH, CellI, target;
+    private TextView CellA, CellB, CellC, CellD, CellE, CellF, CellG, CellH, CellI, target,textView3;
     private List<String> chosen_macs = new ArrayList<String>();
     private Drawable drawable_orange, drawable_white;
     private List<List<Integer>> online_test = new ArrayList<>();
     //for offline testing
     private List<List<Integer>> testing_sample = new ArrayList<>();
     private List<Integer> testing_target = new ArrayList<>();
+    private boolean move_pause;
+    private FuseOrientation fuseSensor = new FuseOrientation();
+    private double azimuthValue;
+    private int offset=0;
+    private double distance;
+    private DecimalFormat d = new DecimalFormat("#");
+    String dir;
+    private double aX=0, aY=0, aZ=0, mag=0;
+    private String state = "idle"; // Walking or idle
+    private double walk_threshold = 15; // Threshold for determining walking; personal
+    private ArrayList<Double> accData = new ArrayList<>();
+    private int sampleCount = 0;
+    private long startTime=0, currentTime = 0;
+    private double walkingTime;
+    private boolean sampling_done;
+    private Clock clock = Clock.systemDefaultZone();
+    private int window = 1000; // 1000ms
+    private double speed = 1; // Yujin's walking speed is 1.5m/s
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         target = (TextView) findViewById(R.id.target);
+        textView3=(TextView) findViewById(R.id.textView3);
         CellA = (TextView)findViewById(R.id.CellA);
         CellB = (TextView)findViewById(R.id.CellB);
         CellC = (TextView)findViewById(R.id.CellC);
         CellD = (TextView)findViewById(R.id.CellD);
-        CellE = (TextView)findViewById(R.id.CellF);
-        CellF = (TextView)findViewById(R.id.CellG);
-        CellG = (TextView)findViewById(R.id.CellH);
-        CellH = (TextView)findViewById(R.id.CellI);
-        CellI = (TextView)findViewById(R.id.CellE);
+        CellE = (TextView)findViewById(R.id.CellE);
+        CellF = (TextView)findViewById(R.id.CellF);
+        CellG = (TextView)findViewById(R.id.CellG);
+        CellH = (TextView)findViewById(R.id.CellH);
+        CellI = (TextView)findViewById(R.id.CellI);
         drawable_orange = getResources().getDrawable(R.drawable.rectangle_orange);
         drawable_white = getResources().getDrawable(R.drawable.rectangle);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         loadData(false);
+        move_pause=true;
+        dir="None";
         //Toast.makeText(this,"Initializing..please wait",Toast.LENGTH_LONG).show();
         wifiManager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 
@@ -82,12 +111,28 @@ public class MainActivity extends Activity implements SensorEventListener {
             Toast.makeText(this, "WiFi is disabled ... We need to enable it", Toast.LENGTH_LONG).show();
             wifiManager.setWifiEnabled(true);
         }
-
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        fuseSensor.setMode(FuseOrientation.Mode.FUSION);
     }
-
     protected void onResume() {
         super.onResume();
-
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
+                SensorManager.SENSOR_DELAY_FASTEST);
+        sensorManager.registerListener(this,
+                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
+                SensorManager.SENSOR_DELAY_FASTEST);
     }
     protected void onPause() {
         super.onPause();
@@ -96,11 +141,83 @@ public class MainActivity extends Activity implements SensorEventListener {
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
+    private void get_distance(SensorEvent event) {
+        if (sampleCount == 0) {
+            sampleCount++;
+            startTime = clock.millis();
+            currentTime = startTime;
+//            System.out.println("startTime: " + startTime);
+        }else{
+            sampleCount++;
+            currentTime = clock.millis();
+//            System.out.println("currentTime: " + currentTime);
+        }
+        aX = event.values[0];
+        aY = event.values[1];
+        aZ = event.values[2];
+        mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
+//        if (accData.size()<sampleSize){
+        // angleSum+=azimuthValue;
+        if (currentTime - startTime < window){
+            accData.add(mag);
+            sampling_done=false;
+            //inputAngle=angleSum/sampleCount;
+
+        }
+        else{
+            state = DetectWalk(accData);
+            sampling_done=true;
+            //angleSum=0;
+            if (state == "walking") {
+                walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
+                distance = walkingTime * speed; // window内移动的距离
+                //distance=0.2;
+//                System.out.println(walkingTime);
+            }
+            else {
+                distance=0;
+            }
+//            System.out.println("Current state: " + state);
+            accData.clear();
+//            System.out.println("Samples in 1s: " + sampleCount);
+            sampleCount = 0;
+        }
+    }
     @Override
     public void onSensorChanged(SensorEvent event) {
-        //activity.setText("0.0");
-        //get the the x,y,z values of the accelerometer
+        switch (event.sensor.getType()) {
+            case Sensor.TYPE_ACCELEROMETER:
+                fuseSensor.setAccel(event.values);
+                fuseSensor.calculateAccMagOrientation();
+                get_distance(event);
+                break;
+            case Sensor.TYPE_GYROSCOPE:
+                fuseSensor.gyroFunction(event);
+                break;
+            case Sensor.TYPE_MAGNETIC_FIELD:
+                fuseSensor.setMagnet(event.values);
+                break;
+        }
+        azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
+        if(sampling_done && !move_pause) {
+            if(distance>speed*1) {
+                if(azimuthValue<45 ||azimuthValue>=315) {
+                    dir="up";
+                }
+                if(45<=azimuthValue &&azimuthValue<135) {
+                    dir="right";
+                }
+                if(135<=azimuthValue&&azimuthValue<225) {
+                    dir="down";
+                }
+                if(225<=azimuthValue&&azimuthValue<315) {
+                    dir="left";
+                }
+            }
+        }
+        textView3.setText(d.format(azimuthValue) +" "+dir);
     }
+
     //Load the local training data
     private void loadData(boolean offtest) {
         InputStream in1 = this.getResources().openRawResource(R.raw.macs);
@@ -161,14 +278,72 @@ public class MainActivity extends Activity implements SensorEventListener {
                         }
                         testing_sample.add(sample_split);
                     }
-                    reader4.close();
-                    //System.out.println(testing_sample);
-                    Log.d("success", "Testing Loaded");
                 }
+                String[] motion_id = new String[4];
+                motion_id[0]="motionup";
+                motion_id[1]="motiondown";
+                motion_id[2]="motionleft";
+                motion_id[3]="motionright";
+                for (int i = 0; i < 4; i++) {
+                    int k = getResources().getIdentifier(motion_id[i], "raw", getPackageName());
+                    InputStream in5 = this.getResources().openRawResource(k);
+                    BufferedReader reader5 = new BufferedReader(new InputStreamReader(in5));
+                    Float[][] trans_mtrix = new Float[numCells][numCells];
+                    int n=0;
+                    while ((line = reader5.readLine()) != null) {
+                        String[] line_split = line.split("\\s+");
+                        //get rid of the first element which is ""
+                        for (int j = 1; j < line_split.length; j++) {
+                            trans_mtrix[n][j-1]=Float.parseFloat(line_split[j]);
+                        }
+                        n++;
+                    }
+                    trans_mtrixs.add(trans_mtrix);
+                    reader5.close();
+                }
+                //System.out.println(testing_sample);
+                Log.d("success", "transition_matrix loaded");
+
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+    private String DetectWalk(ArrayList<Double> accData){
+        String state = "idle";
+        double[] results = autocorrelation(accData);
+//        for (int i=0; i<results.length; ++i) {
+//            System.out.println("Result" + i + ": " + results[i]);
+//        }
+        // Find the maximum of autocorrelation results
+        double max = results[0];
+        for (int i=1; i<results.length; ++i) {
+            if (results[i] > max) {
+                max = results[i];
+//                System.out.println("Max correlation: " + max);
+            }
+        }
+        if (max > walk_threshold) {
+            state = "walking";
+        }
+        return state;
+    }
+    // Brute force autocorrelation
+    private double[] autocorrelation(ArrayList<Double> accData){
+        double sum = 0;
+        for (int i=0; i<accData.size(); ++i) {
+            sum += accData.get(i);
+        }
+        double avg = sum/accData.size();
+        double[] results = new double[accData.size()];
+        for (int i=0; i<accData.size(); ++i){
+            results[i] = 0; // i: lag
+            for (int j=0; j<accData.size(); ++j){
+                results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
+            }
+        }
+//        save2file(results);
+        return results;
     }
     private void enableView(View v, boolean b) {
         if (b == true) {
@@ -226,15 +401,27 @@ public class MainActivity extends Activity implements SensorEventListener {
         System.out.println("Sample size: "+testing_sample.size()+"\nCorrect prediction: "+count+"\nAccuracy: "+accuracy);
         System.out.println(online_test);
     }
+    public void start_move(View v) {
+        Button btn=(Button)v;
+        move_pause=!move_pause;
+        if(move_pause==false) {
+            btn.setText("Pause move");
+        } else {
+            btn.setText("Start move");
+            move(dir);
+
+        }
+    }
+
     public void locate_me(View v) {
 
 //        List<String> scaned_mac=new ArrayList<>();
 //        List<Integer> scaned_rss=new ArrayList<>();
 //
-//        scaned_mac.add("28:d1:27:d8:0c:3e");
-//        scaned_mac.add("c0:a0:bb:e9:87:85");
-//        scaned_mac.add("c0:a0:bb:e9:87:87");//this one does not show in tha mac table. We need to clean it
-//        scaned_mac.add("28:d1:27:d8:0c:3f");
+//        scaned_mac.add("00:4a:77:6a:6f:2f");
+//        scaned_mac.add("00:5a:13:74:59:10");
+//        scaned_mac.add("08:26:97:e7:a0:d1");//this one does not show in tha mac table. We need to clean it
+//        scaned_mac.add("48:f8:b3:25:4f:6c");
 //        scaned_mac.add("68:ff:7b:a9:67:94");
 //        scaned_mac.add("34:e8:94:bd:dd:d3");
 //        scaned_mac.add("34:e8:94:bd:dd:d4");
@@ -245,8 +432,8 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scaned_mac.add("58:8b:f3:4e:cc:e4");
 //        scaned_mac.add("08:26:97:e3:2c:81");
 //        scaned_mac.add("82:2a:a8:11:e2:3f");
-//        scaned_mac.add("0a:26:97:e3:2c:81");
-//        scaned_rss.add(-45);
+//        scaned_mac.add("00:4a:77:6a:6f:2f");
+//        scaned_rss.add(-44);
 //        scaned_rss.add(-45);
 //        scaned_rss.add(-47);
 //        scaned_rss.add(-49);
@@ -263,15 +450,18 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scaned_rss.add(-78);
 //        scanned_MACs=scaned_mac;
 //        scanned_RSS=scaned_rss;
-          scanWifi();
-          //execute_serial_filtering();
+          if(move_pause) {
+              scanWifi();
+              dir="None";
+          }
+
+
+        //execute_serial_filtering();
        // offline_test();
     }
     private void execute_serial_filtering() {
         Toast.makeText(this, "serial", Toast.LENGTH_SHORT).show();
         Integer[] sorted_indexes = sort(scanned_RSS);
-        for (int index : sorted_indexes)
-            System.out.println(scanned_RSS.get(index));
         int max_serial_itr = 5;
         if(max_serial_itr>scanned_RSS.size())
         {
@@ -281,7 +471,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             System.out.println("Iteration: " + (i + 1));
             System.out.println("Scanned MACs: " + scanned_MACs.get(sorted_indexes[i]));
             System.out.println("Scanned RSS: " + scanned_RSS.get(sorted_indexes[i]));
-            posterior_serial = sense_serial(prior_serial, scanned_MACs.get(sorted_indexes[i]), scanned_RSS.get(sorted_indexes[i]));
+            posterior_serial = sense_serial(prior_serial, scanned_MACs.get(sorted_indexes[0]), scanned_RSS.get(sorted_indexes[0]));
+
             if (check_steady_state()) {
                 Toast.makeText(this, "Steady State reached", Toast.LENGTH_SHORT).show();
                 System.out.println("Steady State reached");
@@ -292,11 +483,9 @@ public class MainActivity extends Activity implements SensorEventListener {
                 Toast.makeText(this, "max interation reached", Toast.LENGTH_SHORT).show();
             }
         }
+
         prediction = getMaxIndex(posterior_serial);
-        System.out.println(prediction);
-
-
-
+        //System.out.println(prediction);
         show_result(prediction,true);
     }
     private void show_result(int prediction,boolean serial){
@@ -365,6 +554,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     {
         Float[] inital_prior=new Float[]{1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f};
         prior_serial=inital_prior;
+        posterior_serial=inital_prior;
         resetBg();
         update_prior_txt();
     }
@@ -385,6 +575,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         Float[] inital_prior=new Float[]{1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f};
         resetBg();
         prior_serial=inital_prior;
+
     }
 
     private boolean check_steady_state(){
@@ -392,6 +583,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         //if any big change happens, we should keep the iteration
         for(int i=0;i<prior_serial.length;i++)
         {
+            System.out.println(posterior_serial[i]);
             if(prior_serial[i]==0 || posterior_serial[i]==0) continue;
             float change_rate=Math.abs(prior_serial[i]-posterior_serial[i])/prior_serial[i];
             System.out.println("change rate: "+change_rate);
@@ -432,6 +624,39 @@ public class MainActivity extends Activity implements SensorEventListener {
     public void updata_serial_prior(){
         prior_serial=posterior_serial;
     }
+    private void move(String orientation) {
+        Float[][] transition_matrx = new Float[numCells][numCells];
+        boolean move=true;
+        switch (orientation) {
+            case "up":
+                transition_matrx = trans_mtrixs.get(0);
+                break;
+            case "down":
+                transition_matrx = trans_mtrixs.get(1);
+                break;
+            case "left":
+                transition_matrx = trans_mtrixs.get(2);
+                break;
+            case "right":
+                transition_matrx = trans_mtrixs.get(3);
+                break;
+            default://no movement scanning
+                move=false;
+        }
+        if(move==true) {
+            // matrix multiplication
+            Float[] prior = new Float[]{0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f, 0f};
+
+            for (int col = 0; col < numCells; col++) {
+                for (int row = 0; row < numCells; row++) {
+                    prior[col] += prior_serial[row] * transition_matrx[row][col];
+                }
+            }
+            prior_serial=prior;
+        }
+        prediction=getMaxIndex(prior_serial);
+        show_result(prediction,true);
+    }
     public Float[] sense_serial(Float[] prior,String rss_mac,Integer rss)
     {
         Float[] posterior=new Float[numCells];
@@ -458,22 +683,16 @@ public class MainActivity extends Activity implements SensorEventListener {
                 System.out.println("table:"+index_table+" col: "+column+" "+mac_tables.get(index_table).get(i).get(column));
 
             }
-            //System.out.println("Poster "+posterior[i]);
-            //System.out.println("sum "+sum);
         }
-
         //normalization
         if(sum==0)
             sum =0.0000001f;
         for(int i=0;i<numCells;i++)
         {
             posterior[i]/=sum;
+
         }
 
-        // for(int i=0;i<numCells;i++)
-        // {
-        //     System.out.println(posterior[i]);
-        // }
         return posterior;
     }
     private int getMaxIndex(Float[] arr) {
@@ -494,7 +713,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
         return minIndex;
     }
-
     private int sense_parallel(List<Float[]> prior_parallel,List<String> rss_mac, List<Integer> rss){
         int num_mac=rss_mac.size();
 
@@ -504,13 +722,6 @@ public class MainActivity extends Activity implements SensorEventListener {
             //update the prior
             prior_parallel.set(i,sense_serial(prior,rss_mac.get(i),rss.get(i)));
         }
-
-        // for(int i=0;i<num_mac;i++)
-        // {   System.out.println("mac"+i);
-        //     for(int j=0;j<numCells;j++){
-        //         System.out.println((prior_parallel.get(i))[j]);
-        //     }
-        // }
         //Majority vote
         int[] vote=new int[numCells];
         for(int i=0;i<num_mac;i++){
@@ -519,25 +730,6 @@ public class MainActivity extends Activity implements SensorEventListener {
         }
         return getMaxIndex(vote);
     }
-
-//    private int[] sort_MACs (List<Integer> rss_values) {
-//        int[] ranks = new int[rss_values.size()];
-//        Arrays.fill(ranks, -101);
-//        List<Integer> rss_temp = new ArrayList<>();
-//        for (int i=0; i<rss_values.size(); ++i) {
-//            rss_temp.add(rss_values.get(i));
-//        }
-//        // 1. Find the max value, obtain index_max
-//        // 2. Update ranks[index_max]
-//        // 3. Set the current max value to -101f, go back to step 1
-//        for (int i=0; i<rss_values.size(); ++i) {
-//            Integer max = Collections.max(rss_temp);
-//            int index_max = rss_temp.indexOf(max);
-//            ranks[index_max] = i;
-//            rss_temp.set(index_max, -101);
-//        }
-//        return ranks;
-//    }
 
     private Integer[] sort(List<Integer> input)
     {
