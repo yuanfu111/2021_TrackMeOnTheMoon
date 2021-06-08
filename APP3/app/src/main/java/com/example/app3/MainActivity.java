@@ -86,10 +86,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int center_x;
     public static int center_y;
     public static int point_size = 10;
-    public static int pixelPerMeter = 100; // To be modified
-    public static double move_noise; // To be modified
-    public static double orient_noise; // To be modified
-    public static double resample_noise=1; // To be modified
+    public static int pixelPerMeter = 85;
+    public static double move_noise;
+    public static double orient_noise;
+    public static double resample_noise=1;
 
     //testing
     @Override
@@ -185,24 +185,25 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //        System.out.println("x: " +x+" y: "+y);
         return p;
     }
+
     /** @Brief: Check if the coordinate is within the rooms of the layout
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315). Modified by Yujin
      *  @Param: x,y coordinates
      *  @Return: false if out of range
      */
     public static boolean check_in_room(double x, double y) {
-        if(x<-10 || x>10 || y<-3.5 || y>3.5) // Room size to be modified
+        if(x<-10.9 || x>10.9 || y<-3.5 || y>3.5)
             return false;
         // the bottom left part
-        if(x<-1.5 && 2.5>y) {
+        if(x<-2.8 && y<2.5) {
             return false;
         }
         // the bottom middle part
-        if(2<x && -2.5>y) {
+        if((2.8<x && x<5.49 && y<-3.5) || (x>5.49 && x<9.72 && y<-2.15)) {
             return false;
         }
         // the bottom right part
-        if(6.5<x  && 2.5>y) {
+        if(9.72<x  && y<2.5) {
             return false;
         }
         return true;
@@ -262,7 +263,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         v.invalidate();
     }
     /** @Brief: Initialize walls based on our layout 1m=100 pixel
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315). Modified by Yujin.
      *  @Return: None
      *  -------------------------------------------
      *  -         -          -          -         -
@@ -276,79 +277,79 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      *  -                  -----
      */
     private void init_layout() {
-        int line_width=8;
+        int line_width=4;
         walls=new ArrayList<>();
         //horizontal lines
         ShapeDrawable d1 = new ShapeDrawable(new RectShape());
-        d1.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*3.5),
-                center_x+pixelPerMeter*10,center_y+line_width/2-(int)(pixelPerMeter*3.5));
+        d1.setBounds(center_x-(int)(pixelPerMeter*10.9),center_y-line_width/2-(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*10.9),center_y+line_width/2-(int)(pixelPerMeter*3.5));
 
         // door related
         ShapeDrawable d2 = new ShapeDrawable(new RectShape());
-        d2.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*2),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+        d2.setBounds(center_x-(int)(pixelPerMeter*10.9),center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*4.54),center_y+line_width/2-(int)(pixelPerMeter*2.5));
         // door related
         ShapeDrawable d3 = new ShapeDrawable(new RectShape());
-        d3.setBounds(center_x+pixelPerMeter*3,center_y-line_width/2-(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*10),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+        d3.setBounds(center_x+(int)(pixelPerMeter*5.39),center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*10.9),center_y+line_width/2-(int)(pixelPerMeter*2.5));
 
         ShapeDrawable d4 = new ShapeDrawable(new RectShape());
-        d4.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*0.5),
-                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*0.5));
+        d4.setBounds(center_x+(int)(pixelPerMeter*2.8),center_y-line_width/2+(int)(pixelPerMeter*0.5),
+                center_x+(int)(pixelPerMeter*4.42),center_y+line_width/2+(int)(pixelPerMeter*0.5));
 
         ShapeDrawable d5 = new ShapeDrawable(new RectShape());
-        d5.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
-                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*3.5));
+        d5.setBounds(center_x+(int)(pixelPerMeter*2.8),center_y-line_width/2+(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*5.49),center_y+line_width/2+(int)(pixelPerMeter*3.5));
 
         ShapeDrawable d6 = new ShapeDrawable(new RectShape());
-        d6.setBounds(center_x+(int)(pixelPerMeter*2),center_y-line_width/2+(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*6.5),center_y+line_width/2+(int)(pixelPerMeter*2.5));
+        d6.setBounds(center_x+(int)(pixelPerMeter*5.49),center_y-line_width/2+(int)(pixelPerMeter*2.15),
+                center_x+(int)(pixelPerMeter*9.72),center_y+line_width/2+(int)(pixelPerMeter*2.15));
 
-        //vetical lines
+        //vertical lines
         ShapeDrawable d7 = new ShapeDrawable(new RectShape());
-        d7.setBounds(center_x-line_width/2-(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2-(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+        d7.setBounds(center_x-line_width/2+(int)(pixelPerMeter*2.8),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*2.8),center_y+(int)(pixelPerMeter*3.5));
 
         // door related
         ShapeDrawable d8 = new ShapeDrawable(new RectShape());
-        d8.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*1.5));
+        d8.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.42),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*4.42),center_y-(int)(pixelPerMeter*1.13));
 
         // door related
         ShapeDrawable d9 = new ShapeDrawable(new RectShape());
-        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*0.5),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*2));
+        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.42),center_y-(int)(pixelPerMeter*0.3),
+                center_x+line_width/2+(int)(pixelPerMeter*4.42),center_y+(int)(pixelPerMeter*2.38));
 
         // door related
         ShapeDrawable d10 = new ShapeDrawable(new RectShape());
-        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.42),center_y+(int)(pixelPerMeter*3.11),
+                center_x+line_width/2+(int)(pixelPerMeter*4.42),center_y+(int)(pixelPerMeter*3.5));
 
         ShapeDrawable d11 = new ShapeDrawable(new RectShape());
-        d11.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*4.5),center_y+(int)(pixelPerMeter*1.5));
+        d11.setBounds(center_x-line_width/2+(int)(pixelPerMeter*7.49),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*7.49),center_y+(int)(pixelPerMeter*1.35));
 
         ShapeDrawable d12 = new ShapeDrawable(new RectShape());
-        d12.setBounds(center_x-line_width/2+(int)(pixelPerMeter*6.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*6.5),center_y+(int)(pixelPerMeter*2.5));
+        d12.setBounds(center_x-line_width/2+(int)(pixelPerMeter*9.72),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*9.72),center_y+(int)(pixelPerMeter*2.15));
 
         ShapeDrawable d13 = new ShapeDrawable(new RectShape());
-        d13.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+        d13.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2-(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*2.5));
 
         ShapeDrawable d14 = new ShapeDrawable(new RectShape());
-        d14.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+        d14.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2+(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*2.5));
 
-        // additional bottom two lines
-        // horizontal
+        // Additional vertical lines
         ShapeDrawable d15 = new ShapeDrawable(new RectShape());
-        d15.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
-                center_x+(int)(pixelPerMeter*2),center_y+line_width/2+(int)(pixelPerMeter*3.5));
-        //vetical
+        d15.setBounds(center_x-line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*1.13));
+
         ShapeDrawable d16 = new ShapeDrawable(new RectShape());
-        d16.setBounds(center_x-line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*3.5));
+        d16.setBounds(center_x-line_width/2+(int)(pixelPerMeter*5.49),center_y+(int)(pixelPerMeter*2.15),
+                center_x+line_width/2+(int)(pixelPerMeter*5.49),center_y+(int)(pixelPerMeter*3.5));
+
         walls.add(d1);
         walls.add(d2);
         walls.add(d3);
@@ -365,11 +366,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         walls.add(d14);
         walls.add(d15);
         walls.add(d16);
+
         // virtual lines
         virtual_lines=new ArrayList<>();
         ShapeDrawable l1 = new ShapeDrawable(new RectShape());
-        l1.setBounds(center_x-line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l1.setBounds(center_x-line_width/4-(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4-(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*2.5));
         l1.getPaint().setColor(Color.GRAY);
 
         ShapeDrawable l2 = new ShapeDrawable(new RectShape());
@@ -378,13 +380,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         l2.getPaint().setColor(Color.GRAY);
 
         ShapeDrawable l3 = new ShapeDrawable(new RectShape());
-        l3.setBounds(center_x-line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l3.setBounds(center_x-line_width/4+(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4+(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*2.5));
         l3.getPaint().setColor(Color.GRAY);
 
         ShapeDrawable l4 = new ShapeDrawable(new RectShape());
-        l4.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/4-(int)(pixelPerMeter*0),
-                center_x+(int)(pixelPerMeter*4.5),center_y+line_width/4-(int)(pixelPerMeter*0));
+        l4.setBounds(center_x+(int)(pixelPerMeter*4.42),center_y-line_width/4-(int)(pixelPerMeter*0.15),
+                center_x+(int)(pixelPerMeter*7.49),center_y+line_width/4-(int)(pixelPerMeter*0.15));
         l4.getPaint().setColor(Color.GRAY);
 
         virtual_lines.add(l1);
@@ -392,6 +394,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         virtual_lines.add(l3);
         virtual_lines.add(l4);
     }
+
+    /** @Brief: Detect if the person is walking using autocorrelation
+     *  @Author: Yujin
+     *  @Return: current state
+     */
     private String DetectWalk(ArrayList<Double> accData){
         String state = "idle";
         double[] results = autocorrelation(accData);
@@ -411,6 +418,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         return state;
     }
+
+    /** @Brief: Calculate the autocorrelation of magnitudes
+     *  @Author: Yujin
+     *  @Return: the results of autocorrelation with different lags
+     */
     // Brute force autocorrelation
     private double[] autocorrelation(ArrayList<Double> accData){
         double sum = 0;
@@ -428,6 +440,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //        save2file(results);
         return results;
     }
+
+    /** @Brief: Calculate walking distance
+     *  @Author: Yujin
+     *  @Return: none
+     */
     private void get_distance(SensorEvent event) {
         if (sampleCount == 0) {
             sampleCount++;
@@ -445,7 +462,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
 //        if (accData.size()<sampleSize){
         if (currentTime - startTime < window){
-
             accData.add(mag);
             sampling_done=false;
         }
@@ -467,6 +483,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             sampleCount = 0;
         }
     }
+
     @Override
     public  void onClick(View v) {
         switch (v.getId()) {
@@ -488,6 +505,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             }
         }
     }
+
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
