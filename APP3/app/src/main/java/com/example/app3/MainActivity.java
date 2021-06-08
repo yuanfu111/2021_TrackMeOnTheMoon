@@ -63,7 +63,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private long startTime=0, currentTime = 0;
     private double walkingTime;
     private double distance;
-    private double speed = 0.5; // Yujin's walking speed is 1.5m/s
+    private double speed = 1.2; // Yujin's walking speed is 1.2m/s
     private boolean sampling_done;
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
@@ -85,7 +85,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int display_height;
     public static int center_x;
     public static int center_y;
-    public static int point_size = 10;
+    public static int point_size = 5;
     public static int pixelPerMeter = 85;
     public static double move_noise;
     public static double orient_noise;
@@ -141,9 +141,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      * @Return: None
      */
     private void config_init() {
-        x_range = 20;
+        x_range = 21.8;
         y_range = 7; // in meters
-        num_particle = 200;
+        num_particle = 1000;
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -195,7 +195,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         if(x<-10.9 || x>10.9 || y<-3.5 || y>3.5)
             return false;
         // the bottom left part
-        if(x<-2.8 && y<2.5) {
+        if(x<2.8 && y<2.5) {
             return false;
         }
         // the bottom middle part
@@ -219,7 +219,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
      */
-    private void resample( ) {
+    private void resample() {
         // TODO: Test it. Maybe try array instead of list to decrease searching time
         // identify dead particles
         List<Integer> dead_indeces=new ArrayList<>();
@@ -402,15 +402,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private String DetectWalk(ArrayList<Double> accData){
         String state = "idle";
         double[] results = autocorrelation(accData);
-//        for (int i=0; i<results.length; ++i) {
-//            System.out.println("Result" + i + ": " + results[i]);
-//        }
         // Find the maximum of autocorrelation results
         double max = results[0];
         for (int i=1; i<results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
-//                System.out.println("Max correlation: " + max);
             }
         }
         if (max > walk_threshold) {
@@ -437,7 +433,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
             }
         }
-//        save2file(results);
         return results;
     }
 
@@ -450,11 +445,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             sampleCount++;
             startTime = clock.millis();
             currentTime = startTime;
-//            System.out.println("startTime: " + startTime);
         }else{
             sampleCount++;
             currentTime = clock.millis();
-//            System.out.println("currentTime: " + currentTime);
         }
         aX = event.values[0];
         aY = event.values[1];
@@ -470,16 +463,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             sampling_done=true;
             if (state == "walking") {
                 walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
-                //distance = walkingTime * speed; // window内移动的距离
-                distance=0.2; // To be modified
-//                System.out.println(walkingTime);
+                distance = walkingTime * speed; // window内移动的距离
             }
             else {
                 distance=0;
             }
-//            System.out.println("Current state: " + state);
             accData.clear();
-//            System.out.println("Samples in 1s: " + sampleCount);
             sampleCount = 0;
         }
     }
