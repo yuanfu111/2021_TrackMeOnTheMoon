@@ -24,6 +24,7 @@ import java.io.OutputStreamWriter;
 import java.time.Clock;
 import java.util.ArrayList;
 import java.lang.Math;
+import java.util.List;
 
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
@@ -31,29 +32,30 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private Button start, pause, resume, stop;
     private SensorManager sensorManager;
     private Sensor accelerometer;
-    private double aX=0, aY=0, aZ=0, mag=0;
+    private double aX = 0, aY = 0, aZ = 0, mag = 0;
     private String state = "idle"; // Walking or idle
-    private double walk_threshold = 15; // Threshold for determining walking; personal
-    private ArrayList<Double> accData = new ArrayList<>();
-//    private int sampleSize = 50;
-    private int sampleCount = 0;
-    private int window = 1000; // 1000ms
-    private long startTime=0, currentTime = 0;
-    private double walkingTime;
-    private double distance;
-    private double speed = 1.5; // Yujin's walking speed is 1.5m/s
+    private double walk_threshold = 0.5; // Threshold for determining walking; personal
+    private List<Double> accData1 = new ArrayList<>(); // Former window of data
+    private List<Double> accData2 = new ArrayList<>(); // Current window of data
+    private int sampleSize = 30;
+    private double step_length = 0.66;
+    private int steps = 0;
+    private double distance = 0;
     private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
+
+    // Variables for testing
+    private List<Double> test_results = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        start = (Button)findViewById(R.id.start);
-        pause = (Button)findViewById(R.id.pause);
-        resume = (Button)findViewById(R.id.resume);
-        stop = (Button)findViewById(R.id.stop);
+        start = (Button) findViewById(R.id.start);
+        pause = (Button) findViewById(R.id.pause);
+        resume = (Button) findViewById(R.id.resume);
+        stop = (Button) findViewById(R.id.stop);
         start.setOnClickListener(this);
         pause.setOnClickListener(this);
         resume.setOnClickListener(this);
@@ -61,57 +63,49 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         currentState = findViewById(R.id.currentState);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
-//        if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
-//
-//            accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-
-//            sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-//        }
-
     }
 
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
-
+        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
     }
+
     protected void onPause() {
         super.onPause();
         sensorManager.unregisterListener(this);
     }
 
     @Override
-    public  void onClick(View v) {
-        switch (v.getId()){
+    public void onClick(View v) {
+        switch (v.getId()) {
             case R.id.start:
-                Toast.makeText(this,"Start sensing...",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Start sensing...", Toast.LENGTH_LONG).show();
                 if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
                     accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                    sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+                    sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 }
+                steps = 0;
                 distance = 0;
-                walkingTime = 0;
-                state = "idle";
-                sampleCount = 0;
-                accData.clear();
+                accData1.clear();
+                accData2.clear();
+                test_results.clear();
                 break;
             case R.id.pause:
-                Toast.makeText(this,"Pause sensing...",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Pause sensing...", Toast.LENGTH_LONG).show();
                 sensorManager.unregisterListener(this);
                 currentState.setText("Paused");
                 break;
             case R.id.resume:
-                Toast.makeText(this,"Resume sensing...",Toast.LENGTH_LONG).show();
-                sensorManager.registerListener(this, accelerometer,SensorManager.SENSOR_DELAY_NORMAL);
+                Toast.makeText(this, "Resume sensing...", Toast.LENGTH_LONG).show();
+                sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
                 break;
             case R.id.stop:
-                Toast.makeText(this,"Stop sensing...",Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Stop sensing...", Toast.LENGTH_LONG).show();
                 sensorManager.unregisterListener(this);
                 currentState.setText("Stopped");
-                distance = walkingTime * speed;
-//                System.out.println(distance);
-                double[] results = {walkingTime, distance};
-                save2file(results);
+//                test_results.add((double) steps);
+//                test_results.add(distance);
+//                saveArrayList(test_results, "Steps_Distance");
             default:
                 break;
         }
@@ -119,36 +113,33 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        if (sampleCount == 0) {
-            sampleCount++;
-            startTime = clock.millis();
-            currentTime = startTime;
-//            System.out.println("startTime: " + startTime);
-        }else{
-            sampleCount++;
-            currentTime = clock.millis();
-//            System.out.println("currentTime: " + currentTime);
-        }
         aX = event.values[0];
         aY = event.values[1];
         aZ = event.values[2];
-        mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
-//        if (accData.size()<sampleSize){
-        if (currentTime - startTime < window){
-            accData.add(mag);
+        mag = Math.sqrt(aX * aX + aY * aY + aZ * aZ); // magnitude of acceleration
+        // Store the first window in accData1
+        if (accData1.size()<sampleSize) {
+            accData1.add(mag);
+//            test_results.add(mag);
         }
-        else{
-            state = DetectWalk(accData);
+        // Store the second window in accData2
+        else if (accData2.size()<sampleSize){
+            accData2.add(mag);
+//            test_results.add(mag);
+        }
+        if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
+            state = DetectWalk(accData1, accData2);
             if (state == "walking") {
-                walkingTime += (currentTime - startTime)/1000.0; // walking during the last sampling window
-                double d = (currentTime - startTime)/1000.0 * speed; // window内移动的距离
-//                System.out.println(walkingTime);
+              steps += 1;
+              distance += step_length;
             }
-//            System.out.println("Current state: " + state);
             currentState.setText(state);
-            accData.clear();
-//            System.out.println("Samples in 1s: " + sampleCount);
-            sampleCount = 0;
+            // Copy accData2 to accData1
+            for (int i=0; i<sampleSize; ++i) {
+                accData1.set(i, accData2.get(i));
+            }
+            // Clear accData2 to store the next window of data
+            accData2.clear();
         }
     }
 
@@ -158,18 +149,25 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     }
 
     // Detect walking using autocorrelation
-    public String DetectWalk(ArrayList<Double> accData){
+    public String DetectWalk(List<Double> accData1, List<Double> accData2) {
         String state = "idle";
-        double[] results = autocorrelation(accData);
-//        for (int i=0; i<results.length; ++i) {
-//            System.out.println("Result" + i + ": " + results[i]);
-//        }
+        double mean1 = get_mean(accData1);
+        double mean2 = get_mean(accData2);
+        double std_dev1 = get_std_dev(accData1, mean1);
+        double std_dev2 = get_std_dev(accData2, mean2);
+//        test_results.add(std_dev2);
+        if (std_dev2 < 0.2) {
+            state = "idle";
+            return state;
+        }
+        double[] results = autocorrelation(accData1, mean1, std_dev1, accData2, mean2, std_dev2);
         // Find the maximum of autocorrelation results
         double max = results[0];
-        for (int i=1; i<results.length; ++i) {
+        int index = 0;
+        for (int i = 1; i < results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
-//                System.out.println("Max correlation: " + max);
+                index = i;
             }
         }
         if (max > walk_threshold) {
@@ -178,41 +176,78 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         return state;
     }
 
-    // Brute force autocorrelation
-    public double[] autocorrelation(ArrayList<Double> accData){
-        double sum = 0;
-        for (int i=0; i<accData.size(); ++i) {
-            sum += accData.get(i);
-        }
-        double avg = sum/accData.size();
-        double[] results = new double[accData.size()];
-        for (int i=0; i<accData.size(); ++i){
+    public double[] autocorrelation(List<Double> accData1, double mean1, double std_dev1, List<Double> accData2, double mean2, double std_dev2)
+    {
+        double[] results = new double[sampleSize];
+        for (int i=0; i<10; ++i){
             results[i] = 0; // i: lag
-            for (int j=0; j<accData.size(); ++j){
-                results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
+            for (int j=0; j<sampleSize; ++j){
+                results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
             }
         }
-//        save2file(results);
         return results;
     }
 
-    private void save2file(double[] results){
-        FileOutputStream out ;
+    public double get_mean(List<Double> data) {
+        double mean = 0;
+        double sum = 0;
+        for (int i = 0; i < data.size(); ++i) {
+            sum += data.get(i);
+        }
+        mean = sum / data.size();
+        return mean;
+    }
+
+    public double get_std_dev(List<Double> data, double mean) {
+        double std_dev = 0;
+        double sum_square = 0;
+        for (int i = 0; i < data.size(); ++i) {
+            sum_square += Math.pow(data.get(i) - mean, 2);
+        }
+        std_dev = Math.sqrt(sum_square / data.size());
+        return std_dev;
+    }
+
+
+    private void saveArray(double[] results, String filename) {
+        FileOutputStream out;
         BufferedWriter writer = null;
-        try{
-            out = openFileOutput("Results" + clock.millis() + ".txt", Context.MODE_PRIVATE);
+        try {
+            out = openFileOutput(filename + clock.millis() + ".txt", Context.MODE_PRIVATE);
             writer = new BufferedWriter(new OutputStreamWriter(out));
-            for(Double result : results){
-                writer.write(String.valueOf(result)+"\n");
+            for (Double result : results) {
+                writer.write(String.valueOf(result) + "\n");
             }
-        }catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
-        }catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
-        }finally {
-            try{
+        } finally {
+            try {
                 writer.close();
-            }catch(IOException e){
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    private void saveArrayList(List<Double> results, String filename) {
+        FileOutputStream out;
+        BufferedWriter writer = null;
+        try {
+            out = openFileOutput(filename + clock.millis() + ".txt", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            for (Double result : results) {
+                writer.write(String.valueOf(result)+ "\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
                 e.printStackTrace();
             }
         }
