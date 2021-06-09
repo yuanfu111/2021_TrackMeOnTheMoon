@@ -35,7 +35,7 @@ import java.util.List;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
-    private Button button, move_drawable,pause;
+    private Button init, move_drawable,pause;
     private TextView azimuthText, textView2;
     private boolean is_pase;
     // Sensor related declarations
@@ -47,13 +47,14 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
-    private double walk_threshold = 15; // Threshold for determining walking; personal
-    private ArrayList<Double> accData = new ArrayList<>();
-    private int sampleCount = 0;
-    private long startTime=0, currentTime = 0;
-    private double walkingTime;
-    private double distance;
-    private boolean sampling_done;
+    private double walk_threshold = 0.5; // Threshold for determining walking; personal
+    private List<Double> accData1 = new ArrayList<>(); // Former window of data
+    private List<Double> accData2 = new ArrayList<>(); // Current window of data
+    private int sampleSize = 30; // 30 samples can capture one step
+    private double step_length = 0.66;
+    private int steps = 0;
+    private double distance = 0; // Total distance
+    private boolean measure_dist_done;
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
     // Particle filter related declarations
@@ -78,8 +79,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static double orient_noise=10;
     public static double resample_noise=0.1;
     private int num_particle=1000;
-    private double speed = 0.4; // Yujin's walking speed is 1.5m/s
-    private int window = 500; // 1000ms
    // private double inputAngle;
    // private double angleSum;
 
@@ -88,8 +87,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(this);
+        init = (Button) findViewById(R.id.init);
+        init.setOnClickListener(this);
         move_drawable = (Button) findViewById(R.id.move_drawable);
         move_drawable.setOnClickListener(this);
         pause = (Button) findViewById(R.id.Pause);
@@ -101,7 +100,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         registerSensorManagerListeners();
         fuseSensor.setMode(FuseOrientation.Mode.FUSION);
         config_init();
-        //testing
     }
 
     public void registerSensorManagerListeners() {
@@ -128,7 +126,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     /**
      * @Brief: Initialize some global variables, create a customized view class and add it to the layout
-     * @Author: Yuan Fu (5215315)
+     * @Author: Yuan Fu (5215315), modified by Yujin
      * @Return: None
      */
     private void config_init() {
@@ -149,13 +147,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         canvas = new Canvas(blankBitmap);
         canvasView.setImageBitmap(blankBitmap);
         init_layout();
-        sampling_done=false;
         ConstraintLayout canvas_layout=(ConstraintLayout)findViewById(R.id.canvas_layout);
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.FILL_PARENT);
         v = new myView(this);
         v.setLayoutParams(lp);
         canvas_layout.addView(v);
     }
+
     /**
      * @Brief: Create particles randomly in a restricted range
      * @Author: Yuan Fu (5215315)
@@ -172,14 +170,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             y = y_range * (r.nextDouble() - 0.5);
             p.set_attr(x, y, orient);
         }while(!check_in_room(x, y) || p.collision);
-
-        //p.set_noise(move_noise, orient_noise, resample_noise);
-//        System.out.println("particle created");
-//        System.out.println("x: " +x+" y: "+y);
         return p;
     }
+
     /** @Brief: Check if the coordinate is within the rooms of the layout
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315), modified by Yujin
      *  @Param: x,y coordinates
      *  @Return: false if out of range
      */
@@ -208,6 +203,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             p_list.add(new_p);
         }
     }
+
     /** @Brief: Resample the current particle list. Identify dead particles and reborn them from random alive particles
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -241,7 +237,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
                 reborn_around.add(random_index);
             }
-                //System.out.println("reborn " + reborn_around);
                 // reborn
                 if (dead_indeces.size() != reborn_around.size()) {
                     System.out.println("number of dead and reborn do not match");
@@ -252,11 +247,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
         }
     }
+
     private void draw_particle_on_map() {
         v.invalidate();
     }
+
     /** @Brief: Initialize walls based on our layout 1m=100 pixel
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315), modified by Yujin
      *  @Return: None
      *  -------------------------------------------
      *  -         -          -          -         -
@@ -388,18 +385,26 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         virtual_lines.add(l4);
     }
 
-    private String DetectWalk(ArrayList<Double> accData){
+    // Detect walking using autocorrelation
+    // accData1: former window; accData2: current window
+    public String DetectWalk(List<Double> accData1, List<Double> accData2) {
         String state = "idle";
-        double[] results = autocorrelation(accData);
-//        for (int i=0; i<results.length; ++i) {
-//            System.out.println("Result" + i + ": " + results[i]);
-//        }
+        double mean1 = get_mean(accData1);
+        double mean2 = get_mean(accData2);
+        double std_dev1 = get_std_dev(accData1, mean1);
+        double std_dev2 = get_std_dev(accData2, mean2);
+        if (std_dev2 < 0.2) {
+            state = "idle";
+            return state;
+        }
+        double[] results = autocorrelation(accData1, mean1, std_dev1, accData2, mean2, std_dev2);
         // Find the maximum of autocorrelation results
         double max = results[0];
-        for (int i=1; i<results.length; ++i) {
+        int index = 0;
+        for (int i = 1; i < results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
-//                System.out.println("Max correlation: " + max);
+                index = i;
             }
         }
         if (max > walk_threshold) {
@@ -407,71 +412,82 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         return state;
     }
-    // Brute force autocorrelation
-    private double[] autocorrelation(ArrayList<Double> accData){
-        double sum = 0;
-        for (int i=0; i<accData.size(); ++i) {
-            sum += accData.get(i);
-        }
-        double avg = sum/accData.size();
-        double[] results = new double[accData.size()];
-        for (int i=0; i<accData.size(); ++i){
+
+    // Calculate the normalized autocorrelation of two windows of data
+    public double[] autocorrelation(List<Double> accData1, double mean1, double std_dev1, List<Double> accData2, double mean2, double std_dev2)
+    {
+        double[] results = new double[sampleSize];
+        // If walking, the lag between two windows is between 0 and 10.
+        // This value is obtained by measurement.
+        for (int i=0; i<10; ++i){
             results[i] = 0; // i: lag
-            for (int j=0; j<accData.size(); ++j){
-                results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
+            for (int j=0; j<sampleSize; ++j){
+                results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
             }
         }
-//        save2file(results);
         return results;
     }
-    private void get_distance(SensorEvent event) {
-        if (sampleCount == 0) {
-            sampleCount++;
-            startTime = clock.millis();
-            currentTime = startTime;
-//            System.out.println("startTime: " + startTime);
-        }else{
-            sampleCount++;
-            currentTime = clock.millis();
-//            System.out.println("currentTime: " + currentTime);
+
+    public double get_mean(List<Double> data) {
+        double mean = 0;
+        double sum = 0;
+        for (int i = 0; i < data.size(); ++i) {
+            sum += data.get(i);
         }
+        mean = sum / data.size();
+        return mean;
+    }
+
+    public double get_std_dev(List<Double> data, double mean) {
+        double std_dev = 0;
+        double sum_square = 0;
+        for (int i = 0; i < data.size(); ++i) {
+            sum_square += Math.pow(data.get(i) - mean, 2);
+        }
+        std_dev = Math.sqrt(sum_square / data.size());
+        return std_dev;
+    }
+
+    private void get_distance(SensorEvent event) {
         aX = event.values[0];
         aY = event.values[1];
         aZ = event.values[2];
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
-//        if (accData.size()<sampleSize){
-       // angleSum+=azimuthValue;
-        if (currentTime - startTime < window){
-            accData.add(mag);
-            sampling_done=false;
-            //inputAngle=angleSum/sampleCount;
-
+        // Store the first window in accData1
+        if (accData1.size()<sampleSize) {
+            accData1.add(mag);
         }
-        else{
-            state = DetectWalk(accData);
-            sampling_done=true;
-            //angleSum=0;
+        // Store the second window in accData2
+        else if (accData2.size()<sampleSize){
+            accData2.add(mag);
+        }
+        if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
+            state = DetectWalk(accData1, accData2);
             if (state == "walking") {
-                walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
-                distance = walkingTime * speed; // window内移动的距离
-                //distance=0.2;
-//                System.out.println(walkingTime);
+                steps += 1;
+                distance += step_length;
             }
-            else {
-                distance=0;
+            // Copy accData2 to accData1
+            for (int i=0; i<sampleSize; ++i) {
+                accData1.set(i, accData2.get(i));
             }
-//            System.out.println("Current state: " + state);
-            accData.clear();
-//            System.out.println("Samples in 1s: " + sampleCount);
-            sampleCount = 0;
+            // Clear accData2 to store the next window of data
+            accData2.clear();
+            measure_dist_done = true;
         }
     }
+
     @Override
     public  void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button: {
+            case R.id.init: {
                 init_particles();
                 draw_particle_on_map();
+                steps = 0;
+                distance = 0;
+                accData1.clear();
+                accData2.clear();
+                measure_dist_done=false;
                 Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
@@ -494,6 +510,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             }
         }
     }
+
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -515,7 +532,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         updateValue();
     }
-    /** @Brief: Up date the (fused)sensor value move the particles and redraw the
+    /** @Brief: Update the (fused) sensor value, move the particles, and redraw the
      *          map when distance sampling is done
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -525,19 +542,16 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
         azimuthText.setText("Angle: "+d.format(azimuthValue));
 
-        if(sampling_done && p_list.size()!=0 && !is_pase) {
+        if(measure_dist_done && p_list.size()!=0 && !is_pase) {
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) +"\nAvg angle: " + d.format(azimuthValue));
-            //distance=0.1;
-           // System.out.println(distance);
             for (Particle p : p_list) {
-                p.move(distance, azimuthValue);
+                p.move(step_length, azimuthValue);
             }
             resample();
             draw_particle_on_map();
-           // System.out.println("moving");
         }
-        //System.out.println(azimuthValue);
     }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
