@@ -51,9 +51,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private List<Double> accData1 = new ArrayList<>(); // Former window of data
     private List<Double> accData2 = new ArrayList<>(); // Current window of data
     private int sampleSize = 30; // 30 samples can capture one step
-    private double step_length = 0.66;
+    private double step_length = 0.58;
     private int steps = 0;
     private double distance = 0; // Total distance
+    private double delta_d = 0; // Change in distance
     private boolean measure_dist_done;
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
@@ -73,12 +74,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int display_height;
     public static int center_x;
     public static int center_y;
-    public static int point_size = 3;
+    public static int point_size = 5;
     public static int pixelPerMeter = 85;
     public static double move_noise=0.05;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
-    private int num_particle=1000;
+    private int num_particle=100;
    // private double inputAngle;
    // private double angleSum;
 
@@ -93,7 +94,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         move_drawable.setOnClickListener(this);
         pause = (Button) findViewById(R.id.Pause);
         pause.setOnClickListener(this);
-        azimuthText = (TextView) findViewById(R.id.textView1);
+//        azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
         // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -165,7 +166,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         orient = 2 * Math.PI * r.nextDouble();
         Particle p = new Particle();
         // repeat recreating until within room and not collision
-        do  {
+        do {
             x = x_range * (r.nextDouble() - 0.5);
             y = y_range * (r.nextDouble() - 0.5);
             p.set_attr(x, y, orient);
@@ -400,11 +401,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double[] results = autocorrelation(accData1, mean1, std_dev1, accData2, mean2, std_dev2);
         // Find the maximum of autocorrelation results
         double max = results[0];
-        int index = 0;
         for (int i = 1; i < results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
-                index = i;
             }
         }
         if (max > walk_threshold) {
@@ -449,6 +448,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     }
 
     private void get_distance(SensorEvent event) {
+        delta_d = 0;
         aX = event.values[0];
         aY = event.values[1];
         aZ = event.values[2];
@@ -466,6 +466,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             if (state == "walking") {
                 steps += 1;
                 distance += step_length;
+                delta_d = step_length;
             }
             // Copy accData2 to accData1
             for (int i=0; i<sampleSize; ++i) {
@@ -483,11 +484,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             case R.id.init: {
                 init_particles();
                 draw_particle_on_map();
+                state = "idle";
                 steps = 0;
                 distance = 0;
                 accData1.clear();
                 accData2.clear();
                 measure_dist_done=false;
+                textView2.setText("State: "+state+ "\nDistance: "+d.format(distance)+ "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue));
                 Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
@@ -506,7 +509,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                     pause.setText("Resume");
                     is_pase=true;
                 }
-
             }
         }
     }
@@ -532,6 +534,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         updateValue();
     }
+
     /** @Brief: Update the (fused) sensor value, move the particles, and redraw the
      *          map when distance sampling is done
      *  @Author: Yuan Fu (5215315)
@@ -540,15 +543,17 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public void updateValue() {
         //TODO: distance related
         azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
-        azimuthText.setText("Angle: "+d.format(azimuthValue));
+//        azimuthText.setText("Angle: "+d.format(azimuthValue));
 
         if(measure_dist_done && p_list.size()!=0 && !is_pase) {
-            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) +"\nAvg angle: " + d.format(azimuthValue));
-            for (Particle p : p_list) {
-                p.move(step_length, azimuthValue);
+            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue));
+            if (delta_d > 0){
+                for (Particle p : p_list) {
+                    p.move(step_length, azimuthValue);
+                }
+                resample();
+                draw_particle_on_map();
             }
-            resample();
-            draw_particle_on_map();
         }
     }
 
