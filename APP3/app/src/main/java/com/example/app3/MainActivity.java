@@ -67,7 +67,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private List<ShapeDrawable> virtual_lines;
     public static List<ShapeDrawable> walls;
     myView v;
-   // private int redraw_interval=1000;
+    // private int redraw_interval=1000;
     // some global variables
     private int offset=15;
     public static int display_width;
@@ -238,14 +238,14 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
                 reborn_around.add(random_index);
             }
-                // reborn
-                if (dead_indeces.size() != reborn_around.size()) {
-                    System.out.println("number of dead and reborn do not match");
-                }
+            // reborn
+            if (dead_indeces.size() != reborn_around.size()) {
+                System.out.println("number of dead and reborn do not match");
+            }
 
-                for (int i = 0; i < dead_indeces.size(); i++) {
-                    p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
-                }
+            for (int i = 0; i < dead_indeces.size(); i++) {
+                p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
+            }
         }
     }
 
@@ -518,7 +518,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      *  @Return: None
      */
     public void onSensorChanged(SensorEvent event) {
-        //TODO: distance related
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 fuseSensor.setAccel(event.values);
@@ -537,11 +536,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     /** @Brief: Update the (fused) sensor value, move the particles, and redraw the
      *          map when distance sampling is done
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315), modified by Yujin
      *  @Return: None
      */
     public void updateValue() {
-        //TODO: distance related
         azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
 //        azimuthText.setText("Angle: "+d.format(azimuthValue));
 
@@ -549,7 +547,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue));
             if (delta_d > 0){
                 for (Particle p : p_list) {
-                    p.move(step_length, azimuthValue);
+                    p.move(delta_d, azimuthValue);
                 }
                 resample();
                 draw_particle_on_map();
@@ -582,7 +580,60 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
             }
         }
+    }
 
+    // If particles in one cell > 80% of total particles, converge. Return the current location.
+    public String check_converge() {
+        // number of particles in each cell
+        int[] counts = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int total = p_list.size();
+        int location = 0; // 0->cell A, 1->cell B, 2->cell C...
+        String current_cell = null;
+
+        // Todo: Count particles
+        for (Particle p: p_list) {
+            // Obtain the x and y of a particle; check if it's in cell A, B, C...
+        }
+
+        // Check convergence
+        for (int i=0; i<counts.length; ++i) {
+            if (counts[i] > 0.8*total) {
+                location = i;
+                break;
+            }
+        }
+
+        // Convert index to string
+        switch (location) {
+            case 0:
+                current_cell = "A";
+                break;
+            case 1:
+                current_cell = "B";
+                break;
+            case 2:
+                current_cell = "C";
+                break;
+            case 3:
+                current_cell = "D";
+                break;
+            case 4:
+                current_cell = "E";
+                break;
+            case 5:
+                current_cell = "F";
+                break;
+            case 6:
+                current_cell = "G";
+                break;
+            case 7:
+                current_cell = "H";
+                break;
+            case 8:
+                current_cell = "I";
+                break;
+        }
+        return current_cell;
     }
 }
 
