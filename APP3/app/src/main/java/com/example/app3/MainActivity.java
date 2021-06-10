@@ -36,7 +36,7 @@ import java.util.List;
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
     private Button init, move_drawable,pause;
-    private TextView azimuthText, textView2;
+    private TextView azimuthText, location, textView2;
     private boolean is_pase;
     // Sensor related declarations
     private SensorManager sensorManager = null;
@@ -80,6 +80,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static double orient_noise=10;
     public static double resample_noise=0.1;
     private int num_particle=100;
+    private String current_cell;
    // private double inputAngle;
    // private double angleSum;
 
@@ -96,6 +97,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         pause.setOnClickListener(this);
 //        azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
+        location = (TextView) findViewById(R.id.location);
         // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
@@ -551,6 +553,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
                 resample();
                 draw_particle_on_map();
+                current_cell = check_converge();
+                if (current_cell != null) {
+                    location.setText(current_cell);
+                }
             }
         }
     }
