@@ -582,22 +582,70 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
     }
 
-    // If particles in one cell > 80% of total particles, converge. Return the current location.
+    // If particles in one cell > 80% of total particles, converge.
+    // If converge, return the current cell; else, return null.
     public String check_converge() {
         // number of particles in each cell
         int[] counts = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         int total = p_list.size();
+        double percent = 0.8; // threshold for convergence
         int location = 0; // 0->cell A, 1->cell B, 2->cell C...
         String current_cell = null;
 
-        // Todo: Count particles
         for (Particle p: p_list) {
             // Obtain the x and y of a particle; check if it's in cell A, B, C...
+            double x = p.get_x();
+            double y = p.get_y();
+            // if (x,y) is in the range of cell A
+            if (x>2.8 && x<4.42 && y>-0.5 && y<2.5) {
+                counts[0] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell B
+            if (x>4.42 && x<7.49 && y>-0.15 && y<2.5) {
+                counts[1] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell C
+            if ((x>4.42 && x<5.49 && -3.5<y && y<-0.15) || (5.49<=x && x<7.49 && -2.15<y && y<= 0.15)) {
+                counts[2] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell D
+            if (7.49<x && x<9.72 && -2.15<y && y<2.5) {
+                counts[3] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell E
+            if (2.8<x && x<4.42 && -3.5<y && y<-0.5) {
+                counts[4] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell F
+            if (-10.9<x && x<-5.45 && 2.5<y && y<3.5) {
+                counts[5] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell G
+            if (-5.45<x && x<0 && 2.5<y && y<3.5) {
+                counts[6] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell H
+            if (0<x && x<5.45 && 2.5<y && y<3.5) {
+                counts[7] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell I
+            if (5.45<x && x<10.9 && 2.5<y && y<3.5) {
+                counts[8] += 1;
+                continue;
+            }
         }
 
         // Check convergence
         for (int i=0; i<counts.length; ++i) {
-            if (counts[i] > 0.8*total) {
+            if (counts[i] > (int) percent*total) {
                 location = i;
                 break;
             }
@@ -632,6 +680,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             case 8:
                 current_cell = "I";
                 break;
+            default:
+                current_cell = null;
         }
         return current_cell;
     }
