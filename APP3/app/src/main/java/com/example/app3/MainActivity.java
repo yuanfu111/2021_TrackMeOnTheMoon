@@ -38,14 +38,17 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private List<Double> accData1 = new ArrayList<>(); // Former window of data
     private List<Double> accData2 = new ArrayList<>(); // Current window of data
     private int sampleSize = 30;
-    private double step_length = 0.66;
+    private double step_length = 0.58;
     private int steps = 0;
     private double distance = 0;
     private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
+    private int sampling_rate = 20000; // 20 ms -> 50 Hz
 
     // Variables for testing
     private List<Double> test_results = new ArrayList<>();
+    private int sampleCount = 0;
+    private long startTime=0, currentTime = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +70,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     protected void onResume() {
         super.onResume();
-        sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+        sensorManager.registerListener(this, accelerometer, sampling_rate);
     }
 
     protected void onPause() {
@@ -82,7 +85,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 Toast.makeText(this, "Start sensing...", Toast.LENGTH_LONG).show();
                 if (sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER) != null) {
                     accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
-                    sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                    sensorManager.registerListener(this, accelerometer, sampling_rate);
                 }
                 steps = 0;
                 distance = 0;
@@ -97,7 +100,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 break;
             case R.id.resume:
                 Toast.makeText(this, "Resume sensing...", Toast.LENGTH_LONG).show();
-                sensorManager.registerListener(this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManager.registerListener(this, accelerometer, sampling_rate);
                 break;
             case R.id.stop:
                 Toast.makeText(this, "Stop sensing...", Toast.LENGTH_LONG).show();
@@ -106,6 +109,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //                test_results.add((double) steps);
 //                test_results.add(distance);
 //                saveArrayList(test_results, "Steps_Distance");
+//                saveArrayList(test_results, "window time");
             default:
                 break;
         }
@@ -117,17 +121,26 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         aY = event.values[1];
         aZ = event.values[2];
         mag = Math.sqrt(aX * aX + aY * aY + aZ * aZ); // magnitude of acceleration
+
+        if (accData2.size()==0){
+            startTime = clock.millis();
+            currentTime = startTime;
+        }else{
+            currentTime = clock.millis();
+        }
+
         // Store the first window in accData1
         if (accData1.size()<sampleSize) {
             accData1.add(mag);
-//            test_results.add(mag);
+            sampleCount++;
         }
         // Store the second window in accData2
         else if (accData2.size()<sampleSize){
             accData2.add(mag);
-//            test_results.add(mag);
+            sampleCount++;
         }
         if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
+            test_results.add((double)(currentTime-startTime));
             state = DetectWalk(accData1, accData2);
             if (state == "walking") {
               steps += 1;
@@ -167,6 +180,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         for (int i = 1; i < results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
+//                test_results.add(max);
                 index = i;
             }
         }
