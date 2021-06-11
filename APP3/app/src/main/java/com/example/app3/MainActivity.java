@@ -91,8 +91,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
         init = (Button) findViewById(R.id.init);
         init.setOnClickListener(this);
-        move_drawable = (Button) findViewById(R.id.move_drawable);
-        move_drawable.setOnClickListener(this);
+//        move_drawable = (Button) findViewById(R.id.move_drawable);
+//        move_drawable.setOnClickListener(this);
         pause = (Button) findViewById(R.id.Pause);
         pause.setOnClickListener(this);
 //        azimuthText = (TextView) findViewById(R.id.textView1);
@@ -492,17 +492,18 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 accData1.clear();
                 accData2.clear();
                 measure_dist_done=false;
+                location.setText("Current cell: " + location + "\n");
                 textView2.setText("State: "+state+ "\nDistance: "+d.format(distance)+ "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue));
                 Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
-            case R.id.move_drawable: {
-                for(Particle p : p_list) {
-                    p.move(0.1,azimuthValue);
-                }
-                resample();
-                break;
-            }
+//            case R.id.move_drawable: {
+//                for(Particle p : p_list) {
+//                    p.move(0.1,azimuthValue);
+//                }
+//                resample();
+//                break;
+//            }
             case R.id.Pause: {
                 if(is_pase) {
                     pause.setText("Pause");
@@ -546,6 +547,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //        azimuthText.setText("Angle: "+d.format(azimuthValue));
 
         if(measure_dist_done && p_list.size()!=0 && !is_pase) {
+            location.setText("Current cell: " + location + "\n");
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue));
             if (delta_d > 0){
                 for (Particle p : p_list) {
