@@ -36,7 +36,7 @@ import java.util.List;
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
     private Button init, move_drawable,pause;
-    private TextView azimuthText, location, textView2;
+    private TextView azimuthText, textView2;
     private boolean is_pase;
     // Sensor related declarations
     private SensorManager sensorManager = null;
@@ -80,7 +80,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static double orient_noise=10;
     public static double resample_noise=0.1;
     private int num_particle=100;
-    private String current_cell;
+    private String current_cell = null;
    // private double inputAngle;
    // private double angleSum;
 
@@ -97,7 +97,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         pause.setOnClickListener(this);
 //        azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
-        location = (TextView) findViewById(R.id.location);
         // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
@@ -455,6 +454,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         aY = event.values[1];
         aZ = event.values[2];
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
+        if (accData2.size()==0){
+            measure_dist_done = false;
+        }
         // Store the first window in accData1
         if (accData1.size()<sampleSize) {
             accData1.add(mag);
@@ -491,9 +493,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 distance = 0;
                 accData1.clear();
                 accData2.clear();
+                current_cell = null;
                 measure_dist_done=false;
-                location.setText("Current cell: " + location + "\n");
-                textView2.setText("State: "+state+ "\nDistance: "+d.format(distance)+ "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue));
+                textView2.setText("State: "+state+ "\nDistance: "+d.format(distance)+ "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue)+ "\nCurrent cell: "+ current_cell);
                 Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
@@ -547,19 +549,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //        azimuthText.setText("Angle: "+d.format(azimuthValue));
 
         if(measure_dist_done && p_list.size()!=0 && !is_pase) {
-            location.setText("Current cell: " + location + "\n");
-            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue));
-            if (delta_d > 0){
+            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue) + "\nCurrent cell: "+ current_cell);
+//            if (delta_d > 0){
                 for (Particle p : p_list) {
                     p.move(delta_d, azimuthValue);
                 }
                 resample();
                 draw_particle_on_map();
                 current_cell = check_converge();
-                if (current_cell != null) {
-                    location.setText(current_cell);
-                }
-            }
+//            }
         }
     }
 
@@ -597,7 +595,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         int[] counts = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         int total = p_list.size();
         double percent = 0.8; // threshold for convergence
-        int location = 0; // 0->cell A, 1->cell B, 2->cell C...
+        int location = -1; // 0->cell A, 1->cell B, 2->cell C...
         String current_cell = null;
 
         for (Particle p: p_list) {
@@ -651,9 +649,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             }
         }
 
+//        System.out.println("Total particles: "+total);
+//        for (int i=0; i<9; ++i){
+//            System.out.println("Cell " +i + ": " + counts[i]);
+//        }
+//        System.out.println("Threshold: " + percent*total);
+
         // Check convergence
         for (int i=0; i<counts.length; ++i) {
-            if (counts[i] > (int) percent*total) {
+            if (counts[i] > (int) (percent*total)) {
                 location = i;
                 break;
             }

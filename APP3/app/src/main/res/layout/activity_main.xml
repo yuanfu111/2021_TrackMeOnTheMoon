@@ -28,8 +28,8 @@
         <TextView
             android:id="@+id/textView2"
             android:layout_width="274dp"
-            android:layout_height="90dp"
-            android:text="State, distance, steps and angle"
+            android:layout_height="110dp"
+            android:text="State, distance, steps and angle, current cell"
             android:textSize="18sp"
             tools:layout_editor_absoluteX="3dp"
             tools:layout_editor_absoluteY="329dp"
@@ -43,7 +43,8 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:layout_editor_absoluteX="1dp">
+            tools:layout_editor_absoluteX="0dp"
+            tools:layout_editor_absoluteY="0dp">
 
             <Button
                 android:id="@+id/Pause"
@@ -57,17 +58,17 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="1.0" />
 
-<!--            <Button-->
-<!--                android:id="@+id/move_drawable"-->
-<!--                android:layout_width="wrap_content"-->
-<!--                android:layout_height="wrap_content"-->
-<!--                android:text="Forward(test purpose)"-->
-<!--                app:layout_constraintBottom_toBottomOf="parent"-->
-<!--                app:layout_constraintEnd_toEndOf="parent"-->
-<!--                app:layout_constraintHorizontal_bias="0.025"-->
-<!--                app:layout_constraintStart_toStartOf="parent"-->
-<!--                app:layout_constraintTop_toTopOf="parent"-->
-<!--                app:layout_constraintVertical_bias="0.867" />-->
+            <!--            <Button-->
+            <!--                android:id="@+id/move_drawable"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:text="Forward(test purpose)"-->
+            <!--                app:layout_constraintBottom_toBottomOf="parent"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintHorizontal_bias="0.025"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toTopOf="parent"-->
+            <!--                app:layout_constraintVertical_bias="0.867" />-->
 
             <Button
                 android:id="@+id/init"
@@ -81,21 +82,21 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintVertical_bias="0.84" />
 
-            <TextView
-                android:id="@+id/location"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="415dp"
-                android:layout_marginEnd="352dp"
-                android:layout_marginRight="352dp"
-                android:layout_marginBottom="47dp"
-                android:text="Location"
-                app:layout_constraintBottom_toTopOf="@+id/init"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintHorizontal_bias="0.0"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintVertical_bias="0.0" />
+            <!--            <TextView-->
+            <!--                android:id="@+id/location"-->
+            <!--                android:layout_width="wrap_content"-->
+            <!--                android:layout_height="wrap_content"-->
+            <!--                android:layout_marginTop="415dp"-->
+            <!--                android:layout_marginEnd="352dp"-->
+            <!--                android:layout_marginRight="352dp"-->
+            <!--                android:layout_marginBottom="47dp"-->
+            <!--                android:text="Location"-->
+            <!--                app:layout_constraintBottom_toTopOf="@+id/init"-->
+            <!--                app:layout_constraintEnd_toEndOf="parent"-->
+            <!--                app:layout_constraintHorizontal_bias="0.0"-->
+            <!--                app:layout_constraintStart_toStartOf="parent"-->
+            <!--                app:layout_constraintTop_toTopOf="parent"-->
+            <!--                app:layout_constraintVertical_bias="0.0" />-->
 
             <!--        <TextView-->
             <!--            android:id="@+id/textView1"-->
