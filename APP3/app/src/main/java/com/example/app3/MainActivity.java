@@ -200,7 +200,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public double[] autocorrelation(List<Double> accData1, double mean1, double std_dev1, List<Double> accData2, double mean2, double std_dev2)
     {
         double[] results = new double[sampleSize];
-        for (int i=0; i<3; ++i){
+        for (int i=0; i<10; ++i){
             results[i] = 0; // i: lag
             for (int j=0; j<sampleSize; ++j){
                 results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
