@@ -43,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
     private Button CellA_Btn, CellB_Btn, CellC_Btn, CellD_Btn, CellE_Btn, CellF_Btn, CellG_Btn, CellH_Btn, CellI_Btn;
     private String label;
     private ListView listView;
-    private List<ScanResult> results;
+    private List<ScanResult> results= new ArrayList<ScanResult>();
     private ArrayList<String> arrayList = new ArrayList<>();
     private ArrayAdapter adapter;
     private int count = 0;
@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
     private Handler handler;
     private Runnable runnable;
     private int interval = 500;
-    private int max_sample = 23;
+    private int max_sample = 5;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -74,26 +74,12 @@ public class MainActivity extends AppCompatActivity {
 
         // Set listener for the button.
         // Push the button once, scan multiple times with given interval
-        buttonScan.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                handler = new Handler();
-                runnable = new Runnable() {
-                    @Override
-                    public void run() {
-                        if (count < max_sample) {
-                            scanWifi();
-                            handler.postDelayed(this, interval);
-                        }
-                        else {
-                            handler.removeCallbacks(runnable);
-                            buttonScan.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.OVERLAY);
-                        }
-                    }
-                };
-                handler.postDelayed(runnable, interval);
-            }
-        });
+//        buttonScan.setOnClickListener(new View.OnClickListener(){
+//            @Override
+//            public void onClick(View view) {
+//
+//            }
+//        });
 
         // Push the button once, scan once
 //        buttonScan.setOnClickListener(new View.OnClickListener() {
@@ -189,23 +175,42 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void scanWifi() {
-        registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-        wifiManager.startScan();
+        registerReceiver(wifiReceiver,
+                new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+        boolean success =wifiManager.startScan();
         if (count == 0) {
             Toast.makeText(getApplicationContext(), "Start scanning WiFi ...", Toast.LENGTH_SHORT).show();
         }
+        //System.out.println(success);
     }
-
+    public void start(View v) {
+        handler = new Handler();
+        runnable = new Runnable() {
+            @Override
+            public void run() {
+                if (count < max_sample) {
+                    scanWifi();
+                    handler.postDelayed(this, interval);
+                }
+                else {
+                    handler.removeCallbacks(runnable);
+                    buttonScan.getBackground().setColorFilter(Color.GRAY, PorterDuff.Mode.OVERLAY);
+                }
+            }
+        };
+        handler.postDelayed(runnable, interval);
+    }
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            System.out.println("scan complete");
             count ++;
             if ((count-4) % 10 == 0){
                 Toast.makeText(getApplicationContext(), "Complete " + (count-3) + " scans!", Toast.LENGTH_SHORT).show();
             }
             results = wifiManager.getScanResults();
             unregisterReceiver(this);
-
+            System.out.println("scan complete");
             // Abandon the first 3 scans due to WiFi wake time (1.5 sec)
             if (count > 3) {
                 for (int i=0; i<results.size(); ++i) {
