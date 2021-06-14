@@ -41,7 +41,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private double step_length = 0.58;
     private int steps = 0;
     private double distance = 0;
-    private TextView currentState;
+    private TextView currentState, stepCount;
     private Clock clock = Clock.systemDefaultZone();
     private int sampling_rate = 20000; // 20 ms -> 50 Hz
 
@@ -64,6 +64,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         resume.setOnClickListener(this);
         stop.setOnClickListener(this);
         currentState = findViewById(R.id.currentState);
+        stepCount = findViewById(R.id.steps);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
     }
@@ -110,6 +111,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //                test_results.add(distance);
 //                saveArrayList(test_results, "Steps_Distance");
 //                saveArrayList(test_results, "window time");
+//                saveArrayList(test_results, "std_dev");
+//                  saveArrayList(test_results, "max_index");
+                saveArrayList(test_results, "max");
             default:
                 break;
         }
@@ -119,8 +123,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public void onSensorChanged(SensorEvent event) {
         aX = event.values[0];
         aY = event.values[1];
-        aZ = event.values[2];
+        aZ = event.values[2]-9.8;
         mag = Math.sqrt(aX * aX + aY * aY + aZ * aZ); // magnitude of acceleration
+//        test_results.add(mag);
 
         if (accData2.size()==0){
             startTime = clock.millis();
@@ -140,13 +145,14 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             sampleCount++;
         }
         if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
-            test_results.add((double)(currentTime-startTime));
+//            test_results.add((double)(currentTime-startTime));
             state = DetectWalk(accData1, accData2);
             if (state == "walking") {
               steps += 1;
               distance += step_length;
             }
             currentState.setText(state);
+            stepCount.setText("Steps: "+steps);
             // Copy accData2 to accData1
             for (int i=0; i<sampleSize; ++i) {
                 accData1.set(i, accData2.get(i));
@@ -169,7 +175,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double std_dev1 = get_std_dev(accData1, mean1);
         double std_dev2 = get_std_dev(accData2, mean2);
 //        test_results.add(std_dev2);
-        if (std_dev2 < 0.2) {
+        if (std_dev2 < 0.1) {
             state = "idle";
             return state;
         }
@@ -180,8 +186,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         for (int i = 1; i < results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
-//                test_results.add(max);
                 index = i;
+                test_results.add(max);
+//                test_results.add((double) index);
             }
         }
         if (max > walk_threshold) {
@@ -193,7 +200,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public double[] autocorrelation(List<Double> accData1, double mean1, double std_dev1, List<Double> accData2, double mean2, double std_dev2)
     {
         double[] results = new double[sampleSize];
-        for (int i=0; i<10; ++i){
+        for (int i=0; i<3; ++i){
             results[i] = 0; // i: lag
             for (int j=0; j<sampleSize; ++j){
                 results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
