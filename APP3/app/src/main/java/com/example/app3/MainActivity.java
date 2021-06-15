@@ -44,17 +44,19 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Orientation related declarations
     private double azimuthValue;
     private DecimalFormat d = new DecimalFormat("#.###");
+    private double angle_start, angle_end, delta_angle; // angle within a sampling window
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
-    private double walk_threshold = 0.5; // Threshold for determining walking; personal
+    private double walk_threshold = 0.4;
     private List<Double> accData1 = new ArrayList<>(); // Former window of data
     private List<Double> accData2 = new ArrayList<>(); // Current window of data
-    private int sampleSize = 30; // 30 samples can capture one step
-    private double step_length = 0.58;
+    private int sampleSize = 35; // 35 samples can capture one step
+    private double step_length = 0.5;
     private int steps = 0;
     private double distance = 0; // Total distance
     private double delta_d = 0; // Change in distance
+    private int sampling_rate = 20000; // 20 ms -> 50 Hz
     private boolean measure_dist_done;
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
@@ -69,17 +71,17 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     myView v;
     // private int redraw_interval=1000;
     // some global variables
-    private int offset=15;
+    private int offset=-90;
     public static int display_width;
     public static int display_height;
     public static int center_x;
     public static int center_y;
     public static int point_size = 5;
     public static int pixelPerMeter = 85;
-    public static double move_noise=0.05;
+    public static double move_noise=0.03;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
-    private int num_particle=100;
+    private int num_particle=1500;
     private String current_cell = null;
    // private double inputAngle;
    // private double angleSum;
@@ -106,14 +108,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     public void registerSensorManagerListeners() {
         sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER), sampling_rate);
         sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-                SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE), sampling_rate);
         sensorManager.registerListener(this,
-                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_NORMAL);
+                sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD), sampling_rate);
     }
 
     protected void onResume() {
@@ -334,9 +333,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 center_x+line_width/2+(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*2.5));
 
         // Additional vertical lines
-        ShapeDrawable d15 = new ShapeDrawable(new RectShape());
-        d15.setBounds(center_x-line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*1.13));
+//        ShapeDrawable d15 = new ShapeDrawable(new RectShape());
+//        d15.setBounds(center_x-line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*2.5),
+//                center_x+line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*1.13));
 
         ShapeDrawable d16 = new ShapeDrawable(new RectShape());
         d16.setBounds(center_x-line_width/2+(int)(pixelPerMeter*5.49),center_y+(int)(pixelPerMeter*2.15),
@@ -356,7 +355,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         walls.add(d12);
         walls.add(d13);
         walls.add(d14);
-        walls.add(d15);
+//        walls.add(d15);
         walls.add(d16);
 
         // virtual lines
@@ -395,7 +394,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double mean2 = get_mean(accData2);
         double std_dev1 = get_std_dev(accData1, mean1);
         double std_dev2 = get_std_dev(accData2, mean2);
-        if (std_dev2 < 0.2) {
+        if (std_dev2 < 0.1) {
             state = "idle";
             return state;
         }
@@ -419,7 +418,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double[] results = new double[sampleSize];
         // If walking, the lag between two windows is between 0 and 10.
         // This value is obtained by measurement.
-        for (int i=0; i<10; ++i){
+        for (int i=0; i<5; ++i){
             results[i] = 0; // i: lag
             for (int j=0; j<sampleSize; ++j){
                 results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
@@ -452,10 +451,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         delta_d = 0;
         aX = event.values[0];
         aY = event.values[1];
-        aZ = event.values[2];
+        aZ = event.values[2]-9.81;
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
         if (accData2.size()==0){
             measure_dist_done = false;
+            angle_start = azimuthValue;
         }
         // Store the first window in accData1
         if (accData1.size()<sampleSize) {
@@ -466,11 +466,23 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             accData2.add(mag);
         }
         if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
-            state = DetectWalk(accData1, accData2);
-            if (state == "walking") {
-                steps += 1;
-                distance += step_length;
-                delta_d = step_length;
+            angle_end = azimuthValue;
+            delta_angle = Math.abs(angle_end - angle_start);
+            // When angle_end = 355 and angle_start = 5, the actual angle should be 10.
+            if (delta_angle > 180) {
+                delta_angle = 360-delta_angle;
+            }
+            // When turning around, the distance shouldn't change.
+            if (delta_angle>60) {
+                delta_d = 0;
+                state = "turning";
+            }else{
+                state = DetectWalk(accData1, accData2);
+                if (state == "walking") {
+                    steps += 1;
+                    distance += step_length;
+                    delta_d = step_length;
+                }
             }
             // Copy accData2 to accData1
             for (int i=0; i<sampleSize; ++i) {
@@ -550,14 +562,18 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
         if(measure_dist_done && p_list.size()!=0 && !is_pase) {
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue) + "\nCurrent cell: "+ current_cell);
-//            if (delta_d > 0){
+            if (delta_d > 0){
                 for (Particle p : p_list) {
-                    p.move(delta_d, azimuthValue);
+                    p.move((delta_d-0.38), azimuthValue);
                 }
-                resample();
-                draw_particle_on_map();
-                current_cell = check_converge();
-//            }
+            }else{
+                for (Particle p : p_list) {
+                    p.move(0, azimuthValue);
+                }
+            }
+            resample();
+            draw_particle_on_map();
+            current_cell = check_converge();
         }
     }
 
