@@ -44,6 +44,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Orientation related declarations
     private double azimuthValue;
     private DecimalFormat d = new DecimalFormat("#.###");
+    private double angle_start, angle_end, delta_angle; // angle within a sampling window
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
@@ -51,7 +52,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private List<Double> accData1 = new ArrayList<>(); // Former window of data
     private List<Double> accData2 = new ArrayList<>(); // Current window of data
     private int sampleSize = 30; // 30 samples can capture one step
-    private double step_length = 0.58;
+    private double step_length = 0.55;
     private int steps = 0;
     private double distance = 0; // Total distance
     private double delta_d = 0; // Change in distance
@@ -77,7 +78,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int center_y;
     public static int point_size = 5;
     public static int pixelPerMeter = 85;
-    public static double move_noise=0.05;
+    public static double move_noise=0.23;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
     private int num_particle=1000;
@@ -450,10 +451,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         delta_d = 0;
         aX = event.values[0];
         aY = event.values[1];
-        aZ = event.values[2];
+        aZ = event.values[2]-9.81;
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
         if (accData2.size()==0){
             measure_dist_done = false;
+            angle_start = azimuthValue;
         }
         // Store the first window in accData1
         if (accData1.size()<sampleSize) {
@@ -464,11 +466,23 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             accData2.add(mag);
         }
         if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
-            state = DetectWalk(accData1, accData2);
-            if (state == "walking") {
-                steps += 1;
-                distance += step_length;
-                delta_d = step_length;
+            angle_end = azimuthValue;
+            delta_angle = Math.abs(angle_end - angle_start);
+            // When angle_end = 355 and angle_start = 5, the actual angle should be 10.
+            if (delta_angle > 180) {
+                delta_angle = 360-delta_angle;
+            }
+            // When turning around, the distance shouldn't change.
+            if (delta_angle>30) {
+                delta_d = 0;
+                state = "turning";
+            }else{
+                state = DetectWalk(accData1, accData2);
+                if (state == "walking") {
+                    steps += 1;
+                    distance += step_length;
+                    delta_d = step_length;
+                }
             }
             // Copy accData2 to accData1
             for (int i=0; i<sampleSize; ++i) {
