@@ -35,7 +35,7 @@ import java.util.List;
 @RequiresApi(api = Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener, OnClickListener {
     // UI related declarations
-    private Button button, move_drawable,pause;
+    private Button init, move_drawable,pause;
     private TextView azimuthText, textView2;
     private boolean is_pase;
     // Sensor related declarations
@@ -47,13 +47,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
-    private double walk_threshold = 15; // Threshold for determining walking; personal
-    private ArrayList<Double> accData = new ArrayList<>();
-    private int sampleCount = 0;
-    private long startTime=0, currentTime = 0;
-    private double walkingTime;
-    private double distance;
-    private boolean sampling_done;
+    private double walk_threshold = 0.5; // Threshold for determining walking; personal
+    private List<Double> accData1 = new ArrayList<>(); // Former window of data
+    private List<Double> accData2 = new ArrayList<>(); // Current window of data
+    private int sampleSize = 30; // 30 samples can capture one step
+    private double step_length = 0.58;
+    private int steps = 0;
+    private double distance = 0; // Total distance
+    private double delta_d = 0; // Change in distance
+    private boolean measure_dist_done;
     //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
     // Particle filter related declarations
@@ -65,21 +67,20 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private List<ShapeDrawable> virtual_lines;
     public static List<ShapeDrawable> walls;
     myView v;
-   // private int redraw_interval=1000;
+    // private int redraw_interval=1000;
     // some global variables
     private int offset=15;
     public static int display_width;
     public static int display_height;
     public static int center_x;
     public static int center_y;
-    public static int point_size = 3;
+    public static int point_size = 5;
     public static int pixelPerMeter = 85;
     public static double move_noise=0.05;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
-    private int num_particle=1000;
-    private double speed = 0.4; // Yujin's walking speed is 1.5m/s
-    private int window = 500; // 1000ms
+    private int num_particle=100;
+    private String current_cell = null;
    // private double inputAngle;
    // private double angleSum;
 
@@ -88,32 +89,31 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        button = (Button) findViewById(R.id.button);
-        button.setOnClickListener(this);
-        move_drawable = (Button) findViewById(R.id.move_drawable);
-        move_drawable.setOnClickListener(this);
+        init = (Button) findViewById(R.id.init);
+        init.setOnClickListener(this);
+//        move_drawable = (Button) findViewById(R.id.move_drawable);
+//        move_drawable.setOnClickListener(this);
         pause = (Button) findViewById(R.id.Pause);
         pause.setOnClickListener(this);
-        azimuthText = (TextView) findViewById(R.id.textView1);
+//        azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
         // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
         fuseSensor.setMode(FuseOrientation.Mode.FUSION);
         config_init();
-        //testing
     }
 
     public void registerSensorManagerListeners() {
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER),
-                SensorManager.SENSOR_DELAY_FASTEST);
+                SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_GYROSCOPE),
-                SensorManager.SENSOR_DELAY_FASTEST);
+                SensorManager.SENSOR_DELAY_NORMAL);
         sensorManager.registerListener(this,
                 sensorManager.getDefaultSensor(Sensor.TYPE_MAGNETIC_FIELD),
-                SensorManager.SENSOR_DELAY_FASTEST);
+                SensorManager.SENSOR_DELAY_NORMAL);
     }
 
     protected void onResume() {
@@ -128,11 +128,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
     /**
      * @Brief: Initialize some global variables, create a customized view class and add it to the layout
-     * @Author: Yuan Fu (5215315)
+     * @Author: Yuan Fu (5215315), modified by Yujin
      * @Return: None
      */
     private void config_init() {
-        x_range = 20;
+        x_range = 21.8;
         y_range = 7; // in meters
         is_pase=false;
         //angleSum=0;
@@ -149,13 +149,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         canvas = new Canvas(blankBitmap);
         canvasView.setImageBitmap(blankBitmap);
         init_layout();
-        sampling_done=false;
         ConstraintLayout canvas_layout=(ConstraintLayout)findViewById(R.id.canvas_layout);
         ConstraintLayout.LayoutParams lp = new ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT,RelativeLayout.LayoutParams.FILL_PARENT);
         v = new myView(this);
         v.setLayoutParams(lp);
         canvas_layout.addView(v);
     }
+
     /**
      * @Brief: Create particles randomly in a restricted range
      * @Author: Yuan Fu (5215315)
@@ -167,39 +167,37 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         orient = 2 * Math.PI * r.nextDouble();
         Particle p = new Particle();
         // repeat recreating until within room and not collision
-        do  {
+        do {
             x = x_range * (r.nextDouble() - 0.5);
             y = y_range * (r.nextDouble() - 0.5);
             p.set_attr(x, y, orient);
         }while(!check_in_room(x, y) || p.collision);
-
-        //p.set_noise(move_noise, orient_noise, resample_noise);
-//        System.out.println("particle created");
-//        System.out.println("x: " +x+" y: "+y);
         return p;
     }
+
     /** @Brief: Check if the coordinate is within the rooms of the layout
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315), modified by Yujin
      *  @Param: x,y coordinates
      *  @Return: false if out of range
      */
     public static boolean check_in_room(double x, double y) {
-        if(x<-10 || x>10 || y<-3.5 || y>3.5)
+        if(x<-10.9 || x>10.9 || y<-3.5 || y>3.5)
             return false;
         // the bottom left part
-        if(x<-1.5 && 2.5>y) {
+        if(x<2.8 && y<2.5) {
             return false;
         }
         // the bottom middle part
-        if(2<x && -2.5>y) {
+        if((2.8<x && x<5.49 && y<-3.5) || (x>5.49 && x<9.72 && y<-2.15)) {
             return false;
         }
         // the bottom right part
-        if(6.5<x  && 2.5>y) {
+        if(9.72<x  && y<2.5) {
             return false;
         }
         return true;
     }
+
     private void init_particles() {
         p_list.clear();
         for(int i =0;i<num_particle;i++) {
@@ -207,6 +205,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             p_list.add(new_p);
         }
     }
+
     /** @Brief: Resample the current particle list. Identify dead particles and reborn them from random alive particles
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
@@ -240,22 +239,23 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
                 reborn_around.add(random_index);
             }
-                //System.out.println("reborn " + reborn_around);
-                // reborn
-                if (dead_indeces.size() != reborn_around.size()) {
-                    System.out.println("number of dead and reborn do not match");
-                }
+            // reborn
+            if (dead_indeces.size() != reborn_around.size()) {
+                System.out.println("number of dead and reborn do not match");
+            }
 
-                for (int i = 0; i < dead_indeces.size(); i++) {
-                    p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
-                }
+            for (int i = 0; i < dead_indeces.size(); i++) {
+                p_list.get(dead_indeces.get(i)).reborn(p_list.get(reborn_around.get(i)));
+            }
         }
     }
+
     private void draw_particle_on_map() {
         v.invalidate();
     }
+
     /** @Brief: Initialize walls based on our layout 1m=100 pixel
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315), modified by Yujin
      *  @Return: None
      *  -------------------------------------------
      *  -         -          -          -         -
@@ -273,74 +273,75 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         walls=new ArrayList<>();
         //horizontal lines
         ShapeDrawable d1 = new ShapeDrawable(new RectShape());
-        d1.setBounds(center_x-(int)(pixelPerMeter*10),center_y-line_width/2-(int)(pixelPerMeter*3.5),
-                center_x+(int)(pixelPerMeter*10),center_y+line_width/2-(int)(pixelPerMeter*3.5));
+        d1.setBounds(center_x-(int)(pixelPerMeter*10.9),center_y-line_width/2-(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*10.9),center_y+line_width/2-(int)(pixelPerMeter*3.5));
+
         // door related
         ShapeDrawable d2 = new ShapeDrawable(new RectShape());
-        d2.setBounds(center_x-pixelPerMeter*10,center_y-line_width/2-(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*2),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+        d2.setBounds(center_x-(int)(pixelPerMeter*10.9),center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*4.54),center_y+line_width/2-(int)(pixelPerMeter*2.5));
         // door related
         ShapeDrawable d3 = new ShapeDrawable(new RectShape());
-        d3.setBounds(center_x+pixelPerMeter*3,center_y-line_width/2-(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*10),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+        d3.setBounds(center_x+(int)(pixelPerMeter*5.39),center_y-line_width/2-(int)(pixelPerMeter*2.5),
+                center_x+(int)(pixelPerMeter*10.9),center_y+line_width/2-(int)(pixelPerMeter*2.5));
 
         ShapeDrawable d4 = new ShapeDrawable(new RectShape());
-        d4.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*0.5),
-                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*0.5));
+        d4.setBounds(center_x+(int)(pixelPerMeter*2.8),center_y-line_width/2+(int)(pixelPerMeter*0.5),
+                center_x+(int)(pixelPerMeter*4.42),center_y+line_width/2+(int)(pixelPerMeter*0.5));
 
         ShapeDrawable d5 = new ShapeDrawable(new RectShape());
-        d5.setBounds(center_x-(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
-                center_x+(int)(pixelPerMeter*1.5),center_y+line_width/2+(int)(pixelPerMeter*3.5));
+        d5.setBounds(center_x+(int)(pixelPerMeter*2.8),center_y-line_width/2+(int)(pixelPerMeter*3.5),
+                center_x+(int)(pixelPerMeter*5.49),center_y+line_width/2+(int)(pixelPerMeter*3.5));
 
         ShapeDrawable d6 = new ShapeDrawable(new RectShape());
-        d6.setBounds(center_x+(int)(pixelPerMeter*2),center_y-line_width/2+(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*6.5),center_y+line_width/2+(int)(pixelPerMeter*2.5));
+        d6.setBounds(center_x+(int)(pixelPerMeter*5.49),center_y-line_width/2+(int)(pixelPerMeter*2.15),
+                center_x+(int)(pixelPerMeter*9.72),center_y+line_width/2+(int)(pixelPerMeter*2.15));
 
-        //vetical lines
+        //vertical lines
         ShapeDrawable d7 = new ShapeDrawable(new RectShape());
-        d7.setBounds(center_x-line_width/2-(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2-(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+        d7.setBounds(center_x-line_width/2+(int)(pixelPerMeter*2.8),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*2.8),center_y+(int)(pixelPerMeter*3.5));
 
         // door related
         ShapeDrawable d8 = new ShapeDrawable(new RectShape());
-        d8.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*1.5));
+        d8.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.42),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*4.42),center_y-(int)(pixelPerMeter*1.13));
 
         // door related
         ShapeDrawable d9 = new ShapeDrawable(new RectShape());
-        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y-(int)(pixelPerMeter*0.5),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*2));
+        d9.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.42),center_y-(int)(pixelPerMeter*0.3),
+                center_x+line_width/2+(int)(pixelPerMeter*4.42),center_y+(int)(pixelPerMeter*2.38));
 
         // door related
         ShapeDrawable d10 = new ShapeDrawable(new RectShape());
-        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3),
-                center_x+line_width/2+(int)(pixelPerMeter*1.5),center_y+(int)(pixelPerMeter*3.5));
+        d10.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.42),center_y+(int)(pixelPerMeter*3.11),
+                center_x+line_width/2+(int)(pixelPerMeter*4.42),center_y+(int)(pixelPerMeter*3.5));
 
         ShapeDrawable d11 = new ShapeDrawable(new RectShape());
-        d11.setBounds(center_x-line_width/2+(int)(pixelPerMeter*4.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*4.5),center_y+(int)(pixelPerMeter*1.5));
+        d11.setBounds(center_x-line_width/2+(int)(pixelPerMeter*7.49),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*7.49),center_y+(int)(pixelPerMeter*1.35));
 
         ShapeDrawable d12 = new ShapeDrawable(new RectShape());
-        d12.setBounds(center_x-line_width/2+(int)(pixelPerMeter*6.5),center_y-(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*6.5),center_y+(int)(pixelPerMeter*2.5));
+        d12.setBounds(center_x-line_width/2+(int)(pixelPerMeter*9.72),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*9.72),center_y+(int)(pixelPerMeter*2.15));
 
         ShapeDrawable d13 = new ShapeDrawable(new RectShape());
-        d13.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/2-(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+        d13.setBounds(center_x-line_width/2-(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2-(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*2.5));
 
         ShapeDrawable d14 = new ShapeDrawable(new RectShape());
-        d14.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/2+(int)(pixelPerMeter*10),center_y-(int)(pixelPerMeter*2.5));
+        d14.setBounds(center_x-line_width/2+(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/2+(int)(pixelPerMeter*10.9),center_y-(int)(pixelPerMeter*2.5));
 
-        // additional bottom two lines
-        // horizontal
+        // Additional vertical lines
         ShapeDrawable d15 = new ShapeDrawable(new RectShape());
-        d15.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/2+(int)(pixelPerMeter*3.5),
-                center_x+(int)(pixelPerMeter*2),center_y+line_width/2+(int)(pixelPerMeter*3.5));
-        //vetical
+        d15.setBounds(center_x-line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*2.5),
+                center_x+line_width/2+(int)(pixelPerMeter*5.56),center_y-(int)(pixelPerMeter*1.13));
+
         ShapeDrawable d16 = new ShapeDrawable(new RectShape());
-        d16.setBounds(center_x-line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*2.5),
-                center_x+line_width/2+(int)(pixelPerMeter*2),center_y+(int)(pixelPerMeter*3.5));
+        d16.setBounds(center_x-line_width/2+(int)(pixelPerMeter*5.49),center_y+(int)(pixelPerMeter*2.15),
+                center_x+line_width/2+(int)(pixelPerMeter*5.49),center_y+(int)(pixelPerMeter*3.5));
+
         walls.add(d1);
         walls.add(d2);
         walls.add(d3);
@@ -357,11 +358,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         walls.add(d14);
         walls.add(d15);
         walls.add(d16);
+
         // virtual lines
         virtual_lines=new ArrayList<>();
         ShapeDrawable l1 = new ShapeDrawable(new RectShape());
-        l1.setBounds(center_x-line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/4-(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l1.setBounds(center_x-line_width/4-(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4-(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*2.5));
         l1.getPaint().setColor(Color.GRAY);
 
         ShapeDrawable l2 = new ShapeDrawable(new RectShape());
@@ -370,13 +372,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         l2.getPaint().setColor(Color.GRAY);
 
         ShapeDrawable l3 = new ShapeDrawable(new RectShape());
-        l3.setBounds(center_x-line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*3.5),
-                center_x+line_width/4+(int)(pixelPerMeter*5),center_y-(int)(pixelPerMeter*2.5));
+        l3.setBounds(center_x-line_width/4+(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*3.5),
+                center_x+line_width/4+(int)(pixelPerMeter*5.45),center_y-(int)(pixelPerMeter*2.5));
         l3.getPaint().setColor(Color.GRAY);
 
         ShapeDrawable l4 = new ShapeDrawable(new RectShape());
-        l4.setBounds(center_x+(int)(pixelPerMeter*1.5),center_y-line_width/4-(int)(pixelPerMeter*0),
-                center_x+(int)(pixelPerMeter*4.5),center_y+line_width/4-(int)(pixelPerMeter*0));
+        l4.setBounds(center_x+(int)(pixelPerMeter*4.42),center_y-line_width/4-(int)(pixelPerMeter*0.15),
+                center_x+(int)(pixelPerMeter*7.49),center_y+line_width/4-(int)(pixelPerMeter*0.15));
         l4.getPaint().setColor(Color.GRAY);
 
         virtual_lines.add(l1);
@@ -384,18 +386,25 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         virtual_lines.add(l3);
         virtual_lines.add(l4);
     }
-    private String DetectWalk(ArrayList<Double> accData){
+
+    // Detect walking using autocorrelation
+    // accData1: former window; accData2: current window
+    public String DetectWalk(List<Double> accData1, List<Double> accData2) {
         String state = "idle";
-        double[] results = autocorrelation(accData);
-//        for (int i=0; i<results.length; ++i) {
-//            System.out.println("Result" + i + ": " + results[i]);
-//        }
+        double mean1 = get_mean(accData1);
+        double mean2 = get_mean(accData2);
+        double std_dev1 = get_std_dev(accData1, mean1);
+        double std_dev2 = get_std_dev(accData2, mean2);
+        if (std_dev2 < 0.2) {
+            state = "idle";
+            return state;
+        }
+        double[] results = autocorrelation(accData1, mean1, std_dev1, accData2, mean2, std_dev2);
         // Find the maximum of autocorrelation results
         double max = results[0];
-        for (int i=1; i<results.length; ++i) {
+        for (int i = 1; i < results.length; ++i) {
             if (results[i] > max) {
                 max = results[i];
-//                System.out.println("Max correlation: " + max);
             }
         }
         if (max > walk_threshold) {
@@ -403,81 +412,100 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         return state;
     }
-    // Brute force autocorrelation
-    private double[] autocorrelation(ArrayList<Double> accData){
-        double sum = 0;
-        for (int i=0; i<accData.size(); ++i) {
-            sum += accData.get(i);
-        }
-        double avg = sum/accData.size();
-        double[] results = new double[accData.size()];
-        for (int i=0; i<accData.size(); ++i){
+
+    // Calculate the normalized autocorrelation of two windows of data
+    public double[] autocorrelation(List<Double> accData1, double mean1, double std_dev1, List<Double> accData2, double mean2, double std_dev2)
+    {
+        double[] results = new double[sampleSize];
+        // If walking, the lag between two windows is between 0 and 10.
+        // This value is obtained by measurement.
+        for (int i=0; i<10; ++i){
             results[i] = 0; // i: lag
-            for (int j=0; j<accData.size(); ++j){
-                results[i] += (accData.get(j) - avg) * (accData.get((j+i)%accData.size()) - avg);
+            for (int j=0; j<sampleSize; ++j){
+                results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
             }
         }
-//        save2file(results);
         return results;
     }
-    private void get_distance(SensorEvent event) {
-        if (sampleCount == 0) {
-            sampleCount++;
-            startTime = clock.millis();
-            currentTime = startTime;
-//            System.out.println("startTime: " + startTime);
-        }else{
-            sampleCount++;
-            currentTime = clock.millis();
-//            System.out.println("currentTime: " + currentTime);
+
+    public double get_mean(List<Double> data) {
+        double mean = 0;
+        double sum = 0;
+        for (int i = 0; i < data.size(); ++i) {
+            sum += data.get(i);
         }
+        mean = sum / data.size();
+        return mean;
+    }
+
+    public double get_std_dev(List<Double> data, double mean) {
+        double std_dev = 0;
+        double sum_square = 0;
+        for (int i = 0; i < data.size(); ++i) {
+            sum_square += Math.pow(data.get(i) - mean, 2);
+        }
+        std_dev = Math.sqrt(sum_square / data.size());
+        return std_dev;
+    }
+
+    private void get_distance(SensorEvent event) {
+        delta_d = 0;
         aX = event.values[0];
         aY = event.values[1];
         aZ = event.values[2];
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
-//        if (accData.size()<sampleSize){
-       // angleSum+=azimuthValue;
-        if (currentTime - startTime < window){
-            accData.add(mag);
-            sampling_done=false;
-            //inputAngle=angleSum/sampleCount;
-
+        if (accData2.size()==0){
+            measure_dist_done = false;
         }
-        else{
-            state = DetectWalk(accData);
-            sampling_done=true;
-            //angleSum=0;
+        // Store the first window in accData1
+        if (accData1.size()<sampleSize) {
+            accData1.add(mag);
+        }
+        // Store the second window in accData2
+        else if (accData2.size()<sampleSize){
+            accData2.add(mag);
+        }
+        if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
+            state = DetectWalk(accData1, accData2);
             if (state == "walking") {
-                walkingTime = (currentTime - startTime)/1000.0; // walking during the last sampling window
-                distance = walkingTime * speed; // window内移动的距离
-                //distance=0.2;
-//                System.out.println(walkingTime);
+                steps += 1;
+                distance += step_length;
+                delta_d = step_length;
             }
-            else {
-                distance=0;
+            // Copy accData2 to accData1
+            for (int i=0; i<sampleSize; ++i) {
+                accData1.set(i, accData2.get(i));
             }
-//            System.out.println("Current state: " + state);
-            accData.clear();
-//            System.out.println("Samples in 1s: " + sampleCount);
-            sampleCount = 0;
+            // Clear accData2 to store the next window of data
+            accData2.clear();
+            measure_dist_done = true;
         }
     }
+
     @Override
     public  void onClick(View v) {
         switch (v.getId()) {
-            case R.id.button: {
+            case R.id.init: {
                 init_particles();
                 draw_particle_on_map();
+                state = "idle";
+                steps = 0;
+                distance = 0;
+                accData1.clear();
+                accData2.clear();
+                current_cell = null;
+                measure_dist_done=false;
+                textView2.setText("State: "+state+ "\nDistance: "+d.format(distance)+ "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue)+ "\nCurrent cell: "+ current_cell);
                 Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
-            case R.id.move_drawable: {
-                for(Particle p : p_list) {
-                    p.move(0.1,azimuthValue);
-                }
-                resample();
-                break;
-            }
+//            case R.id.move_drawable: {
+//                for(Particle p : p_list) {
+//                    p.move(0.1,azimuthValue);
+//                }
+//                resample();
+//                break;
+//            }
             case R.id.Pause: {
                 if(is_pase) {
                     pause.setText("Pause");
@@ -486,16 +514,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                     pause.setText("Resume");
                     is_pase=true;
                 }
-
             }
         }
     }
+
     /** @Brief: Listen to 3 sensors: ACC、 Gyro、 Compass
      *  @Author: Yuan Fu (5215315)
      *  @Return: None
      */
     public void onSensorChanged(SensorEvent event) {
-        //TODO: distance related
         switch (event.sensor.getType()) {
             case Sensor.TYPE_ACCELEROMETER:
                 fuseSensor.setAccel(event.values);
@@ -511,29 +538,29 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         }
         updateValue();
     }
-    /** @Brief: Up date the (fused)sensor value move the particles and redraw the
+
+    /** @Brief: Update the (fused) sensor value, move the particles, and redraw the
      *          map when distance sampling is done
-     *  @Author: Yuan Fu (5215315)
+     *  @Author: Yuan Fu (5215315), modified by Yujin
      *  @Return: None
      */
     public void updateValue() {
-        //TODO: distance related
         azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
-        azimuthText.setText("Angle: "+d.format(azimuthValue));
+//        azimuthText.setText("Angle: "+d.format(azimuthValue));
 
-        if(sampling_done && p_list.size()!=0 && !is_pase) {
-            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) +"\nAvg angle: " + d.format(azimuthValue));
-            //distance=0.1;
-           // System.out.println(distance);
-            for (Particle p : p_list) {
-                p.move(distance, azimuthValue);
-            }
-            resample();
-            draw_particle_on_map();
-           // System.out.println("moving");
+        if(measure_dist_done && p_list.size()!=0 && !is_pase) {
+            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue) + "\nCurrent cell: "+ current_cell);
+//            if (delta_d > 0){
+                for (Particle p : p_list) {
+                    p.move(delta_d, azimuthValue);
+                }
+                resample();
+                draw_particle_on_map();
+                current_cell = check_converge();
+//            }
         }
-        //System.out.println(azimuthValue);
     }
+
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) {
     }
@@ -559,7 +586,116 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }
             }
         }
+    }
 
+    // If particles in one cell > 80% of total particles, converge.
+    // If converge, return the current cell; else, return null.
+    public String check_converge() {
+        // number of particles in each cell
+        int[] counts = {0, 0, 0, 0, 0, 0, 0, 0, 0};
+        int total = p_list.size();
+        double percent = 0.8; // threshold for convergence
+        int location = -1; // 0->cell A, 1->cell B, 2->cell C...
+        String current_cell = null;
+
+        for (Particle p: p_list) {
+            // Obtain the x and y of a particle; check if it's in cell A, B, C...
+            double x = p.get_x();
+            double y = p.get_y();
+            // if (x,y) is in the range of cell A
+            if (x>2.8 && x<4.42 && y>-0.5 && y<2.5) {
+                counts[0] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell B
+            if (x>4.42 && x<7.49 && y>-0.15 && y<2.5) {
+                counts[1] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell C
+            if ((x>4.42 && x<5.49 && -3.5<y && y<-0.15) || (5.49<=x && x<7.49 && -2.15<y && y<= 0.15)) {
+                counts[2] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell D
+            if (7.49<x && x<9.72 && -2.15<y && y<2.5) {
+                counts[3] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell E
+            if (2.8<x && x<4.42 && -3.5<y && y<-0.5) {
+                counts[4] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell F
+            if (-10.9<x && x<-5.45 && 2.5<y && y<3.5) {
+                counts[5] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell G
+            if (-5.45<x && x<0 && 2.5<y && y<3.5) {
+                counts[6] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell H
+            if (0<x && x<5.45 && 2.5<y && y<3.5) {
+                counts[7] += 1;
+                continue;
+            }
+            // if (x,y) is in the range of cell I
+            if (5.45<x && x<10.9 && 2.5<y && y<3.5) {
+                counts[8] += 1;
+                continue;
+            }
+        }
+
+//        System.out.println("Total particles: "+total);
+//        for (int i=0; i<9; ++i){
+//            System.out.println("Cell " +i + ": " + counts[i]);
+//        }
+//        System.out.println("Threshold: " + percent*total);
+
+        // Check convergence
+        for (int i=0; i<counts.length; ++i) {
+            if (counts[i] > (int) (percent*total)) {
+                location = i;
+                break;
+            }
+        }
+
+        // Convert index to string
+        switch (location) {
+            case 0:
+                current_cell = "A";
+                break;
+            case 1:
+                current_cell = "B";
+                break;
+            case 2:
+                current_cell = "C";
+                break;
+            case 3:
+                current_cell = "D";
+                break;
+            case 4:
+                current_cell = "E";
+                break;
+            case 5:
+                current_cell = "F";
+                break;
+            case 6:
+                current_cell = "G";
+                break;
+            case 7:
+                current_cell = "H";
+                break;
+            case 8:
+                current_cell = "I";
+                break;
+            default:
+                current_cell = null;
+        }
+        return current_cell;
     }
 }
 
