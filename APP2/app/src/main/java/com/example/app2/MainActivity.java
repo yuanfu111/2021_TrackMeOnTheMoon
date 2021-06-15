@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
 
+
 import androidx.annotation.RequiresApi;
 
 import java.io.BufferedReader;
@@ -450,10 +451,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scaned_rss.add(-78);
 //        scanned_MACs=scaned_mac;
 //        scanned_RSS=scaned_rss;
-          if(move_pause) {
+          //if(move_pause) {
               scanWifi();
               dir="None";
-          }
+          //}
 
 
         //execute_serial_filtering();
@@ -654,8 +655,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             }
             prior_serial=prior;
         }
-        prediction=getMaxIndex(prior_serial);
-        show_result(prediction,true);
+        //prediction=getMaxIndex(prior_serial);
+        //show_result(prediction,true);
     }
     public Float[] sense_serial(Float[] prior,String rss_mac,Integer rss)
     {
