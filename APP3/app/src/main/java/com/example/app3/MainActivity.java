@@ -48,11 +48,11 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
-    private double walk_threshold = 0.4; // Threshold for determining walking; personal
+    private double walk_threshold = 0.4;
     private List<Double> accData1 = new ArrayList<>(); // Former window of data
     private List<Double> accData2 = new ArrayList<>(); // Current window of data
-    private int sampleSize = 30; // 30 samples can capture one step
-    private double step_length = 0.55;
+    private int sampleSize = 35; // 35 samples can capture one step
+    private double step_length = 0.5;
     private int steps = 0;
     private double distance = 0; // Total distance
     private double delta_d = 0; // Change in distance
@@ -78,10 +78,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static int center_y;
     public static int point_size = 5;
     public static int pixelPerMeter = 85;
-    public static double move_noise=0.23;
+    public static double move_noise=0.03;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
-    private int num_particle=1000;
+    private int num_particle=1500;
     private String current_cell = null;
    // private double inputAngle;
    // private double angleSum;
@@ -394,7 +394,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double mean2 = get_mean(accData2);
         double std_dev1 = get_std_dev(accData1, mean1);
         double std_dev2 = get_std_dev(accData2, mean2);
-        if (std_dev2 < 0.2) {
+        if (std_dev2 < 0.1) {
             state = "idle";
             return state;
         }
@@ -418,7 +418,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double[] results = new double[sampleSize];
         // If walking, the lag between two windows is between 0 and 10.
         // This value is obtained by measurement.
-        for (int i=0; i<10; ++i){
+        for (int i=0; i<5; ++i){
             results[i] = 0; // i: lag
             for (int j=0; j<sampleSize; ++j){
                 results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
@@ -473,7 +473,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 delta_angle = 360-delta_angle;
             }
             // When turning around, the distance shouldn't change.
-            if (delta_angle>30) {
+            if (delta_angle>60) {
                 delta_d = 0;
                 state = "turning";
             }else{
