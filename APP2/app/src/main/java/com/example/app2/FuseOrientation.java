@@ -32,7 +32,7 @@ public class FuseOrientation {
 
         private float[] selectedOrientation = fusedOrientation;
         // filters
-        public enum Mode {
+         public enum Mode {
             ACC_MAG, GYRO, FUSION
         }
 
