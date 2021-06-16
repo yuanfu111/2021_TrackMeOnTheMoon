@@ -25,6 +25,11 @@ import android.widget.Toast;
 import androidx.annotation.RequiresApi;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
+import java.io.BufferedWriter;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.security.SecureRandom;
 import java.text.DecimalFormat;
 import java.time.Clock;
@@ -48,7 +53,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
-    private double walk_threshold = 0.4;
+    private double walk_threshold = 0.5;
     private List<Double> accData1 = new ArrayList<>(); // Former window of data
     private List<Double> accData2 = new ArrayList<>(); // Current window of data
     private int sampleSize = 35; // 35 samples can capture one step
@@ -71,7 +76,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     myView v;
     // private int redraw_interval=1000;
     // some global variables
-    private int offset=-90;
+    private int offset=-80;
     public static int display_width;
     public static int display_height;
     public static int center_x;
@@ -81,10 +86,13 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static double move_noise=0.03;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
-    private int num_particle=1500;
+    private int num_particle=1000;
     private String current_cell = null;
-   // private double inputAngle;
-   // private double angleSum;
+    private Butterworth butterworth_lowpass = new Butterworth();
+    // Test variable
+    private List<Double> mags = new ArrayList<>();
+    private List<Double> accData = new ArrayList<>();
+    private String dir="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -103,6 +111,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         registerSensorManagerListeners();
         fuseSensor.setMode(FuseOrientation.Mode.FUSION);
+        float[] a = {1, -0.5095f};
+        float[] b = {0.2452f, 0.2452f};
+        butterworth_lowpass.set_coefficient(b, a);
         config_init();
     }
 
@@ -418,7 +429,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double[] results = new double[sampleSize];
         // If walking, the lag between two windows is between 0 and 10.
         // This value is obtained by measurement.
-        for (int i=0; i<5; ++i){
+        for (int i=0; i<sampleSize; ++i){
             results[i] = 0; // i: lag
             for (int j=0; j<sampleSize; ++j){
                 results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
@@ -453,6 +464,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         aY = event.values[1];
         aZ = event.values[2]-9.81;
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
+        mags.add(mag);
+        // Filter magnitude
+//        mag = butterworth_lowpass.filter((float)mag);
         if (accData2.size()==0){
             measure_dist_done = false;
             angle_start = azimuthValue;
@@ -460,10 +474,12 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         // Store the first window in accData1
         if (accData1.size()<sampleSize) {
             accData1.add(mag);
+            accData.add(mag);
         }
         // Store the second window in accData2
         else if (accData2.size()<sampleSize){
             accData2.add(mag);
+            accData.add(mag);
         }
         if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
             angle_end = azimuthValue;
@@ -473,7 +489,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 delta_angle = 360-delta_angle;
             }
             // When turning around, the distance shouldn't change.
-            if (delta_angle>60) {
+            if (delta_angle>45) {
                 delta_d = 0;
                 state = "turning";
             }else{
@@ -525,6 +541,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }else{
                     pause.setText("Resume");
                     is_pase=true;
+                    saveArrayList(accData,"accData_unfiltered");
+                    saveArrayList(mags, "mags_unfiltered");
                 }
             }
         }
@@ -539,7 +557,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             case Sensor.TYPE_ACCELEROMETER:
                 fuseSensor.setAccel(event.values);
                 fuseSensor.calculateAccMagOrientation();
-                get_distance(event);
+                if (!is_pase) {
+                    get_distance(event);
+                }
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 fuseSensor.gyroFunction(event);
@@ -551,6 +571,23 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         updateValue();
     }
 
+    private double clamp_direction(double azimuth) {
+        double inputAngle=0;
+        dir="Up";
+        if(45<=azimuth && azimuth<135) {
+            inputAngle=90;
+            dir="Right";
+        }
+        else if (135<=azimuth && azimuth<225){
+            inputAngle=180;
+            dir="Down";
+        }
+        else if (225<=azimuth && azimuth<315){
+            inputAngle=180;
+            dir="Left";
+        }
+        return inputAngle;
+    }
     /** @Brief: Update the (fused) sensor value, move the particles, and redraw the
      *          map when distance sampling is done
      *  @Author: Yuan Fu (5215315), modified by Yujin
@@ -561,14 +598,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 //        azimuthText.setText("Angle: "+d.format(azimuthValue));
 
         if(measure_dist_done && p_list.size()!=0 && !is_pase) {
-            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue) + "\nCurrent cell: "+ current_cell);
-            if (delta_d > 0){
+            double inputAngle=clamp_direction(azimuthValue);
+            textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAngle: " + d.format(azimuthValue) +" Dir: "+ dir+"\nCurrent cell: "+ current_cell);
+            if (delta_d > 0) {
                 for (Particle p : p_list) {
-                    p.move((delta_d-0.38), azimuthValue);
+                    p.move((delta_d-0.20), inputAngle);
                 }
             }else{
                 for (Particle p : p_list) {
-                    p.move(0, azimuthValue);
+                    p.move(0, inputAngle);
                 }
             }
             resample();
@@ -610,7 +648,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         // number of particles in each cell
         int[] counts = {0, 0, 0, 0, 0, 0, 0, 0, 0};
         int total = p_list.size();
-        double percent = 0.8; // threshold for convergence
+        double percent = 0.7; // threshold for convergence
         int location = -1; // 0->cell A, 1->cell B, 2->cell C...
         String current_cell = null;
 
@@ -712,6 +750,28 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 current_cell = null;
         }
         return current_cell;
+    }
+
+    private void saveArrayList(List<Double> results, String filename) {
+        FileOutputStream out;
+        BufferedWriter writer = null;
+        try {
+            out = openFileOutput(filename + clock.millis() + ".txt", Context.MODE_PRIVATE);
+            writer = new BufferedWriter(new OutputStreamWriter(out));
+            for (Double result : results) {
+                writer.write(String.valueOf(result)+ "\n");
+            }
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                writer.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
 
