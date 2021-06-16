@@ -43,13 +43,16 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private Button init, move_drawable,pause;
     private TextView azimuthText, textView2;
     private boolean is_pase;
+
     // Sensor related declarations
     private SensorManager sensorManager = null;
     private FuseOrientation fuseSensor = new FuseOrientation();
+
     // Orientation related declarations
     private double azimuthValue;
     private DecimalFormat d = new DecimalFormat("#.###");
     private double angle_start, angle_end, delta_angle; // angle within a sampling window
+
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
@@ -63,18 +66,25 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private double delta_d = 0; // Change in distance
     private int sampling_rate = 20000; // 20 ms -> 50 Hz
     private boolean measure_dist_done;
-    //private TextView currentState;
     private Clock clock = Clock.systemDefaultZone();
+
+    // Time * Speed
+    private long startTime=0, currentTime = 0;
+    private double walkingTime;
+    private double speed = 1;
+    private int sampleCount = 0;
+
     // Particle filter related declarations
     List<Particle> p_list = new ArrayList<>();
     private double x_range, y_range;
+
     // Map related declarations
     private ShapeDrawable drawable;
     private Canvas canvas;
     private List<ShapeDrawable> virtual_lines;
     public static List<ShapeDrawable> walls;
     myView v;
-    // private int redraw_interval=1000;
+
     // some global variables
     private int offset=-80;
     public static int display_width;
@@ -89,6 +99,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     private int num_particle=1000;
     private String current_cell = null;
     private Butterworth butterworth_lowpass = new Butterworth();
+
     // Test variable
     private List<Double> mags = new ArrayList<>();
     private List<Double> accData = new ArrayList<>();
@@ -101,11 +112,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
         init = (Button) findViewById(R.id.init);
         init.setOnClickListener(this);
-//        move_drawable = (Button) findViewById(R.id.move_drawable);
-//        move_drawable.setOnClickListener(this);
         pause = (Button) findViewById(R.id.Pause);
         pause.setOnClickListener(this);
-//        azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
         // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -145,8 +153,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         x_range = 21.8;
         y_range = 7; // in meters
         is_pase=false;
-        //angleSum=0;
-        //inputAngle=0;
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
