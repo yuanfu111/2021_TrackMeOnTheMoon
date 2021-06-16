@@ -1,5 +1,6 @@
 package com.example.app2;
 
+import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.BroadcastReceiver;
 import android.content.Context;
@@ -23,9 +24,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
 
-
-import androidx.annotation.RequiresApi;
-
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
@@ -41,9 +39,9 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.List;
-import java.util.zip.DataFormatException;
 
-@RequiresApi(api = Build.VERSION_CODES.O)
+
+@TargetApi(Build.VERSION_CODES.O)
 public class MainActivity extends Activity implements SensorEventListener {
     private SensorManager sensorManager;
     private WifiManager wifiManager;
@@ -363,6 +361,7 @@ public class MainActivity extends Activity implements SensorEventListener {
         boolean success =wifiManager.startScan();
         //Toast.makeText(this, "Scanning WiFi ...", Toast.LENGTH_SHORT).show();
         Log.d("success", "Scanning WiFi ...");
+        System.out.println(success);
     }
     BroadcastReceiver wifiReceiver = new BroadcastReceiver() {
         @Override
@@ -454,6 +453,7 @@ public class MainActivity extends Activity implements SensorEventListener {
           //if(move_pause) {
         if(dir!="None") {
             move(dir);
+            dir="None";
         }
         scanWifi();
           //}
@@ -657,8 +657,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             prior_serial=prior;
         }
         // show the result of motion
-        prediction=getMaxIndex(prior_serial);
-        show_result(prediction,true);
+        //prediction=getMaxIndex(prior_serial);
+        //show_result(prediction,true);
     }
     public Float[] sense_serial(Float[] prior,String rss_mac,Integer rss)
     {

@@ -458,9 +458,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         aY = event.values[1];
         aZ = event.values[2]-9.81;
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
-        mags.add(mag);
         // Filter magnitude
-//        mag = butterworth_lowpass.filter((float)mag);
+        mag = butterworth_lowpass.filter((float)mag);
+        mags.add(mag);
         if (accData2.size()==0){
             measure_dist_done = false;
             angle_start = azimuthValue;
