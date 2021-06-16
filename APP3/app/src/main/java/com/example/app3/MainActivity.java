@@ -101,11 +101,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
 
         init = (Button) findViewById(R.id.init);
         init.setOnClickListener(this);
-//        move_drawable = (Button) findViewById(R.id.move_drawable);
-//        move_drawable.setOnClickListener(this);
         pause = (Button) findViewById(R.id.Pause);
         pause.setOnClickListener(this);
-//        azimuthText = (TextView) findViewById(R.id.textView1);
         textView2 = (TextView) findViewById(R.id.textView2);
         // init sensors
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -145,8 +142,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         x_range = 21.8;
         y_range = 7; // in meters
         is_pase=false;
-        //angleSum=0;
-        //inputAngle=0;
         Display display = getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -234,7 +229,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             init_particles();
         }
         else {
-//            System.out.println("dead "+dead_indeces);
             // reborn the dead particles new alive particles
             SecureRandom r = new SecureRandom();
             int random_index;
@@ -289,10 +283,10 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         // door related
         ShapeDrawable d2 = new ShapeDrawable(new RectShape());
         d2.setBounds(center_x-(int)(pixelPerMeter*10.9),center_y-line_width/2-(int)(pixelPerMeter*2.5),
-                center_x+(int)(pixelPerMeter*4.54),center_y+line_width/2-(int)(pixelPerMeter*2.5));
+                center_x+(int)(pixelPerMeter*4.42),center_y+line_width/2-(int)(pixelPerMeter*2.5));
         // door related
         ShapeDrawable d3 = new ShapeDrawable(new RectShape());
-        d3.setBounds(center_x+(int)(pixelPerMeter*5.39),center_y-line_width/2-(int)(pixelPerMeter*2.5),
+        d3.setBounds(center_x+(int)(pixelPerMeter*5.45),center_y-line_width/2-(int)(pixelPerMeter*2.5),
                 center_x+(int)(pixelPerMeter*10.9),center_y+line_width/2-(int)(pixelPerMeter*2.5));
 
         ShapeDrawable d4 = new ShapeDrawable(new RectShape());
@@ -429,7 +423,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double[] results = new double[sampleSize];
         // If walking, the lag between two windows is between 0 and 10.
         // This value is obtained by measurement.
-        for (int i=0; i<sampleSize; ++i){
+        for (int i=0; i<5; ++i){
             results[i] = 0; // i: lag
             for (int j=0; j<sampleSize; ++j){
                 results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
@@ -527,13 +521,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 Toast.makeText(this,"init",Toast.LENGTH_LONG).show();
                 break;
             }
-//            case R.id.move_drawable: {
-//                for(Particle p : p_list) {
-//                    p.move(0.1,azimuthValue);
-//                }
-//                resample();
-//                break;
-//            }
             case R.id.Pause: {
                 if(is_pase) {
                     pause.setText("Pause");
@@ -603,7 +590,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAngle: " + d.format(azimuthValue) +" Dir: "+ dir+"\nCurrent cell: "+ current_cell);
             if (delta_d > 0) {
                 for (Particle p : p_list) {
-                    p.move((delta_d-0.28), azimuthValue);
+
+                    p.move((delta_d-0.25), inputAngle);
                 }
             }else{
                 for (Particle p : p_list) {
@@ -703,12 +691,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 continue;
             }
         }
-
-//        System.out.println("Total particles: "+total);
-//        for (int i=0; i<9; ++i){
-//            System.out.println("Cell " +i + ": " + counts[i]);
-//        }
-//        System.out.println("Threshold: " + percent*total);
 
         // Check convergence
         for (int i=0; i<counts.length; ++i) {
