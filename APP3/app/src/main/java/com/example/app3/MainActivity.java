@@ -544,6 +544,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             case Sensor.TYPE_ACCELEROMETER:
                 fuseSensor.setAccel(event.values);
                 fuseSensor.calculateAccMagOrientation();
+
                 if (!is_pase) {
                     get_distance(event);
                 }
@@ -589,6 +590,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAngle: " + d.format(azimuthValue) +" Dir: "+ dir+"\nCurrent cell: "+ current_cell);
             if (delta_d > 0) {
                 for (Particle p : p_list) {
+
                     p.move((delta_d-0.25), inputAngle);
                 }
             }else{
