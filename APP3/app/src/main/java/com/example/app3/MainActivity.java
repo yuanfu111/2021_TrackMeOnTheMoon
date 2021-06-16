@@ -584,7 +584,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             dir="Down";
         }
         else if (225<=azimuth && azimuth<315){
-            inputAngle=180;
+            inputAngle=270;
             dir="Left";
         }
         return inputAngle;
