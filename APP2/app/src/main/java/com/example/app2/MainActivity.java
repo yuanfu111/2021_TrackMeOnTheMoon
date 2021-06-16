@@ -23,6 +23,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 import android.content.IntentFilter;
 
+
 import androidx.annotation.RequiresApi;
 
 import java.io.BufferedReader;
@@ -68,7 +69,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     private boolean move_pause;
     private FuseOrientation fuseSensor = new FuseOrientation();
     private double azimuthValue;
-    private int offset=0;
+    private int offset=-65;
     private double distance;
     private DecimalFormat d = new DecimalFormat("#");
     String dir;
@@ -87,7 +88,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        target = (TextView) findViewById(R.id.target);
+        //target = (TextView) findViewById(R.id.target);
         textView3=(TextView) findViewById(R.id.textView3);
         CellA = (TextView)findViewById(R.id.CellA);
         CellB = (TextView)findViewById(R.id.CellB);
@@ -405,11 +406,11 @@ public class MainActivity extends Activity implements SensorEventListener {
         Button btn=(Button)v;
         move_pause=!move_pause;
         if(move_pause==false) {
-            btn.setText("Pause move");
+            btn.setText("Disable Motion");
         } else {
-            btn.setText("Start move");
-            move(dir);
-
+            btn.setText("Enable Motion");
+            //dir="None";
+            //move(dir);
         }
     }
 
@@ -450,12 +451,12 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scaned_rss.add(-78);
 //        scanned_MACs=scaned_mac;
 //        scanned_RSS=scaned_rss;
-          if(move_pause) {
-              scanWifi();
-              dir="None";
-          }
-
-
+          //if(move_pause) {
+        if(dir!="None") {
+            move(dir);
+        }
+        scanWifi();
+          //}
         //execute_serial_filtering();
        // offline_test();
     }
@@ -527,17 +528,17 @@ public class MainActivity extends Activity implements SensorEventListener {
                 CellI.setBackground(drawable_orange);
                 break;
         }
-        Integer t = Integer.parseInt(target.getText().toString());
+        //Integer t = Integer.parseInt(target.getText().toString());
         if(!serial) {
-            online_test.add(Arrays.asList(prediction, t));
+            //online_test.add(Arrays.asList(prediction, t));
             //System.out.println(online_test);
         }else{update_prior_txt();
         }
     }
-    public void serial_done(View v){
-        Integer t = Integer.parseInt(target.getText().toString());
-        online_test.add(Arrays.asList(prediction, t));
-    }
+//    public void serial_done(View v){
+//        Integer t = Integer.parseInt(target.getText().toString());
+//        online_test.add(Arrays.asList(prediction, t));
+//    }
     private void execute_parallel_filtering(){
 
         List<Float[]> prior_parallel=new ArrayList<>();
@@ -552,6 +553,7 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     public void init_belief(View v)
     {
+        dir="None";
         Float[] inital_prior=new Float[]{1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f,1/9f};
         prior_serial=inital_prior;
         posterior_serial=inital_prior;
@@ -654,6 +656,7 @@ public class MainActivity extends Activity implements SensorEventListener {
             }
             prior_serial=prior;
         }
+        // show the result of motion
         prediction=getMaxIndex(prior_serial);
         show_result(prediction,true);
     }

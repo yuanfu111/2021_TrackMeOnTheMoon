@@ -22,9 +22,7 @@ public final class KNN {
     private float Euc_distance(List<Float> x1,List<Float> x2){
         Double result=0d;
         if(x1.size()!=x2.size()){
-            System.out.println("x1 has length of"+x1.size());
-            System.out.println("x2 has length of"+x2.size());
-            throw new ArithmeticException("sample size is not equal");
+            throw new ArithmeticException("sample size is not equal"+ "x1: " +x1.size()+" x2: " +x2.size());
         }
         //calculate the distance (the last column is the label)
        for(int i=0;i<x1.size()-1;i++){
