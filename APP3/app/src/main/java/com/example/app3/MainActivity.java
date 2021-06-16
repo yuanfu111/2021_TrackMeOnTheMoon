@@ -240,7 +240,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             init_particles();
         }
         else {
-//            System.out.println("dead "+dead_indeces);
             // reborn the dead particles new alive particles
             SecureRandom r = new SecureRandom();
             int random_index;
@@ -465,12 +464,20 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     }
 
     private void get_distance(SensorEvent event) {
+        if (sampleCount == 0) {
+            sampleCount++;
+            startTime = clock.millis();
+            currentTime = startTime;
+        }else{
+            sampleCount++;
+            currentTime = clock.millis();
+        }
         delta_d = 0;
         aX = event.values[0];
         aY = event.values[1];
         aZ = event.values[2]-9.81;
         mag = Math.sqrt(aX*aX + aY*aY + aZ*aZ); // magnitude of acceleration
-        mags.add(mag);
+//        mags.add(mag);
         // Filter magnitude
 //        mag = butterworth_lowpass.filter((float)mag);
         if (accData2.size()==0){
@@ -480,14 +487,15 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         // Store the first window in accData1
         if (accData1.size()<sampleSize) {
             accData1.add(mag);
-            accData.add(mag);
+//            accData.add(mag);
         }
         // Store the second window in accData2
         else if (accData2.size()<sampleSize){
             accData2.add(mag);
-            accData.add(mag);
+//            accData.add(mag);
         }
         if (accData1.size() == sampleSize && accData2.size() == sampleSize) {
+            walkingTime = currentTime - startTime;
             angle_end = azimuthValue;
             delta_angle = Math.abs(angle_end - angle_start);
             // When angle_end = 355 and angle_start = 5, the actual angle should be 10.
@@ -498,12 +506,14 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             if (delta_angle>45) {
                 delta_d = 0;
                 state = "turning";
+                startTime += 600;
             }else{
                 state = DetectWalk(accData1, accData2);
                 if (state == "walking") {
                     steps += 1;
-                    distance += step_length;
-                    delta_d = step_length;
+//                    delta_d = step_length;
+                    delta_d = walkingTime/1000 * speed;
+                    distance += delta_d;
                 }
             }
             // Copy accData2 to accData1
@@ -547,8 +557,8 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 }else{
                     pause.setText("Resume");
                     is_pase=true;
-                    saveArrayList(accData,"accData_unfiltered");
-                    saveArrayList(mags, "mags_unfiltered");
+//                    saveArrayList(accData,"accData_unfiltered");
+//                    saveArrayList(mags, "mags_unfiltered");
                 }
             }
         }
@@ -601,7 +611,6 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
      */
     public void updateValue() {
         azimuthValue = (fuseSensor.getAzimuth()+360+offset)%360;
-//        azimuthText.setText("Angle: "+d.format(azimuthValue));
 
         if(measure_dist_done && p_list.size()!=0 && !is_pase) {
             double inputAngle=clamp_direction(azimuthValue);
