@@ -48,7 +48,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     // Distance related declarations
     private double aX=0, aY=0, aZ=0, mag=0;
     private String state = "idle"; // Walking or idle
-    private double walk_threshold = 0.4;
+    private double walk_threshold = 0.5;
     private List<Double> accData1 = new ArrayList<>(); // Former window of data
     private List<Double> accData2 = new ArrayList<>(); // Current window of data
     private int sampleSize = 35; // 35 samples can capture one step
@@ -71,7 +71,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     myView v;
     // private int redraw_interval=1000;
     // some global variables
-    private int offset=-90;
+    private int offset=-80;
     public static int display_width;
     public static int display_height;
     public static int center_x;
@@ -81,7 +81,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
     public static double move_noise=0.03;
     public static double orient_noise=10;
     public static double resample_noise=0.1;
-    private int num_particle=1500;
+    private int num_particle=1000;
     private String current_cell = null;
    // private double inputAngle;
    // private double angleSum;
@@ -418,7 +418,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
         double[] results = new double[sampleSize];
         // If walking, the lag between two windows is between 0 and 10.
         // This value is obtained by measurement.
-        for (int i=0; i<5; ++i){
+        for (int i=0; i<sampleSize; ++i){
             results[i] = 0; // i: lag
             for (int j=0; j<sampleSize; ++j){
                 results[i] += (accData1.get(j) - mean1) * (accData2.get((j+i)%sampleSize) - mean2)/(sampleSize * std_dev1 * std_dev2);
@@ -473,7 +473,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
                 delta_angle = 360-delta_angle;
             }
             // When turning around, the distance shouldn't change.
-            if (delta_angle>60) {
+            if (delta_angle>45) {
                 delta_d = 0;
                 state = "turning";
             }else{
@@ -539,7 +539,9 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             case Sensor.TYPE_ACCELEROMETER:
                 fuseSensor.setAccel(event.values);
                 fuseSensor.calculateAccMagOrientation();
-                get_distance(event);
+                if(!is_pase) {
+                    get_distance(event);
+                }
                 break;
             case Sensor.TYPE_GYROSCOPE:
                 fuseSensor.gyroFunction(event);
@@ -564,7 +566,7 @@ public class MainActivity extends Activity implements SensorEventListener, OnCli
             textView2.setText("State: "+state+ "\nDistance: "+d.format(distance) + "\nSteps: "+ steps + "\nAvg angle: " + d.format(azimuthValue) + "\nCurrent cell: "+ current_cell);
             if (delta_d > 0){
                 for (Particle p : p_list) {
-                    p.move((delta_d-0.38), azimuthValue);
+                    p.move((delta_d-0.28), azimuthValue);
                 }
             }else{
                 for (Particle p : p_list) {
