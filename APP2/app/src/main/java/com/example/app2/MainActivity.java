@@ -419,8 +419,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             btn.setText("Disable Motion");
         } else {
             btn.setText("Enable Motion");
-            //dir="None";
-            //move(dir);
+            move(dir);
+            dir="None";
         }
     }
 
@@ -462,10 +462,10 @@ public class MainActivity extends Activity implements SensorEventListener {
 //        scanned_MACs=scaned_mac;
 //        scanned_RSS=scaned_rss;
           //if(move_pause) {
-        if(dir!="None") {
-            move(dir);
-            dir="None";
-        }
+//        if(dir!="None") {
+//            move(dir);
+//            dir="None";
+//        }
         scanWifi();
           //}
         //execute_serial_filtering();
@@ -686,8 +686,8 @@ public class MainActivity extends Activity implements SensorEventListener {
             prior_serial=prior;
         }
         // show the result of motion
-        //prediction=getMaxIndex(prior_serial);
-        //show_result(prediction,true);
+//        prediction=getMaxIndex(prior_serial);
+//        show_result(prediction,true);
     }
     public Float[] sense_serial(Float[] prior,String rss_mac,Integer rss)
     {
