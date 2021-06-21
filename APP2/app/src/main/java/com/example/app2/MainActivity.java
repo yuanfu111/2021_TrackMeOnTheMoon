@@ -57,7 +57,8 @@ public class MainActivity extends Activity implements SensorEventListener {
     private int prediction;
     private List<String> scanned_MACs = new ArrayList<String>();
     private List<Integer> scanned_RSS = new ArrayList<Integer>();
-    private TextView CellA, CellB, CellC, CellD, CellE, CellF, CellG, CellH, CellI, target,textView3;
+    private TextView CellA, CellB, CellC, CellD, CellE, CellF, CellG, CellH, CellI,textView3;
+    private TextView Prob_A, Prob_B, Prob_C, Prob_D, Prob_E, Prob_F, Prob_G, Prob_H, Prob_I;
     private List<String> chosen_macs = new ArrayList<String>();
     private Drawable drawable_orange, drawable_white;
     private List<List<Integer>> online_test = new ArrayList<>();
@@ -97,6 +98,16 @@ public class MainActivity extends Activity implements SensorEventListener {
         CellG = (TextView)findViewById(R.id.CellG);
         CellH = (TextView)findViewById(R.id.CellH);
         CellI = (TextView)findViewById(R.id.CellI);
+        Prob_A = (TextView)findViewById(R.id.Prob_A);
+        Prob_B = (TextView)findViewById(R.id.Prob_B);
+        Prob_C = (TextView)findViewById(R.id.Prob_C);
+        Prob_D = (TextView)findViewById(R.id.Prob_D);
+        Prob_E = (TextView)findViewById(R.id.Prob_E);
+        Prob_F = (TextView)findViewById(R.id.Prob_F);
+        Prob_G = (TextView)findViewById(R.id.Prob_G);
+        Prob_H = (TextView)findViewById(R.id.Prob_H);
+        Prob_I = (TextView)findViewById(R.id.Prob_I);
+
         drawable_orange = getResources().getDrawable(R.drawable.rectangle_orange);
         drawable_white = getResources().getDrawable(R.drawable.rectangle);
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
@@ -494,38 +505,47 @@ public class MainActivity extends Activity implements SensorEventListener {
             case 0:
                 resetBg();
                 CellA.setBackground(drawable_orange);
+                Prob_A.setBackground(drawable_orange);
                 break;
             case 1:
                 resetBg();
                 CellB.setBackground(drawable_orange);
+                Prob_B.setBackground(drawable_orange);
                 break;
             case 2:
                 resetBg();
                 CellC.setBackground(drawable_orange);
+                Prob_C.setBackground(drawable_orange);
                 break;
             case 3:
                 resetBg();
                 CellD.setBackground(drawable_orange);
+                Prob_D.setBackground(drawable_orange);
                 break;
             case 4:
                 resetBg();
                 CellE.setBackground(drawable_orange);
+                Prob_E.setBackground(drawable_orange);
                 break;
             case 5:
                 resetBg();
                 CellF.setBackground(drawable_orange);
+                Prob_F.setBackground(drawable_orange);
                 break;
             case 6:
                 resetBg();
                 CellG.setBackground(drawable_orange);
+                Prob_G.setBackground(drawable_orange);
                 break;
             case 7:
                 resetBg();
                 CellH.setBackground(drawable_orange);
+                Prob_H.setBackground(drawable_orange);
                 break;
             case 8:
                 resetBg();
                 CellI.setBackground(drawable_orange);
+                Prob_I.setBackground(drawable_orange);
                 break;
         }
         //Integer t = Integer.parseInt(target.getText().toString());
@@ -562,15 +582,15 @@ public class MainActivity extends Activity implements SensorEventListener {
     }
     private void update_prior_txt(){
         DecimalFormat decimalFormat= new  DecimalFormat( ".000" );
-        CellA.setText("A "+ decimalFormat.format(prior_serial[0]));
-        CellB.setText("B "+decimalFormat.format(prior_serial[1]));
-        CellC.setText("C "+decimalFormat.format(prior_serial[2]));
-        CellD.setText("D "+decimalFormat.format(prior_serial[3]));
-        CellE.setText("E "+ decimalFormat.format(prior_serial[4]));
-        CellF.setText("F "+decimalFormat.format(prior_serial[5]));
-        CellG.setText("G "+decimalFormat.format(prior_serial[6]));
-        CellH.setText("H "+decimalFormat.format(prior_serial[7]));
-        CellI.setText("I "+decimalFormat.format(prior_serial[8]));
+        Prob_A.setText("A  "+ decimalFormat.format(prior_serial[0]));
+        Prob_B.setText("B  "+decimalFormat.format(prior_serial[1]));
+        Prob_C.setText("C  "+decimalFormat.format(prior_serial[2]));
+        Prob_D.setText("D  "+decimalFormat.format(prior_serial[3]));
+        Prob_E.setText("E  "+ decimalFormat.format(prior_serial[4]));
+        Prob_F.setText("F  "+decimalFormat.format(prior_serial[5]));
+        Prob_G.setText("G  "+decimalFormat.format(prior_serial[6]));
+        Prob_H.setText("H  "+decimalFormat.format(prior_serial[7]));
+        Prob_I.setText("I  "+decimalFormat.format(prior_serial[8]));
     }
     private void init_belief()
     {
