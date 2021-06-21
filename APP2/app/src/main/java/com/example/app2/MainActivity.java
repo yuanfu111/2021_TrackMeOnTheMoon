@@ -628,6 +628,15 @@ public class MainActivity extends Activity implements SensorEventListener {
         CellG.setBackground(drawable_white);
         CellH.setBackground(drawable_white);
         CellI.setBackground(drawable_white);
+        Prob_A.setBackground(drawable_white);
+        Prob_B.setBackground(drawable_white);
+        Prob_C.setBackground(drawable_white);
+        Prob_D.setBackground(drawable_white);
+        Prob_E.setBackground(drawable_white);
+        Prob_F.setBackground(drawable_white);
+        Prob_G.setBackground(drawable_white);
+        Prob_H.setBackground(drawable_white);
+        Prob_I.setBackground(drawable_white);
     }
 
     private void clean_scan_result(List<String> raw_mac,List<Integer> raw_rss){
